@@ -1,0 +1,574 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Nine CMD</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="assets/icon/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="assets/icon/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="assets/icon/favicon-16x16.png" />
+        <link rel="manifest" href="assets/icon/site.webmanifest" />
+        <link rel="mask-icon" href="assets/icon/safari-pinned-tab.svg" color="#c0b200" />
+        <link rel="shortcut icon" href="assets/icon/favicon.ico" />
+        <meta name="msapplication-TileColor" content="#ffc40d" />
+        <meta name="msapplication-config" content="assets/icon/browserconfig.xml" />
+        <meta name="theme-color" content="#fff030" />
+
+        <script src="js/lazysizes.min.js" async=""></script>
+        <script src="js/script.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/styles.css" />
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+
+        <style></style>
+
+        <script>
+            $(document).ready(function () {
+                /////////////// Chỉnh kích thước cửa sổ liên tục
+                //  var display_lobby = $(".display_lobby");
+                var display_lobby2 = $(".display_lobby2");
+                var background = $(".background");
+                var backgroundAspectRatio = 1178 / 665;
+
+                $(window).on("load resize", function () {
+                    var windowWidth = $(window).width();
+                    //  var windowHeight = $(window).height();
+                    var backgroundWidth = windowWidth;
+                    var backgroundHeight = backgroundWidth / backgroundAspectRatio;
+
+                    // var butterflyWidth = windowWidth * 0.1;
+                    // var butterflyHeight = butterflyWidth * (display_lobby.height() / display_lobby.width());
+
+                    // var butterflyTop = (backgroundHeight - butterflyHeight) * 0.01;
+                    // var butterflyRight = (windowWidth - butterflyWidth) * 0.01;
+
+                    background.css({
+                        width: backgroundWidth + "px",
+                        height: backgroundHeight + "px",
+                        scale: "95%",
+                    });
+
+                    //  display_lobby.css({
+                    //       width: butterflyWidth + "px",
+                    //      top: butterflyTop + "px",
+                    //      right: butterflyRight + "px",
+                    //  });
+
+                    // Tính toán tỷ lệ zoom theo phần trăm
+                    //  var butterflyWidth2 = windowWidth * 0.1;
+                    //  var butterflyHeight2 = butterflyWidth2 * (display_lobby2.height() / display_lobby2.width());
+                    var zoomPercentage = windowWidth / 10;
+
+                    display_lobby2.css({
+                        // width: butterflyWidth2 + "px",
+                        zoom: zoomPercentage + "%",
+                    });
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                /////////////// Hành động login
+                // Lắng nghe sự kiện submit của form
+                document.getElementById("login_form").addEventListener("submit", function (event) {
+                    addToLog("Bắt đầu submit form login");
+                    event.preventDefault(); // Ngăn chặn việc gửi form đi
+
+                    var urlServerInput = document.getElementById("url_server_jsonBlod");
+                    var urlServer = urlServerInput.value;
+
+                    // Kiểm tra độ dài và kí tự đầu tiên của urlServer
+                    if (urlServer.length !== 19 && urlServer.length > 0 && /^\d+$/.test(urlServer)) {
+                        var errorDiv = document.createElement("small"); // Tạo phần tử div mới
+                        errorDiv.className = "text-danger form-text"; // Áp dụng lớp CSS text-danger từ Bootstrap
+                        errorDiv.innerText = "Your url server incorrect";
+
+                        var formGroup = urlServerInput.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
+
+                        // Xóa các thông báo cũ trước khi thêm thông báo lỗi mới
+                        var existingErrorDivs = formGroup.querySelectorAll(".text-danger");
+                        existingErrorDivs.forEach(function (existingErrorDiv) {
+                            existingErrorDiv.remove();
+                        });
+
+                        formGroup.appendChild(errorDiv); // Thêm thông báo lỗi vào phần tử cha
+                        return; // Dừng việc xử lý tiếp theo
+                    }
+                    showNotification("Login ...", "alert", 10000);
+                    save_9cmd_form_data_login(); // Lưu dữ liệu từ form vào Local Storage
+
+                    var submitBtn = document.getElementById("submit_login_form");
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Login...';
+                    submitBtn.disabled = true;
+
+                    fetchDataAvatar();
+                });
+                // Xóa thông báo lỗi khi người dùng nhấp vào trường url_server_jsonBlod
+                document.getElementById("url_server_jsonBlod").addEventListener("focus", function () {
+                    var formGroup = this.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
+                    var errorDivs = formGroup.querySelectorAll(".text-danger");
+                    errorDivs.forEach(function (errorDiv) {
+                        errorDiv.remove();
+                    });
+                });
+                var Address9cInput = document.getElementById("Address9c");
+                var Address9cValue = Address9cInput.value;
+                // Đăng ký sự kiện khi người dùng nhập xong trường Address9C
+                Address9cInput.addEventListener("input", function () {
+                    var Address9cValue = Address9cInput.value.trim();
+
+                    if (Address9cValue.length === 42 && Address9cValue.startsWith("0x")) {
+                        // Hiển thị trường avatarSelect
+                        document.getElementById("avatarSelect2").style.display = "block";
+                        // Hiển thị trường loading_login
+                        document.getElementById("loading_login").style.display = "block";
+                        // Tối vùng form
+                        document.getElementById("login_form").style.opacity = "0.5";
+
+                        // Gọi hàm listAvatar()
+                        listAvatar();
+
+                        // Ẩn gif loading sau 2 giây (hoặc sau khi xử lý xong)
+                        setTimeout(function () {
+                            document.getElementById("login_form").style.opacity = "1"; // Khôi phục độ trong suốt của form
+                            document.getElementById("loading_login").style.display = "none";
+                        }, 2000);
+                    } else {
+                        // Ẩn trường avatarSelect
+                        document.getElementById("avatarSelect2").style.display = "none";
+                    }
+                });
+
+                /////////////// Lấy dữ liệu node 1 lần
+                // Sử dụng $.getJSON
+                // $.getJSON("https://cors-get-proxy.sirjosh.workers.dev/?url=https://api.9capi.com/rpc", function(data) {
+                // node_list(data);
+                // });
+
+                // Sử dụng fetch
+                fetch("https://cors-get-proxy.sirjosh.workers.dev/?url=https://api.9capi.com/rpc")
+                    .then((response) => response.json())
+                    .then((data) => node_list(data))
+                    .catch((error) => node_list_error(error));
+                /////////////// Làm mới info avatar liên tục
+                // Lặp lại yêu cầu fetch sau mỗi 5 giây
+                setInterval(fetch_data_block_now, 5000);
+				setInterval(fetchDataAvatar, 60000);
+                // Khởi tạo lần đầu khi trang được tải
+                fetch_data_block_now();
+			
+            });
+        </script>
+
+        <script>
+            var CustomProgressBar = function (settings) {
+                var self = this;
+
+                self.element = settings.element;
+                self.imageUrl = settings.imageUrl;
+                self.backgroundImageUrl = settings.backgroundImageUrl || settings.imageUrl;
+                self.imageHeight = settings.imageHeight;
+                self.imageWidth = settings.imageWidth;
+                if (settings.backgroundOpacity || settings.backgroundOpacity === 0) {
+                    self.backgroundOpacity = settings.backgroundOpacity;
+                } else {
+                    self.backgroundOpacity = 0.3;
+                }
+
+                $(self.element).prepend($("<div>", { class: "custom-progress-bar", style: "height: " + self.imageHeight + "px; width: " + self.imageHeight + "px;" }));
+                $(self.element)
+                    .children(".custom-progress-bar")
+                    .prepend($("<div>", { class: "cpb-progress" }));
+                $(self.element)
+                    .children(".custom-progress-bar")
+                    .prepend($("<div>", { class: "cpb-background" }));
+                $(self.element)
+                    .find(".cpb-background")
+                    .prepend($("<img/>", { style: "opacity: " + self.backgroundOpacity + ";", class: "custom-background-image", src: self.backgroundImageUrl }));
+                $(self.element)
+                    .find(".cpb-progress")
+                    .prepend($("<img/>", { class: "custom-progress-image", src: self.imageUrl }));
+
+                self.setPercentage = function (value) {
+                    if (value > 100) value = 100;
+                    if (value < 0) value = 0;
+                    var toShowAmount = (settings.imageHeight / 100) * value;
+                    var toHideAmount = (settings.imageHeight / 100) * (100 - value);
+
+                    // Thêm transition mượt vào cpb-progress
+                    $(self.element)
+                        .find(".cpb-progress")
+                        .css({
+                            height: toShowAmount + "px",
+                            top: toHideAmount + "px",
+                            transition: "height 0.3s ease-in, top 0.3s ease-out",
+                        });
+                };
+            };
+
+            $.fn.customProgressBar = function (settings) {
+                settings.element = $(this);
+                var newProgressBar = new CustomProgressBar(settings);
+                return newProgressBar;
+            };
+            function SimulateProgress(customProgressBar, currentValue) {
+                var increase = getRandomInt(0, 3);
+                var newValue = currentValue + increase;
+                if (newValue > 100) newValue = 100;
+                if (currentValue == 100) newValue = 0;
+                customProgressBar.setPercentage(newValue);
+                setTimeout(function () {
+                    SimulateProgress(customProgressBar, newValue);
+                }, 200);
+            }
+
+            function getRandomInt(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            function updateAPBar(typeBar) {
+                var blockNow = getDataFromLocalStorage("blockNowJson", "block");
+                var dailyRewardReceivedIndex = getDataFromSessionStorage("session_login9cmd", "dailyRewardReceivedIndex");
+                if (blockNow === null || dailyRewardReceivedIndex === null) {
+                    typeBar.setPercentage(0);
+                    $(".lobby-AP-bar-view-3").text("");
+                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-view-6");
+                    _temp[0].style.display = "block";
+                } else {
+                    var block = blockNow - dailyRewardReceivedIndex;
+                    var percentage = (block / 1700) * 100;
+                    if (percentage > 100) percentage = 100;
+                    typeBar.setPercentage(percentage);
+                    $(".lobby-AP-bar-view-3").text(block + "/1700");
+                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-view-6");
+                    _temp[0].style.display = "none";
+                }
+
+                setTimeout(function () {
+                    updateAPBar(typeBar);
+                }, 1000);
+            }
+
+            function updateAPBar2(typeBar) {
+                var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
+                if (actionPoint === null) {
+                    typeBar.setPercentage(0);
+                    $(".lobby-AP-bar-2-view-3").text("");
+                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-2-view-4");
+                    _temp[0].style.display = "block";
+                } else {
+                    let percentage = (actionPoint / 120) * 100;
+                    typeBar.setPercentage(percentage);
+                    $(".lobby-AP-bar-2-view-3").text(actionPoint + "/120");
+                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-2-view-4");
+                    _temp[0].style.display = "none";
+                }
+
+                setTimeout(function () {
+                    updateAPBar2(typeBar);
+                }, 1000);
+            }
+
+            $(document).ready(function () {
+                var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
+                    imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
+                    imageHeight: 128,
+                    imageWidth: 24,
+                    backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+                    backgroundOpacity: 0,
+                });
+
+                var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
+                    imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
+                    imageHeight: 128,
+                    imageWidth: 24,
+                    backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+                    backgroundOpacity: 0,
+                });
+
+                updateAPBar(APBarLobbyCreat);
+                updateAPBar2(APBar2LobbyCreat);
+            });
+        </script>
+    </head>
+    <body>
+        <div class="background">
+            <div class="noty_lobby display_lobby2" style="position: absolute; top: 14%; z-index: 100; /* zoom: 88.2%; */">
+                <button type="button" class="btn btn-outline-success btn-sm"
+                    onclick="showNotification('Thông báo mẫu', 'alert', 5000);
+showNotification('Thông báo mẫu', 'success', 5000);
+showNotification('Thông báo mẫu', 'warning', 5000);
+showNotification('Thông báo mẫu', 'error', 5000);
+showNotification('Thông báo mẫu', 'info', 5000);"
+                    style="/* display: none; */ position: absolute; /* top: 28px; */ right: -55px;"
+                >
+                    Check
+                </button>
+                <input type="number" id="delayUseNode" min="6" value="6" />
+				<button type="button" class="btn btn-outline-success btn-sm" onclick="fetchDataAvatar();">Auto refresh 60s</button>
+            </div>
+            <div class="lobby-grid display_lobby2">
+                <div class="button_lobby arena-lobby-view" data-action="arena" data-bs-toggle="modal" data-bs-target="#func_arena_main">
+                    <img src="assets/img/Lobby/ranking_01_mod.png" alt="Arena" />
+                </div>
+
+                <div class="button_lobby stage-lobby-view" data-action="stage" data-bs-toggle="modal" data-bs-target="#func_stage_main">
+                    <img src="assets/img/Lobby/bg_character_main_08.png" alt="Adventure" />
+                </div>
+
+                <div class="button_lobby craft-upgrade-lobby-view" data-action="craft-upgrade" data-bs-toggle="modal" data-bs-target="#func_craft-upgrade_main">
+                    <img src="assets/img/Lobby/bg_character_main_06.png" alt="Workshop" />
+                </div>
+
+                <div class="button_lobby shop-lobby-view" data-action="shop" data-bs-toggle="modal" data-bs-target="#func_shop_main">
+                    <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop" />
+                </div>
+
+                <div class="button_lobby login-lobby-view" data-bs-toggle="modal" data-bs-target="#login_modal_form">
+                    <div class="image-container">
+                        <img class="lazyload image-avatar lobby-armorId-view" src="assets/loading_small.gif" data-src="assets/img/Common/10200000.png" />
+                        <img style="scale: 45%;" class="lazyload image-avatar lobby-loading-vip" src="assets/loading_small.gif" data-src="assets/loading_vip.gif" />
+                        <img class="lazyload image-avatar" src="assets/loading_small.gif" data-src="assets/img/Common/character_frame_mod.png" />
+                        <div class="lobby-level-view"></div>
+                    </div>
+                </div>
+
+                <div class="lobby-name-view"></div>
+
+                <div class="lobby-donater-view"><i class="bi-cart2"></i></div>
+
+                <div class="button_lobby table-block-now-lobby-view" data-bs-toggle="modal" data-bs-target="#func_main">
+                    <table id="table_node_now" class="block_now">
+                        <tr>
+                            <td>
+                                <div class="hstack gap-3">
+                                    <div class="vr"></div>
+                                    Block:00000000
+                                    <div class="vr"></div>
+                                    Avg block time: 0s
+                                    <div class="vr"></div>
+                                    Node: null
+                                    <div class="vr"></div>
+                                    Delay: 0s
+                                    <div class="vr"></div>
+                                    ' + '
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="button_lobby lobby-AP-bar-view">
+                    <div class="lobby-AP-bar-view-1">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_box.png" />
+                    </div>
+                    <div class="lobby-AP-bar-view-2">
+                        <div style="width: 128px; height: 24px; overflow: hidden;">
+                            <div style="transform-origin: center; transform: rotate(90deg);" id="APBarLobbyCreat"></div>
+                        </div>
+                    </div>
+                    <div class="lobby-AP-bar-view-2" style="z-index: 10;">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+                    </div>
+                    <div class="lobby-AP-bar-view-3"></div>
+                    <div class="lobby-AP-bar-view-4">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_icon_Block.png" />
+                    </div>
+                    <div class="lobby-AP-bar-view-5"></div>
+                    <img class="lazyload lobby-loading-vip-2 lobby-AP-bar-view-6" src="assets/loading_small.gif" data-src="assets/loading_vip.gif" />
+                </div>
+
+                <div class="button_lobby lobby-AP-bar-2-view">
+                    <div class="lobby-AP-bar-2-view-1">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_star.png" />
+                    </div>
+                    <div class="lobby-AP-bar-2-view-2">
+                        <div style="width: 128px; height: 24px; overflow: hidden;">
+                            <div style="transform-origin: center; transform: rotate(90deg);" id="APBar2LobbyCreat"></div>
+                        </div>
+                    </div>
+                    <div class="lobby-AP-bar-2-view-2" style="z-index: 10;">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+                    </div>
+
+                    <div class="lobby-AP-bar-2-view-3"></div>
+                    <img class="lazyload lobby-loading-vip-2 lobby-AP-bar-2-view-4" src="assets/loading_small.gif" data-src="assets/loading_vip.gif" />
+                </div>
+
+                <div class="button_lobby lobby-crystal-bar-view">
+                    <div class="lobby-crystal-bar-view-1">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_crystal_big.png" />
+                    </div>
+                    <div class="lobby-crystal-bar-view-2">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+                    </div>
+                    <div class="lobby-crystal-bar-view-3"></div>
+                    <img class="lazyload lobby-loading-vip lobby-crystal-bar-view-4" src="assets/loading_small.gif" data-src="assets/loading_vip.gif" />
+                </div>
+                <div class="button_lobby lobby-NCG-bar-view">
+                    <div class="lobby-NCG-bar-view-1">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_gold.png" />
+                    </div>
+                    <div class="lobby-NCG-bar-view-2">
+                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+                    </div>
+                    <div class="lobby-NCG-bar-view-3"></div>
+                    <img class="lazyload lobby-loading-vip lobby-NCG-bar-view-4" src="assets/loading_small.gif" data-src="assets/loading_vip.gif" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="login_modal_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
+                <div class="modal-content">
+                    <img id="loading_login" style="position: absolute; transition: translate(-50%, -50%); top: 42%; z-index: 1; left: 35%; display: none;" src="assets/loading_vip.gif" />
+                    <div class="modal-header">
+                        <h4 class="modal-title white-text w-100 font-weight-bold py-2">Login</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="login_form">
+                            <div class="form-floating mb-3">
+                                <input type="text" placeholder="0x***" id="Address9c" name="Address9c" class="form-control" required />
+                                <small class="form-text text-muted">Look like <i class="user-select-all">0x6374FE5F54CdeD72Ff334d09980270c61BC95186</i></small>
+                                <label for="Address9c" class="form-label">Nine Chronicles address</label>
+                            </div>
+
+                            <div class="form-floating mb-3" id="avatarSelect2" style="display: none;">
+                                <select id="avatarSelect" name="avatarSelect" class="form-select" required>
+                                    <div id="avatarList"></div>
+                                </select>
+                                <label for="avatarSelect" class="form-label">Choose avatar</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" placeholder="0x***" id="password" name="password" class="form-control" required />
+                                <label for="password" class="form-label">Password</label>
+                            </div>
+
+                            <div class="form-check form-switch">
+                                <input type="checkbox" role="switch" id="is-donater" name="donater" class="form-check-input" />
+                                <label for="is-donater" class="form-label">is donater</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <select id="url_rpc" name="url_rpc" class="form-select"></select>
+                                <label for="url_rpc" class="form-label">Choose node</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-floating">
+                                        <input type="number" placeholder="0000000000000000000" id="url_server_jsonBlod" name="url_server_jsonBlod" class="form-control" />
+                                        <label for="url_server_jsonBlod" class="form-label">Your server</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-floating">
+                                        <input type="password" placeholder="12345" id="passwordServer" name="passwordServer" class="form-control" value="12345" />
+                                        <label for="passwordServer" class="form-label">Password (Default 12345)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="submit_login_form" type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="func_main" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="func_mainLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+                <div class="modal-content func_main">
+                    <div class="modal-header func_main">
+                        <!-- <h5 class="modal-title" id="func_mainLabel">Modal title</h5> -->
+                        <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                    </div>
+                    <div class="modal-body func_main">
+                        <span class="close-button" data-bs-dismiss="modal"> <img src="assets/img/Common/UI_Mainmenu/UI_icon_Mainmenu_main2.png" /></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Arena-->
+        <div class="modal fade" id="func_arena_main" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="func_arena_main-Label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+                <div class="modal-content func_main">
+                    <div class="modal-header func_main">
+                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_Mainmenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                    </div>
+                    <div class="modal-body func_main">
+                        <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Stage-->
+        <div class="modal fade" id="func_stage_main" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="func_stage_main-Label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+                <div class="modal-content func_main">
+                    <div class="modal-header func_main">
+                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_Mainmenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                    </div>
+                    <div class="modal-body func_main">
+                        <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Shop-->
+        <div class="modal fade" id="func_shop_main" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="func_shop_main-Label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+                <div class="modal-content func_main">
+                    <div class="modal-header func_main">
+                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_Mainmenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                    </div>
+                    <div class="modal-body func_main">
+                        <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Craft Upgrade-->
+        <div class="modal fade" id="func_craft-upgrade_main" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="func_craft-upgrade_main-Label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+                <div class="modal-content func_main">
+                    <div class="modal-header func_main">
+                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_Mainmenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                    </div>
+                    <div class="modal-body func_main">
+                        <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
