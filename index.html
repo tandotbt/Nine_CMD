@@ -36,7 +36,7 @@
                 //  var display_lobby = $(".display_lobby");
                 var display_lobby2 = $(".display_lobby2");
                 var background = $(".background");
-                var backgroundAspectRatio = 1178 / 665;
+                var backgroundAspectRatio = 1920 / 1080;
 
                 $(window).on("load resize", function () {
                     var windowWidth = $(window).width();
@@ -303,7 +303,23 @@
     <body>
         <div class="background">
             <div class="noty_lobby display_lobby2" style="position: absolute; top: 14%; z-index: 100; /* zoom: 88.2%; */">
-                <button
+                <button class="btn btn-outline-success btn-sm" id="fullscreen-button">Fullscreen</button>
+
+<script>
+var fullscreenButton = document.getElementById('fullscreen-button');
+fullscreenButton.addEventListener('click', function() {
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen();
+  } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+    document.documentElement.mozRequestFullScreen();
+  } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
+    document.documentElement.webkitRequestFullscreen();
+  } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+    document.documentElement.msRequestFullscreen();
+  }
+});
+</script>
+				<button
                     type="button"
                     class="btn btn-outline-success btn-sm"
                     onclick="showNotification('Thông báo mẫu', 'alert', 5000);
