@@ -230,11 +230,11 @@ async function fetchDataAvatar_useNode() {
     var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
     var avatarAddress = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
     var url_rpc = getDataFromSessionStorage("session_login9cmd", "url_rpc");
-	if (url_rpc === null) {
-		console.log("Thiếu url rpc");
-		showNotification("Missing node ... ", "error", 5000);
-		return;
-	}
+    if (url_rpc === null) {
+        console.log("Thiếu url rpc");
+        showNotification("Missing node ... ", "error", 5000);
+        return;
+    }
     try {
         // Lấy name, level, crystal, ncg, AP, refill time
         var post_data_json1 = {
@@ -432,27 +432,27 @@ function fetchDataAvatar_display() {
         lobbyLoadingVipElements[i].style.display = "block";
     }
     var _temp2 = document.getElementsByClassName("lobby-loading-vip image-avatar");
-    
+
     if (!(armorId === null)) {
         $(".lobby-armorId-view").attr("src", "https://raw.githubusercontent.com/planetarium/NineChronicles/development/nekoyume/Assets/Resources/UI/Icons/Item/" + armorId + ".png");
-		_temp2[0].style.display = "none";
-	} else {
+        _temp2[0].style.display = "none";
+    } else {
         $(".lobby-armorId-view").attr("src", "assets/img/Common/10200000.png");
-		_temp2[0].style.display = "block";
+        _temp2[0].style.display = "block";
     }
     if (!(level === null)) {
         $(".lobby-level-view").text(level);
-		_temp2[0].style.display = "none";
+        _temp2[0].style.display = "none";
     } else {
         $(".lobby-level-view").text("0");
-		_temp2[0].style.display = "block";
+        _temp2[0].style.display = "block";
     }
     if (!(name === null)) {
         $(".lobby-name-view").text(name);
-		_temp2[0].style.display = "none";
+        _temp2[0].style.display = "none";
     } else {
         $(".lobby-name-view").text("No data name");
-		_temp2[0].style.display = "block";
+        _temp2[0].style.display = "block";
     }
 
     if (!(donaterBlock === null)) {
@@ -486,7 +486,7 @@ function fetchDataAvatar_display() {
     if (!(dailyRewardReceivedIndex === null)) {
         // Tính toán số giây
         let seconds_2 = (dailyRewardReceivedIndex - blockNow + 1700) * avgBlock;
-		let seconds = Math.abs(seconds_2);
+        let seconds = Math.abs(seconds_2);
         // Chuyển đổi thành giờ, phút, giây hoặc ngày, giờ
         let hours = Math.floor(seconds / 3600);
         let minutes = Math.floor((seconds % 3600) / 60);
@@ -723,6 +723,11 @@ function save_9cmd_form_data_login() {
     var url_rpc = document.getElementById("url_rpc").value;
     var url_Server = document.getElementById("url_server_jsonBlod").value;
     var passwordServer = document.getElementById("passwordServer").value;
+
+    if (url_rpc.startsWith("http://")) {
+        // Sử dụng proxy khi url_rpc bắt đầu bằng "http://"
+        url_rpc = "https://cors-proxy.fringe.zone/" + url_rpc;
+    }
 
     var _9cmd_form_data_login = {
         Address9c: Address9c,

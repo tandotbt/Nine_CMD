@@ -55,7 +55,7 @@ body {
     position: absolute;
     top: 5px;
     right: 5px;
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .close-button:hover {
@@ -433,6 +433,76 @@ table.block_now {
     /* display: table; */
     /* white-space: nowrap; */
     z-index: 12;
+}
+
+.lobby-info-tooltip-view {
+    position: relative;
+    grid-row: 50 / 50;
+    grid-column: 92 / 92;
+    /* text-align: -webkit-right; */
+    z-index: 1;
+    overflow: visible;
+}
+
+.tooltip-custom {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-custom .tooltiptext {
+    visibility: hidden;
+    width: 170px;
+    height: 194px;
+    background-color: #fff030;
+    background: url(../assets/img/Common/UI_Popup/UI_bg_frame_16.png);
+    background-size: cover;
+    white-space: nowrap;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 0px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* .tooltip-custom .tooltiptext { */
+/* visibility: hidden; */
+/* width: 169px; */
+/* background-color: #fff030; */
+/* background: url(../assets/img/Common/UI_Popup/UI_bg_frame_16.png); */
+/* background-size: cover; */
+/* white-space: nowrap; */
+/* color: #fff; */
+/* text-align: center; */
+/* border-radius: 5px; */
+/* position: absolute; */
+/* z-index: 10; */
+/* bottom: 150%; */
+/* left: 50%; */
+/* margin-left: -86px; */
+/* opacity: 0; */
+/* transition: opacity 0.3s; */
+/* } */
+
+.tooltip-custom .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip-custom:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }
 
 .custom-gauge {

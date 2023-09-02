@@ -21,8 +21,9 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
@@ -160,10 +161,9 @@
                 /////////////// Làm mới info avatar liên tục
                 // Lặp lại yêu cầu fetch sau mỗi 5 giây
                 setInterval(fetch_data_block_now, 5000);
-				setInterval(fetchDataAvatar, 60000);
+                setInterval(fetchDataAvatar, 60000);
                 // Khởi tạo lần đầu khi trang được tải
                 fetch_data_block_now();
-			
             });
         </script>
 
@@ -303,7 +303,9 @@
     <body>
         <div class="background">
             <div class="noty_lobby display_lobby2" style="position: absolute; top: 14%; z-index: 100; /* zoom: 88.2%; */">
-                <button type="button" class="btn btn-outline-success btn-sm"
+                <button
+                    type="button"
+                    class="btn btn-outline-success btn-sm"
                     onclick="showNotification('Thông báo mẫu', 'alert', 5000);
 showNotification('Thông báo mẫu', 'success', 5000);
 showNotification('Thông báo mẫu', 'warning', 5000);
@@ -314,7 +316,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                     Check
                 </button>
                 <input type="number" id="delayUseNode" min="6" value="6" />
-				<button type="button" class="btn btn-outline-success btn-sm" onclick="fetchDataAvatar();">Auto refresh 60s</button>
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="fetchDataAvatar();">Auto refresh 60s</button>
             </div>
             <div class="lobby-grid display_lobby2">
                 <div class="button_lobby arena-lobby-view" data-action="arena" data-bs-toggle="modal" data-bs-target="#func_arena_main">
@@ -423,6 +425,15 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                     <div class="lobby-NCG-bar-view-3"></div>
                     <img class="lobby-loading-vip lobby-NCG-bar-view-4" src="assets/loading_vip.gif" />
                 </div>
+                <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
+                    <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
+                    <span class="tooltiptext">
+                        <div style="width: 170px; height: 194px; overflow: hidden;"><em>Tooltip</em> <u>with</u> <b>HTML</b></div>
+                    </span>
+                </div>
+                <!-- <div data-bs-html="true" data-bs-title="<em>Tooltip</em> <u>with</u> <b>HTML</b>" class="button_lobby lobby-info-tooltip-view"> -->
+
+                <!-- </div> -->
             </div>
         </div>
 
