@@ -230,6 +230,11 @@ async function fetchDataAvatar_useNode() {
     var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
     var avatarAddress = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
     var url_rpc = getDataFromSessionStorage("session_login9cmd", "url_rpc");
+	if (url_rpc === null) {
+		console.log("Thiếu url rpc");
+		showNotification("Missing node ... ", "error", 5000);
+		return;
+	}
     try {
         // Lấy name, level, crystal, ncg, AP, refill time
         var post_data_json1 = {
@@ -382,7 +387,7 @@ async function checkYourServer() {
     // Ktra server
     var url_Server = getDataFromSessionStorage("session_login9cmd", "url_Server");
 
-    if (url_Server.length > 0) {
+    if (!(url_Server === null)) {
         var passwordServer = getDataFromSessionStorage("session_login9cmd", "passwordServer");
         try {
             var response = await fetch("https://jsonblob.com/api/" + passwordServer + "/" + url_Server);
@@ -426,21 +431,28 @@ function fetchDataAvatar_display() {
     for (var i = 0; i < lobbyLoadingVipElements.length; i++) {
         lobbyLoadingVipElements[i].style.display = "block";
     }
-
+    var _temp2 = document.getElementsByClassName("lobby-loading-vip image-avatar");
+    
     if (!(armorId === null)) {
         $(".lobby-armorId-view").attr("src", "https://raw.githubusercontent.com/planetarium/NineChronicles/development/nekoyume/Assets/Resources/UI/Icons/Item/" + armorId + ".png");
-    } else {
+		_temp2[0].style.display = "none";
+	} else {
         $(".lobby-armorId-view").attr("src", "assets/img/Common/10200000.png");
+		_temp2[0].style.display = "block";
     }
     if (!(level === null)) {
         $(".lobby-level-view").text(level);
+		_temp2[0].style.display = "none";
     } else {
         $(".lobby-level-view").text("0");
+		_temp2[0].style.display = "block";
     }
     if (!(name === null)) {
         $(".lobby-name-view").text(name);
+		_temp2[0].style.display = "none";
     } else {
         $(".lobby-name-view").text("No data name");
+		_temp2[0].style.display = "block";
     }
 
     if (!(donaterBlock === null)) {
@@ -470,8 +482,7 @@ function fetchDataAvatar_display() {
     } else {
         $(".lobby-donater-view").html('<i class="bi-cart2"></i>  No donater');
     }
-    var _temp2 = document.getElementsByClassName("lobby-loading-vip image-avatar");
-    _temp2[0].style.display = "none";
+
     if (!(dailyRewardReceivedIndex === null)) {
         // Tính toán số giây
         let seconds = (dailyRewardReceivedIndex - blockNow + 1700) * avgBlock;
@@ -533,7 +544,7 @@ function getDataFromLocalStorage(parentKey, childKey) {
         var parsedData = localStorageData ? JSON.parse(localStorageData) : {};
 
         // Trả về dữ liệu theo childKey (nếu tồn tại)
-        if (parsedData.hasOwnProperty(childKey)) {
+        if (parsedData.hasOwnProperty(childKey) && parsedData[childKey] != "") {
             return parsedData[childKey];
         } else {
             return null; // Trả về null nếu childKey không tồn tại trong dữ liệu
@@ -591,7 +602,7 @@ function getDataFromSessionStorage(parentKey, childKey) {
         var parsedData = sessionStorageData ? JSON.parse(sessionStorageData) : {};
 
         // Trả về dữ liệu theo childKey (nếu tồn tại)
-        if (parsedData.hasOwnProperty(childKey)) {
+        if (parsedData.hasOwnProperty(childKey) && parsedData[childKey] != "") {
             return parsedData[childKey];
         } else {
             return null; // Trả về null nếu childKey không tồn tại trong dữ liệu
