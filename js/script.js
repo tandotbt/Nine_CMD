@@ -361,7 +361,7 @@ async function checkDonaterBlock() {
     if (donater) {
         var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
         var Address9cLower = Address9c.toLowerCase();
-        fetch("https://cors-proxy.fringe.zone/https://api.tanvpn.tk/donater?vi=" + Address9cLower)
+        fetch("https://api.tanvpn.tk/donater?vi=" + Address9cLower)
             .then(function (response) {
                 if (!response.ok) {
                     throw new Error("my server code error" + response.status);
@@ -840,6 +840,10 @@ function node_list(data) {
         if (item.active === "True") {
             var optionText = item.name + " • " + item.rpcaddress + " • " + item.response_time_seconds + "s • " + item.users;
             var optionValue = item.url;
+			if (optionValue.startsWith("http://")) {
+				// Sử dụng proxy khi optionValue bắt đầu bằng "http://"
+				optionValue = "https://cors-proxy.fringe.zone/" + optionValue;
+			}			
             var option = $("<option>").text(optionText).attr("value", optionValue);
             $("#url_rpc").append(option);
         }
