@@ -485,8 +485,8 @@ function fetchDataAvatar_display() {
 
     if (!(dailyRewardReceivedIndex === null)) {
         // Tính toán số giây
-        let seconds = (dailyRewardReceivedIndex - blockNow + 1700) * avgBlock;
-
+        let seconds_2 = (dailyRewardReceivedIndex - blockNow + 1700) * avgBlock;
+		let seconds = Math.abs(seconds_2);
         // Chuyển đổi thành giờ, phút, giây hoặc ngày, giờ
         let hours = Math.floor(seconds / 3600);
         let minutes = Math.floor((seconds % 3600) / 60);
@@ -544,7 +544,7 @@ function getDataFromLocalStorage(parentKey, childKey) {
         var parsedData = localStorageData ? JSON.parse(localStorageData) : {};
 
         // Trả về dữ liệu theo childKey (nếu tồn tại)
-        if (parsedData.hasOwnProperty(childKey) && parsedData[childKey] != "") {
+        if (parsedData.hasOwnProperty(childKey) && parsedData[childKey] !== "") {
             return parsedData[childKey];
         } else {
             return null; // Trả về null nếu childKey không tồn tại trong dữ liệu
@@ -602,7 +602,7 @@ function getDataFromSessionStorage(parentKey, childKey) {
         var parsedData = sessionStorageData ? JSON.parse(sessionStorageData) : {};
 
         // Trả về dữ liệu theo childKey (nếu tồn tại)
-        if (parsedData.hasOwnProperty(childKey) && parsedData[childKey] != "") {
+        if (parsedData.hasOwnProperty(childKey) && parsedData[childKey] !== "") {
             return parsedData[childKey];
         } else {
             return null; // Trả về null nếu childKey không tồn tại trong dữ liệu
