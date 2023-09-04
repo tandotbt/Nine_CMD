@@ -12,10 +12,6 @@
         <meta name="msapplication-config" content="assets/icon/browserconfig.xml" />
         <meta name="theme-color" content="#fff030" />
 
-        <script src="js/lazysizes.min.js" async=""></script>
-        <script src="js/script.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/styles.css" />
-
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -28,51 +24,121 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
 
-        <style></style>
+        <script src="js/lazysizes.min.js" async=""></script>
+        <script src="js/script.js"></script>
+        <script src="js/numberAnimate.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/styles.css" />
+
+        <style>
+            body {
+                font-family: "nineChroniclesFont", monospace;
+            }
+
+            .number-font {
+                font-family: "nineChroniclesFont2", monospace;
+            }
+
+            @font-face {
+                font-family: "nineChroniclesFont";
+                src: url(assets/font/kanit-light.otf) format("opentype");
+            }
+
+            @font-face {
+                font-family: "nineChroniclesFont2";
+                src: url(assets/font/PoorStory-Regular.ttf) format("truetype");
+            }
+
+            @font-face {
+                font-family: "ninecmdFont";
+                src: url(assets/font/NotoMono-Regular.ttf) format("truetype");
+            }
+        </style>
 
         <script>
-            $(document).ready(function () {
-                /////////////// Chỉnh kích thước cửa sổ liên tục
-                //  var display_lobby = $(".display_lobby");
-                var display_lobby2 = $(".display_lobby2");
-                var background = $(".background");
-                var backgroundAspectRatio = 1920 / 1080;
+                    $(document).ready(function () {
 
-                $(window).on("load resize", function () {
-                    var windowWidth = $(window).width();
-                    //  var windowHeight = $(window).height();
-                    var backgroundWidth = windowWidth;
-                    var backgroundHeight = backgroundWidth / backgroundAspectRatio;
-
-                    // var butterflyWidth = windowWidth * 0.1;
-                    // var butterflyHeight = butterflyWidth * (display_lobby.height() / display_lobby.width());
-
-                    // var butterflyTop = (backgroundHeight - butterflyHeight) * 0.01;
-                    // var butterflyRight = (windowWidth - butterflyWidth) * 0.01;
-
-                    // background.css({
-                    //    width: backgroundWidth + "px",
-                    //    height: backgroundHeight + "px",
-                    //    scale: "95%",
-                    // });
-
-                    //  display_lobby.css({
-                    //       width: butterflyWidth + "px",
-                    //      top: butterflyTop + "px",
-                    //      right: butterflyRight + "px",
-                    //  });
-
-                    // Tính toán tỷ lệ zoom theo phần trăm
-                    //  var butterflyWidth2 = windowWidth * 0.1;
-                    //  var butterflyHeight2 = butterflyWidth2 * (display_lobby2.height() / display_lobby2.width());
-                    var zoomPercentage = windowWidth / 10;
-
-                    display_lobby2.css({
-                        // width: butterflyWidth2 + "px",
-                        zoom: zoomPercentage + "%",
-                    });
-                });
+            $('.lobby-level-view span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
             });
+            $('.lobby-arena-view-4 span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+            <!-- $('.lobby-arena-view-2 span').numberAnimate({ -->
+            	<!-- animationTimes: [500, 1000, 500] -->
+            <!-- });				 -->
+            $('.lobby-donater-view span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+
+            $('.lobby-AP-bar-view-5 span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+
+            $('.lobby-AP-bar-view-3 span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+
+            $('.lobby-AP-bar-2-view-3 span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+
+            $('.lobby-crystal-bar-view-3 span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+
+            $('.lobby-NCG-bar-view-3 span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+
+            $('.lobby-table-block-now-view span').numberAnimate({
+            	animationTimes: [500, 1000, 500]
+            });
+
+                        /////////////// Chỉnh kích thước cửa sổ liên tục
+                        //  var display_lobby = $(".display_lobby");
+                        var display_lobby2 = $(".display_lobby2");
+                        var background = $(".background");
+                        var backgroundAspectRatio = 1920 / 1080;
+
+                        $(window).on("load resize", function () {
+                            var windowWidth = $(window).width();
+                            var windowHeight = $(window).height();
+                            var backgroundWidth = windowWidth;
+                            var backgroundHeight = backgroundWidth / backgroundAspectRatio;
+
+                            // var butterflyWidth = windowWidth * 0.1;
+                            // var butterflyHeight = butterflyWidth * (display_lobby.height() / display_lobby.width());
+
+                            // var butterflyTop = (backgroundHeight - butterflyHeight) * 0.01;
+                            // var butterflyRight = (windowWidth - butterflyWidth) * 0.01;
+
+                            // background.css({
+                            //    width: backgroundWidth + "px",
+                            //    height: backgroundHeight + "px",
+                            //    scale: "95%",
+                            // });
+
+                            //  display_lobby.css({
+                            //       width: butterflyWidth + "px",
+                            //      top: butterflyTop + "px",
+                            //      right: butterflyRight + "px",
+                            //  });
+
+                            // Tính toán tỷ lệ zoom theo phần trăm
+                            //  var butterflyWidth2 = windowWidth * 0.1;
+                            //  var butterflyHeight2 = butterflyWidth2 * (display_lobby2.height() / display_lobby2.width());
+                            var zoomPercentage = backgroundHeight / 5.515;
+            	if ((windowWidth / windowHeight ) >= backgroundAspectRatio) { var zoomPercentage = windowHeight / 5.515};
+
+                            display_lobby2.css({
+            		width:"0px",
+                                scale: zoomPercentage + "%",
+                            });
+
+
+
+            });
+                    });
         </script>
         <script>
             $(document).ready(function () {
@@ -168,158 +234,47 @@
         </script>
 
         <script>
-            var CustomProgressBar = function (settings) {
-                var self = this;
 
-                self.element = settings.element;
-                self.imageUrl = settings.imageUrl;
-                self.backgroundImageUrl = settings.backgroundImageUrl || settings.imageUrl;
-                self.imageHeight = settings.imageHeight;
-                self.imageWidth = settings.imageWidth;
-                if (settings.backgroundOpacity || settings.backgroundOpacity === 0) {
-                    self.backgroundOpacity = settings.backgroundOpacity;
-                } else {
-                    self.backgroundOpacity = 0.3;
-                }
-
-                $(self.element).prepend($("<div>", { class: "custom-progress-bar", style: "height: " + self.imageHeight + "px; width: " + self.imageHeight + "px;" }));
-                $(self.element)
-                    .children(".custom-progress-bar")
-                    .prepend($("<div>", { class: "cpb-progress" }));
-                $(self.element)
-                    .children(".custom-progress-bar")
-                    .prepend($("<div>", { class: "cpb-background" }));
-                $(self.element)
-                    .find(".cpb-background")
-                    .prepend($("<img/>", { style: "opacity: " + self.backgroundOpacity + ";", class: "custom-background-image", src: self.backgroundImageUrl }));
-                $(self.element)
-                    .find(".cpb-progress")
-                    .prepend($("<img/>", { class: "custom-progress-image", src: self.imageUrl }));
-
-                self.setPercentage = function (value) {
-                    if (value > 100) value = 100;
-                    if (value < 0) value = 0;
-                    var toShowAmount = (settings.imageHeight / 100) * value;
-                    var toHideAmount = (settings.imageHeight / 100) * (100 - value);
-
-                    // Thêm transition mượt vào cpb-progress
-                    $(self.element)
-                        .find(".cpb-progress")
-                        .css({
-                            height: toShowAmount + "px",
-                            top: toHideAmount + "px",
-                            transition: "height 0.3s ease-in, top 0.3s ease-out",
+                   $(document).ready(function () {
+                        var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
+                            imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
+                            imageHeight: 128,
+                            imageWidth: 24,
+                            backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+                            backgroundOpacity: 0,
                         });
-                };
-            };
 
-            $.fn.customProgressBar = function (settings) {
-                settings.element = $(this);
-                var newProgressBar = new CustomProgressBar(settings);
-                return newProgressBar;
-            };
-            function SimulateProgress(customProgressBar, currentValue) {
-                var increase = getRandomInt(0, 3);
-                var newValue = currentValue + increase;
-                if (newValue > 100) newValue = 100;
-                if (currentValue == 100) newValue = 0;
-                customProgressBar.setPercentage(newValue);
-                setTimeout(function () {
-                    SimulateProgress(customProgressBar, newValue);
-                }, 200);
-            }
+                        var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
+                            imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
+                            imageHeight: 128,
+                            imageWidth: 24,
+                            backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+                            backgroundOpacity: 0,
+                        });
 
-            function getRandomInt(min, max) {
-                min = Math.ceil(min);
-                max = Math.floor(max);
-                return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
+                        updateAPBar(APBarLobbyCreat);
+                        updateAPBar2(APBar2LobbyCreat);
 
-            function updateAPBar(typeBar) {
-                var blockNow = getDataFromLocalStorage("blockNowJson", "block");
-                var dailyRewardReceivedIndex = getDataFromSessionStorage("session_login9cmd", "dailyRewardReceivedIndex");
-                if (blockNow === null || dailyRewardReceivedIndex === null) {
-                    typeBar.setPercentage(0);
-                    $(".lobby-AP-bar-view-3").text("");
-                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-view-6");
-                    _temp[0].style.display = "block";
-                } else {
-                    var block = blockNow - dailyRewardReceivedIndex;
-                    var percentage = (block / 1700) * 100;
-                    if (percentage > 100) percentage = 100;
-                    typeBar.setPercentage(percentage);
-                    $(".lobby-AP-bar-view-3").text(block + "/1700");
-                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-view-6");
-                    _temp[0].style.display = "none";
-                }
+            <!-- var spansTimeArena = $('.lobby-arena-view-4 span'); -->
+            <!-- var spansTableBlockNow = $('.lobby-table-block-now-view span');	 -->
 
-                setTimeout(function () {
-                    updateAPBar(typeBar);
-                }, 1000);
-            }
+            <!-- spansTimeArena.numberAnimate({ -->
+            	<!-- animationTimes: [500, 1000, 500] -->
+            <!-- }); -->
 
-            function updateAPBar2(typeBar) {
-                var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
-                if (actionPoint === null) {
-                    typeBar.setPercentage(0);
-                    $(".lobby-AP-bar-2-view-3").text("");
-                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-2-view-4");
-                    _temp[0].style.display = "block";
-                } else {
-                    let percentage = (actionPoint / 120) * 100;
-                    typeBar.setPercentage(percentage);
-                    $(".lobby-AP-bar-2-view-3").text(actionPoint + "/120");
-                    let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-2-view-4");
-                    _temp[0].style.display = "none";
-                }
+            <!-- spansTableBlockNow.numberAnimate({ -->
+            	<!-- animationTimes: [500, 1000, 500] -->
+            <!-- }); -->
 
-                setTimeout(function () {
-                    updateAPBar2(typeBar);
-                }, 1000);
-            }
-
-            $(document).ready(function () {
-                var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
-                    imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
-                    imageHeight: 128,
-                    imageWidth: 24,
-                    backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
-                    backgroundOpacity: 0,
-                });
-
-                var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
-                    imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
-                    imageHeight: 128,
-                    imageWidth: 24,
-                    backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
-                    backgroundOpacity: 0,
-                });
-
-                updateAPBar(APBarLobbyCreat);
-                updateAPBar2(APBar2LobbyCreat);
-            });
+            fetchDataAvatar_display();
+                    });
         </script>
     </head>
-    <body>
-        <div class="background">
-            <div class="noty_lobby display_lobby2" style="position: absolute; top: 14%; z-index: 100; /* zoom: 88.2%; */">
-                <button class="btn btn-outline-success btn-sm" id="fullscreen-button">Fullscreen</button>
-
-<script>
-var fullscreenButton = document.getElementById('fullscreen-button');
-fullscreenButton.addEventListener('click', function() {
-  if (document.documentElement.requestFullscreen) {
-    document.documentElement.requestFullscreen();
-  } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-    document.documentElement.mozRequestFullScreen();
-  } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
-    document.documentElement.webkitRequestFullscreen();
-  } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-    document.documentElement.msRequestFullscreen();
-  }
-});
-</script>
-				<button
+    <body class="background">
+        <div class="lobby-grid display_lobby2">
+            <div class="noty_lobby">
+                <input type="number" id="delayUseNode" min="6" value="6" />
+                <button
                     type="button"
                     class="btn btn-outline-success btn-sm"
                     onclick="showNotification('Thông báo mẫu', 'alert', 5000);
@@ -327,129 +282,131 @@ showNotification('Thông báo mẫu', 'success', 5000);
 showNotification('Thông báo mẫu', 'warning', 5000);
 showNotification('Thông báo mẫu', 'error', 5000);
 showNotification('Thông báo mẫu', 'info', 5000);"
-                    style="/* display: none; */ position: absolute; /* top: 28px; */ right: -55px;"
                 >
                     Check
                 </button>
-                <input type="number" id="delayUseNode" min="6" value="6" />
+
                 <button type="button" class="btn btn-outline-success btn-sm" onclick="fetchDataAvatar();">Auto refresh 60s</button>
             </div>
-            <div class="lobby-grid display_lobby2">
-                <div class="button_lobby arena-lobby-view" data-action="arena" data-bs-toggle="modal" data-bs-target="#func_arena_main">
+
+            <div class="button_lobby lobby-arena-view" data-action="arena" data-bs-toggle="modal" data-bs-target="#func_arena_main">
+                <div class="lobby-arena-view-1">
                     <img src="assets/img/Lobby/ranking_01_mod.png" alt="Arena" />
                 </div>
+                <div class="lobby-arena-view-2">
+                    <span class="badge rounded-pill bg-danger lobby-arena-view-ticket1">---</span><br />
+                    <img class="lobby-loading-vip lobby-arena-view-ticket2" style="zoom: 30%;" src="assets/loading_vip.gif" />
+                </div>
+                <div class="lobby-arena-view-3">
+                    <img src="assets/img/Common/UI_Common/UI_icon_Block.png" />
+                </div>
+                <div class="lobby-arena-view-4">
+                    <span>----</span> (<span>--</span>h <span>--</span>m <span>--</span>s)<br />
+                    (<span>--</span>/20)
+                </div>
+            </div>
 
-                <div class="button_lobby stage-lobby-view" data-action="stage" data-bs-toggle="modal" data-bs-target="#func_stage_main">
-                    <img src="assets/img/Lobby/bg_character_main_08.png" alt="Adventure" />
+            <div class="button_lobby stage-lobby-view" data-action="stage" data-bs-toggle="modal" data-bs-target="#func_stage_main">
+                <img src="assets/img/Lobby/bg_character_main_08.png" alt="Adventure" />
+            </div>
+
+            <div class="button_lobby craft-upgrade-lobby-view" data-action="craft-upgrade" data-bs-toggle="modal" data-bs-target="#func_craft-upgrade_main">
+                <img src="assets/img/Lobby/bg_character_main_06.png" alt="Workshop" />
+            </div>
+
+            <div class="button_lobby shop-lobby-view" data-action="shop" data-bs-toggle="modal" data-bs-target="#func_shop_main">
+                <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop" />
+            </div>
+
+            <div class="button_lobby login-lobby-view" data-bs-toggle="modal" data-bs-target="#login_modal_form">
+                <div class="image-container">
+                    <img class="lazyload image-avatar lobby-armorId-view" src="assets/loading_small.gif" data-src="assets/img/Common/10200000.png" />
+                    <img style="zoom: 40%;" class="image-avatar lobby-loading-vip" src="assets/loading_vip.gif" />
+                    <img class="lazyload image-avatar" src="assets/loading_small.gif" data-src="assets/img/Common/character_frame_mod.png" />
+                    <div class="lobby-level-view"><span>---</span></div>
+                </div>
+            </div>
+
+            <div class="lobby-name-view"></div>
+
+            <div class="lobby-donater-view"><i class="bi-cart2"></i><span>------</span></div>
+
+            <div class="button_lobby lobby-table-block-now-view hstack gap-3" data-bs-toggle="modal" data-bs-target="#func_main">
+                <div class="vr"></div>
+                Block:<span>--------</span>
+                <div class="vr"></div>
+                Avg block time: <span>---</span>s
+                <div class="vr"></div>
+                Delay: <span>---</span>s
+                <div class="vr"></div>
+
+                Node: <span class="d-inline-block text-truncate" style="max-width: 500px;">---</span>
+            </div>
+            <div class="button_lobby lobby-AP-bar-view">
+                <div class="lobby-AP-bar-view-1">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_box.png" />
+                </div>
+                <div class="lobby-AP-bar-view-2">
+                    <div style="width: 128px; height: 24px; overflow: hidden;">
+                        <div style="transform-origin: center; transform: rotate(90deg);" id="APBarLobbyCreat"></div>
+                    </div>
+                </div>
+                <div class="lobby-AP-bar-view-2" style="z-index: 10;">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+                </div>
+                <div class="lobby-AP-bar-view-7">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_pink_effect.png" />
+                </div>
+                <div class="lobby-AP-bar-view-3"><span>---</span>/1700</div>
+                <div class="lobby-AP-bar-view-4">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_icon_Block.png" />
+                </div>
+                <div class="lobby-AP-bar-view-5"><span>--</span>h <span>--</span>m</div>
+                <img class="lobby-loading-vip-2 lobby-AP-bar-view-6" src="assets/loading_vip.gif" />
+            </div>
+
+            <div class="button_lobby lobby-AP-bar-2-view">
+                <div class="lobby-AP-bar-2-view-1">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_star.png" />
+                </div>
+                <div class="lobby-AP-bar-2-view-2">
+                    <div style="width: 128px; height: 24px; overflow: hidden;">
+                        <div style="transform-origin: center; transform: rotate(90deg);" id="APBar2LobbyCreat"></div>
+                    </div>
+                </div>
+                <div class="lobby-AP-bar-2-view-2" style="z-index: 10;">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
                 </div>
 
-                <div class="button_lobby craft-upgrade-lobby-view" data-action="craft-upgrade" data-bs-toggle="modal" data-bs-target="#func_craft-upgrade_main">
-                    <img src="assets/img/Lobby/bg_character_main_06.png" alt="Workshop" />
-                </div>
+                <div class="lobby-AP-bar-2-view-3"><span>---</span>/120</div>
+                <img class="lobby-loading-vip-2 lobby-AP-bar-2-view-4" src="assets/loading_vip.gif" />
+            </div>
 
-                <div class="button_lobby shop-lobby-view" data-action="shop" data-bs-toggle="modal" data-bs-target="#func_shop_main">
-                    <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop" />
+            <div class="button_lobby lobby-crystal-bar-view">
+                <div class="lobby-crystal-bar-view-1">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_crystal_big.png" />
                 </div>
-
-                <div class="button_lobby login-lobby-view" data-bs-toggle="modal" data-bs-target="#login_modal_form">
-                    <div class="image-container">
-                        <img class="lazyload image-avatar lobby-armorId-view" src="assets/loading_small.gif" data-src="assets/img/Common/10200000.png" />
-                        <img style="zoom: 40%;" class="image-avatar lobby-loading-vip" src="assets/loading_vip.gif" />
-                        <img class="lazyload image-avatar" src="assets/loading_small.gif" data-src="assets/img/Common/character_frame_mod.png" />
-                        <div class="lobby-level-view"></div>
-                    </div>
+                <div class="lobby-crystal-bar-view-2">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
                 </div>
-
-                <div class="lobby-name-view"></div>
-
-                <div class="lobby-donater-view"><i class="bi-cart2"></i></div>
-
-                <div class="button_lobby table-block-now-lobby-view" data-bs-toggle="modal" data-bs-target="#func_main">
-                    <table id="table_node_now" class="block_now">
-                        <tr>
-                            <td>
-                                <div class="hstack gap-3">
-                                    <div class="vr"></div>
-                                    Block:00000000
-                                    <div class="vr"></div>
-                                    Avg block time: 0s
-                                    <div class="vr"></div>
-                                    Node: null
-                                    <div class="vr"></div>
-                                    Delay: 0s
-                                    <div class="vr"></div>
-                                    ' + '
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="lobby-crystal-bar-view-3"><span>------</span></div>
+                <img class="lobby-loading-vip lobby-crystal-bar-view-4" src="assets/loading_vip.gif" />
+            </div>
+            <div class="button_lobby lobby-NCG-bar-view">
+                <div class="lobby-NCG-bar-view-1">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_gold.png" />
                 </div>
-                <div class="button_lobby lobby-AP-bar-view">
-                    <div class="lobby-AP-bar-view-1">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_box.png" />
-                    </div>
-                    <div class="lobby-AP-bar-view-2">
-                        <div style="width: 128px; height: 24px; overflow: hidden;">
-                            <div style="transform-origin: center; transform: rotate(90deg);" id="APBarLobbyCreat"></div>
-                        </div>
-                    </div>
-                    <div class="lobby-AP-bar-view-2" style="z-index: 10;">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                    </div>
-                    <div class="lobby-AP-bar-view-3"></div>
-                    <div class="lobby-AP-bar-view-4">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_icon_Block.png" />
-                    </div>
-                    <div class="lobby-AP-bar-view-5"></div>
-                    <img class="lobby-loading-vip-2 lobby-AP-bar-view-6" src="assets/loading_vip.gif" />
+                <div class="lobby-NCG-bar-view-2">
+                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
                 </div>
-
-                <div class="button_lobby lobby-AP-bar-2-view">
-                    <div class="lobby-AP-bar-2-view-1">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_star.png" />
-                    </div>
-                    <div class="lobby-AP-bar-2-view-2">
-                        <div style="width: 128px; height: 24px; overflow: hidden;">
-                            <div style="transform-origin: center; transform: rotate(90deg);" id="APBar2LobbyCreat"></div>
-                        </div>
-                    </div>
-                    <div class="lobby-AP-bar-2-view-2" style="z-index: 10;">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                    </div>
-
-                    <div class="lobby-AP-bar-2-view-3"></div>
-                    <img class="lobby-loading-vip-2 lobby-AP-bar-2-view-4" src="assets/loading_vip.gif" />
-                </div>
-
-                <div class="button_lobby lobby-crystal-bar-view">
-                    <div class="lobby-crystal-bar-view-1">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_crystal_big.png" />
-                    </div>
-                    <div class="lobby-crystal-bar-view-2">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                    </div>
-                    <div class="lobby-crystal-bar-view-3"></div>
-                    <img class="lobby-loading-vip lobby-crystal-bar-view-4" src="assets/loading_vip.gif" />
-                </div>
-                <div class="button_lobby lobby-NCG-bar-view">
-                    <div class="lobby-NCG-bar-view-1">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_gold.png" />
-                    </div>
-                    <div class="lobby-NCG-bar-view-2">
-                        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                    </div>
-                    <div class="lobby-NCG-bar-view-3"></div>
-                    <img class="lobby-loading-vip lobby-NCG-bar-view-4" src="assets/loading_vip.gif" />
-                </div>
-                <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
-                    <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
-                    <span class="tooltiptext">
-                        <div style="width: 170px; height: 194px; overflow: hidden;"><em>Tooltip</em> <u>with</u> <b>HTML</b></div>
-                    </span>
-                </div>
-                <!-- <div data-bs-html="true" data-bs-title="<em>Tooltip</em> <u>with</u> <b>HTML</b>" class="button_lobby lobby-info-tooltip-view"> -->
-
-                <!-- </div> -->
+                <div class="lobby-NCG-bar-view-3"><span>------</span></div>
+                <img class="lobby-loading-vip lobby-NCG-bar-view-4" src="assets/loading_vip.gif" />
+            </div>
+            <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
+                <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
+                <span class="tooltiptext">
+                    <div style="width: 170px; height: 194px; overflow: hidden;"><em>Tooltip</em> <u>with</u> <b>HTML</b></div>
+                </span>
             </div>
         </div>
 
@@ -518,10 +475,9 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                     <div class="modal-header func_main">
                         <!-- <h5 class="modal-title" id="func_mainLabel">Modal title</h5> -->
                         <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-                    </div>
-                    <div class="modal-body func_main">
                         <span class="close-button" data-bs-dismiss="modal"> <img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" /></span>
                     </div>
+                    <div class="modal-body func_main"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
                         <button type="button" class="btn btn-primary">Understood</button>
@@ -534,7 +490,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
             <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
                 <div class="modal-content func_main">
                     <div class="modal-header func_main">
-                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                        <span class="close-button" data-bs-dismiss="modal"> <img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" /></span>
                     </div>
                     <div class="modal-body func_main">
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
@@ -551,7 +507,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
             <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
                 <div class="modal-content func_main">
                     <div class="modal-header func_main">
-                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                        <span class="close-button" data-bs-dismiss="modal"> <img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" /></span>
                     </div>
                     <div class="modal-body func_main">
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
@@ -568,7 +524,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
             <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
                 <div class="modal-content func_main">
                     <div class="modal-header func_main">
-                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                        <span class="close-button" data-bs-dismiss="modal"> <img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" /></span>
                     </div>
                     <div class="modal-body func_main">
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
@@ -585,7 +541,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
             <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
                 <div class="modal-content func_main">
                     <div class="modal-header func_main">
-                        <div class="display_lobby2 close-button" data-bs-dismiss="modal" aria-label="Close"><img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" alt="Close" /></div>
+                        <span class="close-button" data-bs-dismiss="modal"> <img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" /></span>
                     </div>
                     <div class="modal-body func_main">
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>

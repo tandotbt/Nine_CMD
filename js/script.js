@@ -142,7 +142,7 @@ function requestToYourServer() {
                         })
                         .catch(function (error) {
                             // console.error("Lỗi khi kiểm tra dữ liệu: " + error);
-                            delDataFromSessionStorage("session_login9cmd", request);
+                            addDataForSessionStorage("session_login9cmd", request, kqua);
                             delDataFromSessionStorage("session_login9cmd", "hasUTC");
                             reject(error); // Gửi tín hiệu lỗi của Promise (nếu cần thiết)
                         });
@@ -178,7 +178,6 @@ function fetch_data_block_now() {
             // Chuyển đổi đối tượng JSON thành một mảng
             var blockNowArray = [];
             blockNowArray.push(data);
-            table_node_now(blockNowArray);
             var _temp = JSON.stringify(data);
             localStorage.setItem("blockNowJson", _temp);
             // addToLog("Hoàn thành lấy block now và avg")
@@ -209,7 +208,7 @@ function delayUseNode() {
 function fetchDataAvatar() {
     console.log("Bắt đầu fetch avatar");
     var submitBtn = document.getElementById("submit_login_form");
-    Promise.all([getArmorIDandSTT(), fetchDataAvatar_useNode(), checkYourServer(), checkDonaterBlock()])
+    Promise.all([getArmorIDandSTT(), fetchDataAvatar_useNode(), checkYourServer(), checkDonaterBlock(), fetchTicketArena()])
         .then(() => {
             console.log("Kết thúc fetch avatar");
 
@@ -382,6 +381,31 @@ async function checkDonaterBlock() {
     }
 }
 
+async function fetchTicketArena() {
+    try {
+        console.log("fetchTicketArena start");
+        const response = await fetch("https://api.9capi.com/arenaLeaderboard");
+        const data = await response.json();
+
+        if (data.length === 0) {
+            throw new Error("No data arena");
+        } else {
+            const user = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
+            const foundUser = data.find((item) => item.avataraddress.toLowerCase() === user.toLowerCase());
+
+            if (!foundUser) {
+                throw new Error("Cann't find you in arena");
+            }
+
+            const currentTickets = foundUser.currenttickets;
+            addDataForSessionStorage("session_login9cmd", "ticketArena", currentTickets);
+        }
+    } catch (error) {
+        delDataFromSessionStorage("session_login9cmd", "ticketArena");
+        console.log("Lỗi khi nhận ticket Arena " + error);
+    }
+}
+
 async function checkYourServer() {
     console.log("checkYourServer start");
     // Ktra server
@@ -410,14 +434,131 @@ async function checkYourServer() {
 }
 
 // Vẽ lobby
-function fetchDataAvatar_display() {
-    var blockNow = getDataFromLocalStorage("blockNowJson", "block");
-    var avgBlock = getDataFromLocalStorage("blockNowJson", "avgBlock");
+// bar custom
+var CustomProgressBar = function (settings) {
+    var self = this;
 
-    if (blockNow === null) {
-        showNotification("Cann't find block now", "error", 5000);
-        return;
+    self.element = settings.element;
+    self.imageUrl = settings.imageUrl;
+    self.backgroundImageUrl = settings.backgroundImageUrl || settings.imageUrl;
+    self.imageHeight = settings.imageHeight;
+    self.imageWidth = settings.imageWidth;
+    if (settings.backgroundOpacity || settings.backgroundOpacity === 0) {
+        self.backgroundOpacity = settings.backgroundOpacity;
+    } else {
+        self.backgroundOpacity = 0.3;
     }
+
+    $(self.element).prepend($("<div>", { class: "custom-progress-bar", style: "height: " + self.imageHeight + "px; width: " + self.imageHeight + "px;" }));
+    $(self.element)
+        .children(".custom-progress-bar")
+        .prepend($("<div>", { class: "cpb-progress" }));
+    $(self.element)
+        .children(".custom-progress-bar")
+        .prepend($("<div>", { class: "cpb-background" }));
+    $(self.element)
+        .find(".cpb-background")
+        .prepend($("<img/>", { style: "opacity: " + self.backgroundOpacity + ";", class: "custom-background-image", src: self.backgroundImageUrl }));
+    $(self.element)
+        .find(".cpb-progress")
+        .prepend($("<img/>", { class: "custom-progress-image", src: self.imageUrl }));
+
+    self.setPercentage = function (value) {
+        if (value > 100) value = 100;
+        if (value < 0) value = 0;
+        var toShowAmount = (settings.imageHeight / 100) * value;
+        var toHideAmount = (settings.imageHeight / 100) * (100 - value);
+
+        // Thêm transition mượt vào cpb-progress
+        $(self.element)
+            .find(".cpb-progress")
+            .css({
+                height: toShowAmount + "px",
+                top: toHideAmount + "px",
+                transition: "height 0.3s ease-in, top 0.3s ease-out",
+            });
+    };
+};
+
+$.fn.customProgressBar = function (settings) {
+    settings.element = $(this);
+    var newProgressBar = new CustomProgressBar(settings);
+    return newProgressBar;
+};
+//
+function SimulateProgress(customProgressBar, currentValue) {
+    var increase = getRandomInt(0, 3);
+    var newValue = currentValue + increase;
+    if (newValue > 100) newValue = 100;
+    if (currentValue == 100) newValue = 0;
+    customProgressBar.setPercentage(newValue);
+    setTimeout(function () {
+        SimulateProgress(customProgressBar, newValue);
+    }, 200);
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+//
+function updateAPBar(typeBar) {
+    var blockNow = getDataFromLocalStorage("blockNowJson", "block");
+    var dailyRewardReceivedIndex = getDataFromSessionStorage("session_login9cmd", "dailyRewardReceivedIndex");
+    if (blockNow === null || dailyRewardReceivedIndex === null) {
+        typeBar.setPercentage(0);
+        $(".lobby-AP-bar-view-3 span").numberAnimate("set", "----");
+        let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-view-6");
+        _temp[0].style.display = "block";
+        let _temp2 = document.getElementsByClassName("lobby-AP-bar-view-7");
+        _temp2[0].style.display = "none";
+        $(".lobby-AP-bar-view").removeClass("zoom-in-out");
+    } else {
+        var block = blockNow - dailyRewardReceivedIndex;
+        var percentage = (block / 1700) * 100;
+        if (percentage > 100) percentage = 100;
+        typeBar.setPercentage(percentage);
+        $(".lobby-AP-bar-view-3 span").numberAnimate("set", block);
+        let _temp2 = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-view-6");
+        _temp2[0].style.display = "none";
+        if (percentage == 100) {
+            let _temp2 = document.getElementsByClassName("lobby-AP-bar-view-7");
+            _temp2[0].style.display = "block";
+            $(".lobby-AP-bar-view").addClass("zoom-in-out");
+        } else {
+            let _temp2 = document.getElementsByClassName("lobby-AP-bar-view-7");
+            _temp2[0].style.display = "none";
+            $(".lobby-AP-bar-view").removeClass("zoom-in-out");
+        }
+    }
+
+    setTimeout(function () {
+        updateAPBar(typeBar);
+    }, 1000);
+}
+
+function updateAPBar2(typeBar) {
+    var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
+    if (actionPoint === null) {
+        typeBar.setPercentage(0);
+        $(".lobby-AP-bar-2-view-3 span").numberAnimate("set", "---");
+        let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-2-view-4");
+        _temp[0].style.display = "block";
+    } else {
+        let percentage = (actionPoint / 120) * 100;
+        typeBar.setPercentage(percentage);
+        $(".lobby-AP-bar-2-view-3 span").numberAnimate("set", actionPoint);
+        let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-2-view-4");
+        _temp[0].style.display = "none";
+    }
+
+    setTimeout(function () {
+        updateAPBar2(typeBar);
+    }, 1000);
+}
+
+function fetchDataAvatar_display() {
     var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
     var armorId = getDataFromSessionStorage("session_login9cmd", "armorId");
     var crystal = getDataFromSessionStorage("session_login9cmd", "crystal");
@@ -426,13 +567,18 @@ function fetchDataAvatar_display() {
     var gold = getDataFromSessionStorage("session_login9cmd", "gold");
     var level = getDataFromSessionStorage("session_login9cmd", "level");
     var name = getDataFromSessionStorage("session_login9cmd", "name");
+    var url_rpc = getDataFromSessionStorage("session_login9cmd", "url_rpc");
+    var ticketArena = getDataFromSessionStorage("session_login9cmd", "ticketArena");
+
+    var delayUseNode = parseInt(document.getElementById("delayUseNode").value);
 
     var lobbyLoadingVipElements = document.getElementsByClassName("lobby-loading-vip");
+
     for (var i = 0; i < lobbyLoadingVipElements.length; i++) {
         lobbyLoadingVipElements[i].style.display = "block";
     }
-    var _temp2 = document.getElementsByClassName("lobby-loading-vip image-avatar");
 
+    var _temp2 = document.getElementsByClassName("lobby-loading-vip image-avatar");
     if (!(armorId === null)) {
         $(".lobby-armorId-view").attr("src", "https://raw.githubusercontent.com/planetarium/NineChronicles/development/nekoyume/Assets/Resources/UI/Icons/Item/" + armorId + ".png");
         _temp2[0].style.display = "none";
@@ -441,10 +587,10 @@ function fetchDataAvatar_display() {
         _temp2[0].style.display = "block";
     }
     if (!(level === null)) {
-        $(".lobby-level-view").text(level);
+        $(".lobby-level-view span").numberAnimate("set", level);
         _temp2[0].style.display = "none";
     } else {
-        $(".lobby-level-view").text("0");
+        $(".lobby-level-view span").numberAnimate("set", "---");
         _temp2[0].style.display = "block";
     }
     if (!(name === null)) {
@@ -455,62 +601,92 @@ function fetchDataAvatar_display() {
         _temp2[0].style.display = "block";
     }
 
-    if (!(donaterBlock === null)) {
-        // Tính toán số giây
-        let seconds = (donaterBlock - blockNow) * avgBlock;
-
-        // Chuyển đổi thành giờ, phút, giây hoặc ngày, giờ
-        let hours = Math.floor(seconds / 3600);
-        let minutes = Math.floor((seconds % 3600) / 60);
-        let remainingSeconds = seconds % 60;
-
-        // Xác định lớp CSS dựa trên số giờ
-        let cssClass = "";
-        let timeText = "";
-        if (hours < 48) {
-            cssClass = "text-warning";
-            timeText = hours + "h " + minutes + "m";
-        } else {
-            cssClass = "text-success";
-            let days = Math.floor(hours / 24);
-            let remainingHours = hours % 24;
-            timeText = days + "day " + remainingHours + "h";
-        }
-
-        // Đặt nội dung và lớp CSS cho phần tử
-        $(".lobby-donater-view").html('<i class="bi-cart2 ' + cssClass + '"></i> ' + (donaterBlock - blockNow) + " (" + timeText + ")");
-    } else {
-        $(".lobby-donater-view").html('<i class="bi-cart2"></i>  No donater');
-    }
-
-    if (!(dailyRewardReceivedIndex === null)) {
-        // Tính toán số giây
-        let seconds_2 = (dailyRewardReceivedIndex - blockNow + 1700) * avgBlock;
-        let seconds = Math.abs(seconds_2);
-        // Chuyển đổi thành giờ, phút, giây hoặc ngày, giờ
-        let hours = Math.floor(seconds / 3600);
-        let minutes = Math.floor((seconds % 3600) / 60);
-        let remainingSeconds = seconds % 60;
-
-        $(".lobby-AP-bar-view-5").text(hours + "h " + minutes + "m");
-    } else {
-        $(".lobby-AP-bar-view-5").text("No data");
-    }
     if (!(crystal === null)) {
-        $(".lobby-crystal-bar-view-3").text(crystal);
+        $(".lobby-crystal-bar-view-3 span").numberAnimate("set", crystal);
         var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-crystal-bar-view-4");
         _temp2[0].style.display = "none";
     } else {
-        $(".lobby-crystal-bar-view-3").text("");
+        $(".lobby-crystal-bar-view-3 span").numberAnimate("set", "------");
     }
 
     if (!(gold === null)) {
-        $(".lobby-NCG-bar-view-3").text(gold);
+        $(".lobby-NCG-bar-view-3 span").numberAnimate("set", gold);
         var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-NCG-bar-view-4");
         _temp2[0].style.display = "none";
     } else {
-        $(".lobby-NCG-bar-view-3").text("");
+        $(".lobby-NCG-bar-view-3 span").numberAnimate("set", "------");
     }
+
+    if (!(ticketArena === null)) {
+        // $('.lobby-arena-view-2 span').numberAnimate('set', ticketArena);
+        $(".lobby-arena-view-2 span").text(ticketArena);
+        var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-arena-view-ticket2");
+        _temp2[0].style.display = "none";
+    } else {
+        // $('.lobby-arena-view-2 span').numberAnimate('set', "-");
+        $(".lobby-arena-view-2 span").text("--");
+    }
+
+    var blockNow = getDataFromLocalStorage("blockNowJson", "block");
+
+    var spansTimeArena = $(".lobby-arena-view-4 span");
+    var spansTableBlockNow = $(".lobby-table-block-now-view span");
+
+    if (blockNow === null) {
+        showNotification("Cann't find block now", "error", 5000);
+        spansTimeArena.eq(0).numberAnimate("set", "----");
+        spansTimeArena.eq(1).numberAnimate("set", "--");
+        spansTimeArena.eq(2).numberAnimate("set", "--");
+        spansTimeArena.eq(3).numberAnimate("set", "--");
+        spansTimeArena.eq(4).numberAnimate("set", "--");
+
+        spansTableBlockNow.eq(0).numberAnimate("set", "--------");
+        spansTableBlockNow.eq(1).numberAnimate("set", "---");
+        spansTableBlockNow.eq(3).text(url_rpc);
+        spansTableBlockNow.eq(2).numberAnimate("set", delayUseNode);
+    } else {
+        var avgBlock = getDataFromLocalStorage("blockNowJson", "avgBlock");
+        var timeBlockArena = getDataFromLocalStorage("blockNowJson", "timeBlock");
+        var roundID = getDataFromLocalStorage("blockNowJson", "roundID");
+        var h_arena = getDataFromLocalStorage("blockNowJson", "h");
+        var m_arena = getDataFromLocalStorage("blockNowJson", "m");
+        var s_arena = getDataFromLocalStorage("blockNowJson", "s");
+
+        spansTimeArena.eq(0).numberAnimate("set", timeBlockArena);
+        spansTimeArena.eq(1).numberAnimate("set", h_arena);
+        spansTimeArena.eq(2).numberAnimate("set", m_arena);
+        spansTimeArena.eq(3).numberAnimate("set", s_arena);
+        spansTimeArena.eq(4).numberAnimate("set", roundID);
+
+        spansTableBlockNow.eq(0).numberAnimate("set", blockNow);
+        spansTableBlockNow.eq(1).numberAnimate("set", avgBlock);
+        spansTableBlockNow.eq(3).text(url_rpc);
+        spansTableBlockNow.eq(2).numberAnimate("set", delayUseNode);
+        if (!(donaterBlock === null)) {
+            $(".lobby-donater-view span").numberAnimate("set", donaterBlock - blockNow);
+        } else {
+            $(".lobby-donater-view span").numberAnimate("set", "------");
+        }
+
+        if (!(dailyRewardReceivedIndex === null)) {
+            // Tính toán số giây
+            let seconds_2 = (dailyRewardReceivedIndex - blockNow + 1700) * avgBlock;
+            let seconds = Math.abs(seconds_2);
+            // Chuyển đổi thành giờ, phút, giây hoặc ngày, giờ
+            let hours = Math.floor(seconds / 3600);
+            let minutes = Math.floor((seconds % 3600) / 60);
+            let remainingSeconds = seconds % 60;
+
+            $(".lobby-AP-bar-view-5 span").eq(0).numberAnimate("set", hours);
+            $(".lobby-AP-bar-view-5 span").eq(1).numberAnimate("set", minutes);
+        } else {
+            $(".lobby-AP-bar-view-5 span").eq(0).numberAnimate("set", "--");
+            $(".lobby-AP-bar-view-5 span").eq(1).numberAnimate("set", "--");
+        }
+    }
+    setTimeout(function () {
+        fetchDataAvatar_display();
+    }, 5000);
 }
 
 function addDataForLocalStorage(parentKey, childKey, data) {
@@ -790,34 +966,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-/////////////// Vẽ bảng block now liên tục
-function table_node_now(data_table_node_now) {
-    // addToLog("Vẽ bảng block now và avg")
-    var url_rpc = getDataFromSessionStorage("session_login9cmd", "url_rpc");
-    var delayUseNode = parseInt(document.getElementById("delayUseNode").value);
-    var student = "";
-    $.each(data_table_node_now, function (key, value) {
-        student += "<tr>";
-        student +=
-            '<td><div class="hstack gap-3"><div class="vr"></div>Block: ' +
-            value.block +
-            '<div class="vr"></div>Avg block time: ' +
-            value.avgBlock +
-            's<div class="vr"></div>Node: ' +
-            url_rpc +
-            '<div class="vr"></div>Delay: ' +
-            delayUseNode +
-            's<div class="vr"></div>' +
-            "</div></td>";
-        student += "</tr>";
-    });
-    // Xóa dữ liệu trong bảng infoTable, trừ hàng tiêu đề có lớp 'sticky notHide'
-    $("#table_node_now tr:not(.notHide)").remove();
-
-    // INSERTING ROWS INTO TABLE
-    $("#table_node_now").append(student);
-    fetchDataAvatar_display();
-}
 /////////////// Hàm chọn node từ link api rpc
 function node_list_error(error) {
     addToLog("Lỗi khi load data rpc " + error);
@@ -840,10 +988,10 @@ function node_list(data) {
         if (item.active === "True") {
             var optionText = item.name + " • " + item.rpcaddress + " • " + item.response_time_seconds + "s • " + item.users;
             var optionValue = item.url;
-			if (optionValue.startsWith("http://")) {
-				// Sử dụng proxy khi optionValue bắt đầu bằng "http://"
-				optionValue = "https://cors-proxy.fringe.zone/" + optionValue;
-			}			
+            if (optionValue.startsWith("http://")) {
+                // Sử dụng proxy khi optionValue bắt đầu bằng "http://"
+                optionValue = "https://cors-proxy.fringe.zone/" + optionValue;
+            }
             var option = $("<option>").text(optionText).attr("value", optionValue);
             $("#url_rpc").append(option);
         }
