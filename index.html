@@ -55,93 +55,110 @@
         </style>
 
         <script>
-                    $(document).ready(function () {
-
-            $('.lobby-level-view span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-            $('.lobby-arena-view-4 span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-            <!-- $('.lobby-arena-view-2 span').numberAnimate({ -->
-            	<!-- animationTimes: [500, 1000, 500] -->
-            <!-- });				 -->
-            $('.lobby-donater-view span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-
-            $('.lobby-AP-bar-view-5 span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-
-            $('.lobby-AP-bar-view-3 span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-
-            $('.lobby-AP-bar-2-view-3 span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-
-            $('.lobby-crystal-bar-view-3 span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-
-            $('.lobby-NCG-bar-view-3 span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-
-            $('.lobby-table-block-now-view span').numberAnimate({
-            	animationTimes: [500, 1000, 500]
-            });
-
-                        /////////////// Chỉnh kích thước cửa sổ liên tục
-                        //  var display_lobby = $(".display_lobby");
-                        var display_lobby2 = $(".display_lobby2");
-                        var background = $(".background");
-                        var backgroundAspectRatio = 1920 / 1080;
-
-                        $(window).on("load resize", function () {
-                            var windowWidth = $(window).width();
-                            var windowHeight = $(window).height();
-                            var backgroundWidth = windowWidth;
-                            var backgroundHeight = backgroundWidth / backgroundAspectRatio;
-
-                            // var butterflyWidth = windowWidth * 0.1;
-                            // var butterflyHeight = butterflyWidth * (display_lobby.height() / display_lobby.width());
-
-                            // var butterflyTop = (backgroundHeight - butterflyHeight) * 0.01;
-                            // var butterflyRight = (windowWidth - butterflyWidth) * 0.01;
-
-                            // background.css({
-                            //    width: backgroundWidth + "px",
-                            //    height: backgroundHeight + "px",
-                            //    scale: "95%",
-                            // });
-
-                            //  display_lobby.css({
-                            //       width: butterflyWidth + "px",
-                            //      top: butterflyTop + "px",
-                            //      right: butterflyRight + "px",
-                            //  });
-
-                            // Tính toán tỷ lệ zoom theo phần trăm
-                            //  var butterflyWidth2 = windowWidth * 0.1;
-                            //  var butterflyHeight2 = butterflyWidth2 * (display_lobby2.height() / display_lobby2.width());
-                            var zoomPercentage = backgroundHeight / 5.515;
-            	if ((windowWidth / windowHeight ) >= backgroundAspectRatio) { var zoomPercentage = windowHeight / 5.515};
-
-                            display_lobby2.css({
-            		width:"0px",
-                                scale: zoomPercentage + "%",
-                            });
-
-
-
-            });
-                    });
-        </script>
-        <script>
             $(document).ready(function () {
+
+                                   $('.lobby-level-view span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+                                   $('.lobby-arena-view-4 span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+                                   <!-- $('.lobby-arena-view-2 span').numberAnimate({ -->
+                                   	<!-- animationTimes: [500, 1000, 500] -->
+                                   <!-- });				 -->
+                                   $('.lobby-donater-view span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+
+                                   $('.lobby-AP-bar-view-5 span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+
+                                   $('.lobby-AP-bar-view-3 span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+
+                                   $('.lobby-AP-bar-2-view-3 span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+
+                                   $('.lobby-crystal-bar-view-3 span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+
+                                   $('.lobby-NCG-bar-view-3 span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+
+                                   $('.lobby-table-block-now-view span').numberAnimate({
+                                   	animationTimes: [500, 1000, 500]
+                                   });
+
+                                               /////////////// Chỉnh kích thước cửa sổ liên tục
+                                               //  var display_lobby = $(".display_lobby");
+                                               // var display_lobby2 = $(".display_lobby2");
+                                               var background = $(".background");
+                                               var backgroundAspectRatio = 1920 / 1080;
+
+                        $(window).on("load resize", function() {
+                         var windowWidth = $(window).width();
+                         var windowHeight = $(window).height();
+
+                         var backgroundWidth = windowWidth;
+                         var backgroundHeight = backgroundWidth / backgroundAspectRatio;
+
+                         var zoomPercentage = backgroundHeight / 5.515;
+                         if (windowWidth / windowHeight >= backgroundAspectRatio) {
+                           zoomPercentage = windowHeight / 5.515;
+                         }
+
+                         var display_lobby2 = $(".display_lobby2");
+                         var display_lobby = $(".display_lobby");
+
+                         display_lobby2.css({
+                           width: "0px",
+                           transform: "scale(" + zoomPercentage + "%)",
+                         });
+
+                         display_lobby.css({
+                           // transform: "scale(" + zoomPercentage + "%)",
+                       	zoom: zoomPercentage + "%",
+                         });
+                       });
+
+               document.getElementById('randomStageSweep_add').addEventListener('click', function() {
+                 var randomStageSweep_select = document.getElementById('randomStageSweep_select');
+                 var number = randomStageSweep_select.value;
+
+                 if (number) {
+                   var listItem = document.createElement('li');
+                   listItem.className = 'list-group-item randomStageSweep_pick d-flex justify-content-between align-items-center';
+                   listItem.innerHTML = number + '<button class="btn btn-danger btn-sm deleteButton" type="button">x</button>';
+
+                   var randomStageSweep_list = document.getElementById('randomStageSweep_list');
+                   randomStageSweep_list.appendChild(listItem);
+            	var numberItems = document.getElementsByClassName('randomStageSweep_pick');
+            	for (var i = 0; i < numberItems.length; i++) {
+            	  numberItems[i].classList.remove('active');
+            	}
+                   randomStageSweep_select.value = number;
+            	randomStageSweep_percentage();
+                 }
+               });
+
+               document.getElementById('randomStageSweep_list').addEventListener('click', function(event) {
+                 if (event.target.classList.contains('deleteButton')) {
+                   var listItem = event.target.parentElement;
+                   listItem.remove();
+            	randomStageSweep_percentage();
+            	var numberItems = document.getElementsByClassName('randomStageSweep_pick');
+            	for (var i = 0; i < numberItems.length; i++) {
+            	  numberItems[i].classList.remove('active');
+            	}
+                 }
+               });
+
+
                 /////////////// Hành động login
                 // Lắng nghe sự kiện submit của form
                 document.getElementById("login_form").addEventListener("submit", function (event) {
@@ -175,7 +192,7 @@
                     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Login...';
                     submitBtn.disabled = true;
 
-                    fetchDataAvatar();
+                    fetchDataAvatarAgain();
                 });
                 // Xóa thông báo lỗi khi người dùng nhấp vào trường url_server_jsonBlod
                 document.getElementById("url_server_jsonBlod").addEventListener("focus", function () {
@@ -220,73 +237,75 @@
                 // });
 
                 // Sử dụng fetch
-                fetch("https://cors-get-proxy.sirjosh.workers.dev/?url=https://api.9capi.com/rpc")
+                fetch("https://api.9capi.com/rpc")
                     .then((response) => response.json())
                     .then((data) => node_list(data))
                     .catch((error) => node_list_error(error));
                 /////////////// Làm mới info avatar liên tục
                 // Lặp lại yêu cầu fetch sau mỗi 5 giây
                 setInterval(fetch_data_block_now, 5000);
-                setInterval(fetchDataAvatar, 60000);
                 // Khởi tạo lần đầu khi trang được tải
                 fetch_data_block_now();
+				updateTurnSweep_range();
+				document.getElementById('turnSweep_range').addEventListener('input', updateTurnSweep_range);
+                $(".switch-useNodeTask").change(function () {
+                    var switchGroup = $(this).data("switch-group");
+                    var isChecked = $(this).prop("checked");
+                    $(".switch-useNodeTask[data-switch-group='" + switchGroup + "']").prop("checked", isChecked);
+                });
+
+                var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
+                    imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
+                    imageHeight: 128,
+                    imageWidth: 24,
+                    backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+                    backgroundOpacity: 0,
+                });
+
+                var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
+                    imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
+                    imageHeight: 128,
+                    imageWidth: 24,
+                    backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+                    backgroundOpacity: 0,
+                });
+
+                var taskUseNodeBar = $("#taskUseNodeBar").customProgressBar({
+                    imageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_mod.png",
+                    imageHeight: 246,
+                    imageWidth: 18,
+                    backgroundImageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_Bg_mod.png",
+                    backgroundOpacity: 1,
+                });
+
+                updateAPBar(APBarLobbyCreat);
+                updateAPBar2(APBar2LobbyCreat);
+                updatetaskUseNodeBar(taskUseNodeBar);
+				
+				
+                fetchDataAvatar_display();
             });
         </script>
-
-        <script>
-
-                   $(document).ready(function () {
-                        var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
-                            imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
-                            imageHeight: 128,
-                            imageWidth: 24,
-                            backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
-                            backgroundOpacity: 0,
-                        });
-
-                        var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
-                            imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
-                            imageHeight: 128,
-                            imageWidth: 24,
-                            backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
-                            backgroundOpacity: 0,
-                        });
-
-                        updateAPBar(APBarLobbyCreat);
-                        updateAPBar2(APBar2LobbyCreat);
-
-            <!-- var spansTimeArena = $('.lobby-arena-view-4 span'); -->
-            <!-- var spansTableBlockNow = $('.lobby-table-block-now-view span');	 -->
-
-            <!-- spansTimeArena.numberAnimate({ -->
-            	<!-- animationTimes: [500, 1000, 500] -->
-            <!-- }); -->
-
-            <!-- spansTableBlockNow.numberAnimate({ -->
-            	<!-- animationTimes: [500, 1000, 500] -->
-            <!-- }); -->
-
-            fetchDataAvatar_display();
-                    });
-        </script>
     </head>
-    <body class="background">
+    <body>
+        <div class="noty_lobby display_lobby"></div>
+
         <div class="lobby-grid display_lobby2">
-            <div class="noty_lobby">
-                <input type="number" id="delayUseNode" min="6" value="6" />
+            <img class="background_lobby" src="assets/img/Lobby/Background_all_2.jpg" />
+            <div class="test_check">
                 <button
                     type="button"
                     class="btn btn-outline-success btn-sm"
                     onclick="showNotification('Thông báo mẫu', 'alert', 5000);
 showNotification('Thông báo mẫu', 'success', 5000);
-showNotification('Thông báo mẫu', 'warning', 5000);
-showNotification('Thông báo mẫu', 'error', 5000);
+showNotification('Thông báo mẫu Thông báo mẫu', 'warning', 5000);
+showNotification('Thông báo mẫu Thông báo mẫu Thông báo mẫu', 'error', 5000);
 showNotification('Thông báo mẫu', 'info', 5000);"
                 >
                     Check
                 </button>
 
-                <button type="button" class="btn btn-outline-success btn-sm" onclick="fetchDataAvatar();">Auto refresh 60s</button>
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="fetchDataAvatarAgain();">Auto refresh 300s</button>
             </div>
 
             <div class="button_lobby lobby-arena-view" data-action="arena" data-bs-toggle="modal" data-bs-target="#func_arena_main">
@@ -294,8 +313,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                     <img src="assets/img/Lobby/ranking_01_mod.png" alt="Arena" />
                 </div>
                 <div class="lobby-arena-view-2">
-                    <span class="badge rounded-pill bg-danger lobby-arena-view-ticket1">---</span><br />
-                    <img class="lobby-loading-vip lobby-arena-view-ticket2" style="zoom: 30%;" src="assets/loading_vip.gif" />
+                    <div class="badge rounded-pill bg-danger lobby-arena-view-ticket1"><img class="lobby-loading-vip lobby-arena-view-ticket2" style="zoom: 30%;" src="assets/loading_vip.gif" /><span></span></div>
                 </div>
                 <div class="lobby-arena-view-3">
                     <img src="assets/img/Common/UI_Common/UI_icon_Block.png" />
@@ -357,7 +375,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                 <div class="lobby-AP-bar-view-7">
                     <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_pink_effect.png" />
                 </div>
-                <div class="lobby-AP-bar-view-3"><span>---</span>/1700</div>
+                <div class="lobby-AP-bar-view-3"><span>----</span>/1700</div>
                 <div class="lobby-AP-bar-view-4">
                     <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_icon_Block.png" />
                 </div>
@@ -405,7 +423,24 @@ showNotification('Thông báo mẫu', 'info', 5000);"
             <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
                 <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
                 <span class="tooltiptext">
-                    <div style="width: 170px; height: 194px; overflow: hidden;"><em>Tooltip</em> <u>with</u> <b>HTML</b></div>
+                    <div style="width: 142px; height: 194px; overflow: hidden; transform: scale(0.7); position: relative; top: 0%; right: -9%;">
+                        <div class="form-check form-switch form-check-reverse">
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="refillAP" />
+                            <label class="form-check-label" for="on_off_auto_refillAP">Auto refill</label>
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="sweep" />
+                            <label class="form-check-label" for="on_off_auto_sweep">Auto sweep</label>
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_repeat" checked />
+                            <label class="form-check-label" for="on_off_auto_repeat">Auto repeat</label>
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_craft" checked />
+                            <label class="form-check-label" for="on_off_auto_craft">Auto craft</label>
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_upgrade" checked />
+                            <label class="form-check-label" for="on_off_auto_upgrade">Auto upgrade</label>
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_arena" checked />
+                            <label class="form-check-label" for="on_off_auto_arena">Auto arena</label>
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_raid" checked />
+                            <label class="form-check-label" for="on_off_auto_raid">Auto world boss</label>
+                        </div>
+                    </div>
                 </span>
             </div>
         </div>
@@ -473,13 +508,190 @@ showNotification('Thông báo mẫu', 'info', 5000);"
             <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
                 <div class="modal-content func_main">
                     <div class="modal-header func_main">
-                        <!-- <h5 class="modal-title" id="func_mainLabel">Modal title</h5> -->
+                        <!-- <h5 class="modal-title" id="func_mainLabel">Use Node Tasks</h5> -->
                         <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                         <span class="close-button" data-bs-dismiss="modal"> <img src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" /></span>
                     </div>
-                    <div class="modal-body func_main"></div>
+                    <div class="modal-body func_main">
+                        <div class="container">
+                            <!-- <div class="progress"> -->
+                            <!-- <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div> -->
+                            <!-- </div> -->
+                            <div class="row">
+                                <div class="col-1">
+                                    <img id="runGifBarUseNode" src="assets/img/gif/run.png" alt="runBarUseNode GIF" />
+                                </div>
+                                <div class="col">
+                                    <div class="mt-4" style="width: 246px; height: 18px; overflow: hidden;">
+                                        <div style="transform-origin: center; transform: rotate(90deg);" id="taskUseNodeBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row taskOutputAndList">
+                                <div class="col-6">
+                                    <div id="taskOutput"></div>
+                                </div>
+                                <div class="col-6">
+                                    <ul class="list-group list-group-flush list-group-numbered" id="taskListItems"></ul>
+                                </div>
+                            </div>
+                            <span id="taskListSpan"></span>
+
+                            <div class="row rounded" style="background-color: whitesmoke; height: 500px;">
+                                <div class="col-4" style="height: 100%;">
+                                    <!-- List group -->
+                                    <div class="list-group pt-3 pb-5" id="manageUseNodeList" role="tablist" style="height: 100%; overflow: overlay;">
+                                        <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#tabManageUseNode" role="tab">Manage Use Node</a>
+                                        <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageCanAuto" role="tab">
+                                            Can auto? <span id="warningCanAutoCount" class="badge bg-danger text-white position-absolute top-50 end-0 translate-middle-y">0</span>
+                                        </a>
+                                        <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageRefillAP" role="tab">RefillAP setting</a>
+                                        <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageSweep" role="tab">Sweep setting</a>
+                                        <!-- <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#TEMP" role="tab">TEMP</a> -->
+                                    </div>
+                                </div>
+                                <div class="col-8" style="height: 100%;">
+                                    <!-- Tab panes -->
+                                    <div class="tab-content pt-3 pb-5" style="height: 100%; overflow: overlay;">
+                                        <div class="tab-pane active" id="tabManageUseNode" role="tabpanel">
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <div class="form-floating">
+                                                        <input type="number" placeholder="6" id="delayUseNode" value="6" min="6" max="60" name="delayUseNode" class="form-control" />
+                                                        <label for="delayUseNode" class="form-label">Delay before use node</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button onclick="tryUseNode_refillAP();updateTaskInfo();" class="btn btn-primary mb-3">Try refill AP</button>
+                                                    <button onclick="tryUseNode_sweep();updateTaskInfo();" class="btn btn-primary mb-3">Try sweep</button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <button onclick="deleteAllTasks()" class="btn btn-primary mb-3">Clear all tasks <span id="taskCount" class="badge bg-secondary">0</span></button>
+
+                                                    <button onclick="checkAllswitch_useNodeTask()" class="btn btn-primary mb-3">Turn on all tasks</button>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="continueUseNodeCheckbox" checked />
+                                                        <label class="form-check-label" for="continueUseNodeCheckbox">Continue use node?</label>
+                                                    </div>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="refillAP" id="on_off_auto_refillAP" />
+                                                        <label class="form-check-label" for="on_off_auto_refillAP">On / off auto refill AP</label>
+                                                    </div>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="sweep" id="on_off_auto_sweep" />
+                                                        <label class="form-check-label" for="on_off_auto_sweep">On / off auto sweep</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tabManageCanAuto" role="tabpanel"></div>
+                                        <div class="tab-pane" id="tabManageRefillAP" role="tabpanel">
+                                            2...
+                                        </div>
+                                        <div class="tab-pane" id="tabManageSweep" role="tabpanel">
+                                            <div class="accordion" id="accordionSweepTask">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneSweepTask" aria-expanded="true" aria-controls="collapseOneSweepTask">
+                                                            #1 When sweep
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseOneSweepTask" class="accordion-collapse collapse show" data-bs-parent="#accordionSweepTask">
+                                                        <div class="accordion-body">
+                                                            Automatically try sweep task when the AP [0 - 120] ≤ <input type="number" value="5" min="0" max="120" /> and the block refill [0 - 1700] ≤
+                                                            <input type="number" value="0" min="0" max="1700" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoSweepTask" aria-expanded="false" aria-controls="collapseTwoSweepTask">
+                                                            #2 Stage sweep
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseTwoSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                                                        <div class="accordion-body">
+														
+														<div class="form-check">												
+
+                                                                <input class="form-check-input" type="radio" name="radioStagesweep" id="radioStagesweep_fixed" value="" aria-label="..." checked />
+																<label id="radioStagesweep_label" class="form-check-label" for="radioStagesweep_fixed">Fixed 1 Stage [1 - <span>0</span>] </label>
+                                                                <input id="numberStagesweep_fixed" class="form-control" type="number" value="" min="0" max="350" placeholder="Enter 0 or empty to always sweep latest Stage" />
+
+														</div>	
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="radioStagesweep" id="radioStagesweep_random" value="" aria-label="..." />
+																<label class="form-check-label" for="radioStagesweep_random">Random stage</label>
+                                                                <div class="row">
+                                                                    <div class="col-md-4">
+                                                                        <input type="number" id="randomStageSweep_select" class="form-control" min="1" max="350" placeholder="Add stage" />
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <button id="randomStageSweep_add" class="btn btn-primary" type="button">+</button>
+                                                                    </div>
+                                                                </div>
+                                                                <ul id="randomStageSweep_list" class="list-group list-group-numbered"></ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThreeSweepTask" aria-expanded="false" aria-controls="collapseThreeSweepTask">
+                                                            #3 How many AP you spend for sweep
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseThreeSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                                                        <div class="accordion-body">
+                                                            <p>Have now <span class="spanActionPotionText"></span>/120 AP<p>
+															<p>Need to spend <span class="spanAPBaseOnStakeText"></span> APs per turn</p>
+															<input type="range" id="turnSweep_range" min="0" max="120" step="5" value="0">
+															<div>Turn: <span id="turnSweep_number1">0</span> (0 = max <span id="turnSweep_number2">0</span> turn can sweep)</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourSweepTask" aria-expanded="false" aria-controls="collapseFourSweepTask">
+                                                            #4 Item equipment for sweep
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseFourSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                                                        <div class="accordion-body">
+                                                            No thing
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFiveSweepTask" aria-expanded="false" aria-controls="collapseFiveSweepTask">
+                                                            #5 Runes for sweep
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseFiveSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                                                        <div class="accordion-body">
+                                                            No thing
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="tab-pane" id="TEMP" role="tabpanel"> -->
+                                        <!-- TEMP -->
+                                        <!-- </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hide</button>
                         <button type="button" class="btn btn-primary">Understood</button>
                     </div>
                 </div>
@@ -496,7 +708,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hide</button>
                         <button type="button" class="btn btn-primary">Understood</button>
                     </div>
                 </div>
@@ -513,7 +725,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hide</button>
                         <button type="button" class="btn btn-primary">Understood</button>
                     </div>
                 </div>
@@ -530,7 +742,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hide</button>
                         <button type="button" class="btn btn-primary">Understood</button>
                     </div>
                 </div>
@@ -547,7 +759,7 @@ showNotification('Thông báo mẫu', 'info', 5000);"
                         <div class="badge bg-primary text-wrap" style="width: 6rem;">Nothing here!</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ẩn</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hide</button>
                         <button type="button" class="btn btn-primary">Understood</button>
                     </div>
                 </div>

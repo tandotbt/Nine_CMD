@@ -39,12 +39,27 @@ img {
     /* padding: 15px; */
 }
 .background {
-    background-image: url("../assets/img/Lobby/Background_all_2.jpg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: top left;
+    /* background-image: url("../assets/img/Lobby/Background_all_2.jpg"); */
+    /* background-size: contain; */
+    /* background-repeat: no-repeat; */
+    /* background-position: top left; */
     /* z-index:-1; */
     /* box-shadow: 0 25px 25px rgb(0 0 0 / 50%); */
+	/* width: 100%; */
+    /* height: 100%; */
+    /* display: inline-block; */
+}
+
+.background_lobby {
+    width: 100%;
+	max-width: 100%;
+    /* height: 100%; */
+    /* object-fit: contain; */
+    /* object-position: 0px 0%; */
+    grid-row: 1 / 62;
+    grid-column: 1 / 111;
+    /* z-index: 0; */
+    box-shadow: 0 25px 25px rgb(0 0 0 / 50%);
 }
 
 .image-container {
@@ -115,21 +130,26 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #45a049;
 }
-
+.noty_lobby{
+	position: absolute;
+	z-index: 9999;
+	/* top: 16vh; */
+	right: 10px;
+	overflow: hidden;
+}
 .lobby-grid {
     display: grid;
-    grid-template: repeat(60, 9px) / repeat(113, 8.9px);
+    grid-template: repeat(60, 9px) / repeat(113, 8.907px);
     gap: 0px;
     transform-origin: top;
 }
-.noty_lobby {
+.test_check {
     /* background-color: #7c7d97; */
     grid-row: 10 / 20;
-    grid-column: 1 / 2;
+    grid-column: 1 / 22;
     z-index: 20;
     display: inline-table;
 }
-
 .login-lobby-view {
     /* background-color: #7c7d97; */
     grid-row: 1 / 1;
@@ -255,7 +275,7 @@ button[type="submit"]:hover {
     position: relative;
     bottom: -21px;
     grid-row: 56 / 60;
-    grid-column: 1 / 110;
+    grid-column: 1 / 111;
     zoom: 100%;
     font-size: 11px;
     /* z-index: 13; */
@@ -654,5 +674,43 @@ button[type="submit"]:hover {
 }
 
 /*///////////////////////////////////////////////*/
+#taskOutput,
+#taskListItems {
+    height: 200px;
+    overflow: overlay;
+}
 
+#taskOutput {
+    float: left;
+    width: 100%;
+    white-space: pre;
+    background-color: #f8f8f8;
+    padding: 10px;
+    margin: 0;
+    border: 1px solid #ccc;
+    /* overflow: overlay; */
+}
+
+#taskListItems {
+    float: right;
+    width: 100%;
+}
+.delete-task{
+	cursor: pointer;
+}
+
+.row .taskOutputAndList::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.listTaskUseNode-refillAP {
+    background-color: #e94e6bb8;
+    color: white;
+}
+
+.listTaskUseNode-sweep {
+    background-color: #fff038b8;
+    color: white;
+}
 /*///////////////////////////////////////////////*/
