@@ -121,9 +121,9 @@ function requestToYourServer() {
                                 console.log("Lưu lại kqua cho yêu cầu " + request);
                                 addDataForSessionStorage("session_login9cmd", request, kqua);
                                 addDataForSessionStorage("tempNineCMD", "hasUTCFile", true);
-								addDataForSessionStorage("tempNineCMD", "passwordOk", true);
-								addDataForSessionStorage("tempNineCMD", "serverOk", true);
-								delDataFromSessionStorage("tempNineCMD", "errorYourServer");
+                                addDataForSessionStorage("tempNineCMD", "passwordOk", true);
+                                addDataForSessionStorage("tempNineCMD", "serverOk", true);
+                                delDataFromSessionStorage("tempNineCMD", "errorYourServer");
                                 clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
                                 isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
                                 resolve(); // Gửi tín hiệu hoàn thành Promise
@@ -131,16 +131,16 @@ function requestToYourServer() {
                                 console.log("Có lỗi server gửi về");
                                 clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
                                 isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-								addDataForSessionStorage("tempNineCMD", "serverOk", true);
-								addDataForSessionStorage("tempNineCMD", "errorYourServer", kqua);							
+                                addDataForSessionStorage("tempNineCMD", "serverOk", true);
+                                addDataForSessionStorage("tempNineCMD", "errorYourServer", kqua);
                                 throw new Error(" - " + kqua); // Tung ra đối tượng lỗi mới với thông điệp
                             } else {
                                 counter++;
                                 if (counter > 60) {
                                     clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
                                     isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-									addDataForSessionStorage("tempNineCMD", "serverOk", false);
-									addDataForSessionStorage("tempNineCMD", "errorYourServer", "Server does not respond after 60s");
+                                    addDataForSessionStorage("tempNineCMD", "serverOk", false);
+                                    addDataForSessionStorage("tempNineCMD", "errorYourServer", "Server does not respond after 60s");
                                     throw new Error("Server does not respond after 60s");
                                 } else {
                                     console.log("Server chưa phản hồi");
@@ -150,7 +150,7 @@ function requestToYourServer() {
                         .catch(function (Error) {
                             // console.error("Lỗi khi kiểm tra dữ liệu: " + Error);
                             delDataFromSessionStorage("tempNineCMD", "hasUTCFile");
-                            delDataFromSessionStorage("tempNineCMD", "passwordOk");							
+                            delDataFromSessionStorage("tempNineCMD", "passwordOk");
                             reject(Error); // Gửi tín hiệu lỗi của Promise (nếu cần thiết)
                         });
                 }
@@ -219,14 +219,14 @@ function fetchDataAvatar() {
     Promise.all([getArmorIDandSTT(), fetchDataAvatar_useNode(), checkYourServer(), checkDonaterBlock(), fetchTicketArena()])
         .then(() => {
             console.log("Kết thúc fetch avatar");
-
-            submitBtn.innerHTML = "Submit";
+            submitBtn.classList.remove("disabled");
+            submitBtn.innerHTML = "Login";
             submitBtn.disabled = false;
         })
         .catch((Error) => {
             console.log("Đã xảy ra lỗi trong quá trình fetch avatar:", Error);
-
-            submitBtn.innerHTML = "Submit";
+            submitBtn.classList.remove("disabled");
+            submitBtn.innerHTML = "Login";
             submitBtn.disabled = false;
         });
 
@@ -241,7 +241,6 @@ function fetchDataAvatarAgain() {
     fetchDataAvatar();
 }
 
-
 // Lấy name, level, ncg, cryslat, AP và time AP
 async function fetchDataAvatar_useNode() {
     console.log("fetchDataAvatar_useNode start");
@@ -254,7 +253,7 @@ async function fetchDataAvatar_useNode() {
         return;
     }
     try {
-		showNotification("Refresh data ... ", "info", 10000);
+        showNotification("Refresh data ... ", "info", 10000);
         var post_data_json = {
             query: `query{stateQuery{stakeStates(addresses:"${Address9c}"){deposit}agent(address:"${Address9c}"){gold crystal}avatar(avatarAddress:"${avatarAddress}"){address actionPoint level dailyRewardReceivedIndex name stageMap{count}runes{runeId level}inventory{consumables{grade id itemType itemSubType elementalType requiredBlockIndex itemId mainStat}materials{grade id itemType itemSubType elementalType requiredBlockIndex itemId}costumes{grade id itemType itemSubType elementalType requiredBlockIndex itemId equipped}equipments{grade id itemType itemSubType elementalType requiredBlockIndex setId stat{statType baseValue totalValue additionalValue}equipped itemId level exp skills{id elementalType power chance statPowerRatio referencedStatType}buffSkills{id elementalType power chance statPowerRatio referencedStatType}statsMap{hP aTK dEF cRI hIT sPD}}}itemMap{count pairs}}}}`,
         };
@@ -270,49 +269,46 @@ async function fetchDataAvatar_useNode() {
         var apiResponse = await response.json();
 
         if (apiResponse && apiResponse.data && apiResponse.data.stateQuery) {
-
         } else if (apiResponse && apiResponse.errors && apiResponse.errors[0].message) {
             throw (Error = apiResponse.errors[0].message);
         } else {
             throw (Error = "fetch use node - Unknown error");
         }
 
-		// Lưu dữ liệu avatar info
-		var avatarInfo = JSON.parse(sessionStorage.getItem("session_login9cmd")) || {};
-		
-		if (apiResponse.data.stateQuery.stakeStates[0] !== null) {
-			var ncgStake = Math.floor(apiResponse.data.stateQuery.stakeStates[0].deposit);
-			avatarInfo.ncgStake = ncgStake;			
-		
-				if (ncgStake < 5000) {
-					avatarInfo.APBaseOnStake = 5;
-				} else if (ncgStake < 500000) {
-					avatarInfo.APBaseOnStake = 4;
-				} else {
-					avatarInfo.APBaseOnStake = 3;
-				}
-		} else {
-			avatarInfo.ncgStake = null;		
-			avatarInfo.APBaseOnStake = 5;
-		}
+        // Lưu dữ liệu avatar info
+        var avatarInfo = JSON.parse(sessionStorage.getItem("session_login9cmd")) || {};
 
-		if (apiResponse.data.stateQuery.avatar.runes.length) {
-			avatarInfo.runes = apiResponse.data.stateQuery.avatar.runes;			
-		} else {
-			avatarInfo.runes = null;
-		}
+        if (apiResponse.data.stateQuery.stakeStates[0] !== null) {
+            var ncgStake = Math.floor(apiResponse.data.stateQuery.stakeStates[0].deposit);
+            avatarInfo.ncgStake = ncgStake;
 
-		avatarInfo.name = apiResponse.data.stateQuery.avatar.name;
-		avatarInfo.level = apiResponse.data.stateQuery.avatar.level;
-		avatarInfo.gold = apiResponse.data.stateQuery.agent.gold;
-		avatarInfo.crystal = Math.floor(parseFloat(apiResponse.data.stateQuery.agent.crystal));
-		avatarInfo.actionPoint = apiResponse.data.stateQuery.avatar.actionPoint;
-		avatarInfo.dailyRewardReceivedIndex = apiResponse.data.stateQuery.avatar.dailyRewardReceivedIndex;
-		avatarInfo.passStage = apiResponse.data.stateQuery.avatar.stageMap.count;
+            if (ncgStake < 5000) {
+                avatarInfo.APBaseOnStake = 5;
+            } else if (ncgStake < 500000) {
+                avatarInfo.APBaseOnStake = 4;
+            } else {
+                avatarInfo.APBaseOnStake = 3;
+            }
+        } else {
+            avatarInfo.ncgStake = null;
+            avatarInfo.APBaseOnStake = 5;
+        }
 
-		sessionStorage.setItem("session_login9cmd", JSON.stringify(avatarInfo));
+        if (apiResponse.data.stateQuery.avatar.runes.length) {
+            avatarInfo.runes = apiResponse.data.stateQuery.avatar.runes;
+        } else {
+            avatarInfo.runes = null;
+        }
 
+        avatarInfo.name = apiResponse.data.stateQuery.avatar.name;
+        avatarInfo.level = apiResponse.data.stateQuery.avatar.level;
+        avatarInfo.gold = parseFloat(apiResponse.data.stateQuery.agent.gold);
+        avatarInfo.crystal = Math.floor(parseFloat(apiResponse.data.stateQuery.agent.crystal));
+        avatarInfo.actionPoint = apiResponse.data.stateQuery.avatar.actionPoint;
+        avatarInfo.dailyRewardReceivedIndex = apiResponse.data.stateQuery.avatar.dailyRewardReceivedIndex;
+        avatarInfo.passStage = apiResponse.data.stateQuery.avatar.stageMap.count;
 
+        sessionStorage.setItem("session_login9cmd", JSON.stringify(avatarInfo));
     } catch (Error) {
         console.error(Error);
         delDataFromSessionStorage("session_login9cmd", "name");
@@ -321,9 +317,9 @@ async function fetchDataAvatar_useNode() {
         delDataFromSessionStorage("session_login9cmd", "crystal");
         delDataFromSessionStorage("session_login9cmd", "actionPoint");
         delDataFromSessionStorage("session_login9cmd", "dailyRewardReceivedIndex");
-		delDataFromSessionStorage("session_login9cmd", "passStage");
-		delDataFromSessionStorage("session_login9cmd", "ncgStake");
-		showNotification("Error when refresh data:<br>" + Error, "error", 10000);
+        delDataFromSessionStorage("session_login9cmd", "passStage");
+        delDataFromSessionStorage("session_login9cmd", "ncgStake");
+        showNotification("Error when refresh data:<br>" + Error, "error", 10000);
         return { Error: "Có lỗi xảy ra trong fetchDataAvatar_useNode()" };
     }
 }
@@ -332,10 +328,10 @@ async function getArmorIDandSTT() {
     console.log("getArmorIDandSTT start");
     var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
     var avatarAddress2 = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
-	if (Address9c === null || avatarAddress2 === null) {
-		return;
-	}
-	var avatarAddress = avatarAddress2.toLowerCase();
+    if (Address9c === null || avatarAddress2 === null) {
+        return;
+    }
+    var avatarAddress = avatarAddress2.toLowerCase();
     var url = "https://api.9cscan.com/account?address=" + Address9c;
     fetch(url)
         .then((response) => {
@@ -381,8 +377,8 @@ async function getArmorIDandSTT() {
         })
         .catch(function (Error) {
             console.log(Error);
-			delDataFromSessionStorage("session_login9cmd", "armorId");
-			delDataFromSessionStorage("session_login9cmd", "stt");
+            delDataFromSessionStorage("session_login9cmd", "armorId");
+            delDataFromSessionStorage("session_login9cmd", "stt");
             return { Error: "Có lỗi xảy ra trong getArmorIDandSTT()" };
         });
 }
@@ -406,7 +402,7 @@ async function checkDonaterBlock() {
                     throw new Error("No data");
                 }
                 addDataForSessionStorage("session_login9cmd", "donaterBlock", data[0].block);
-				addDataForSessionStorage("tempNineCMD", "isDonater", true);
+                addDataForSessionStorage("tempNineCMD", "isDonater", true);
             })
             .catch(function (Error) {
                 delDataFromSessionStorage("session_login9cmd", "donaterBlock");
@@ -419,19 +415,17 @@ async function checkDonaterBlock() {
 async function fetchTicketArena() {
     try {
         console.log("fetchTicketArena start");
-		const user = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
-		if (user === null) {
-			return;
-		}
+        const user = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
+        if (user === null) {
+            return;
+        }
         const response = await fetch("https://api.9capi.com/arenaLeaderboard");
 
         const data = await response.json();
 
-
         if (data.length === 0) {
             throw new Error("No data arena");
         } else {
-
             const foundUser = data.find((item) => item.avataraddress.toLowerCase() === user.toLowerCase());
 
             if (!foundUser) {
@@ -584,7 +578,7 @@ function updatetaskUseNodeBar(typeBar) {
     if (taskPercentageNow === null) {
         typeBar.setPercentage(0);
     } else {
-		typeBar.setPercentage(taskPercentageNow);
+        typeBar.setPercentage(taskPercentageNow);
     }
     setTimeout(function () {
         updatetaskUseNodeBar(typeBar);
@@ -603,7 +597,7 @@ function updateAPBar2(typeBar) {
         typeBar.setPercentage(percentage);
         $(".lobby-AP-bar-2-view-3 span").numberAnimate("set", actionPoint);
         let _temp = document.getElementsByClassName("lobby-loading-vip-2 lobby-AP-bar-2-view-4");
-        _temp[0].style.display = "none";		
+        _temp[0].style.display = "none";
     }
 
     setTimeout(function () {
@@ -611,25 +605,23 @@ function updateAPBar2(typeBar) {
     }, 1000);
 }
 
-    function updateTurnSweep_range() {
-		var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
-		var APBaseOnStake = getDataFromSessionStorage("session_login9cmd","APBaseOnStake");
-		if (APBaseOnStake === null) APBaseOnStake = 5;
-		if (actionPoint === null) actionPoint = 0;
-		$(".spanActionPotionText").text(actionPoint);
-		$(".spanAPBaseOnStakeText").text(APBaseOnStake);
-		var turnSweep_range = document.getElementById('turnSweep_range');
-		var turnSweep_number1 = document.getElementById('turnSweep_number1');
-		var turnSweep_number2 = document.getElementById('turnSweep_number2');
-		// Update the step attribute of the turnSweep_range input
-		turnSweep_range.step = APBaseOnStake
-		// Disable turnSweep_range beyond the specified limit
-		if (turnSweep_range.value > actionPoint) {
-		turnSweep_range.value = actionPoint;
-		}
-		turnSweep_number1.textContent = turnSweep_range.value / APBaseOnStake;
-		turnSweep_number2.textContent = actionPoint / APBaseOnStake;
+function updateTurnSweep_range() {
+    var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
+    var APBaseOnStake = getDataFromSessionStorage("session_login9cmd", "APBaseOnStake");
+    if (APBaseOnStake === null) APBaseOnStake = 5;
+    if (actionPoint === null) actionPoint = 0;
+    var turnSweep_range = document.getElementById("turnSweep_range");
+    var turnSweep_number1 = document.getElementById("turnSweep_number1");
+    var turnSweep_number2 = document.getElementById("turnSweep_number2");
+    // Update the step attribute of the turnSweep_range input
+    turnSweep_range.step = APBaseOnStake;
+    // Disable turnSweep_range beyond the specified limit
+    if (turnSweep_range.value > actionPoint) {
+        turnSweep_range.value = actionPoint;
     }
+    turnSweep_number1.textContent = turnSweep_range.value / APBaseOnStake;
+    turnSweep_number2.textContent = actionPoint / APBaseOnStake;
+}
 
 function fetchDataAvatar_display() {
     var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
@@ -642,10 +634,10 @@ function fetchDataAvatar_display() {
     var name = getDataFromSessionStorage("session_login9cmd", "name");
     var url_rpc = getDataFromSessionStorage("session_login9cmd", "url_rpc");
     var ticketArena = getDataFromSessionStorage("session_login9cmd", "ticketArena");
-	var passStage = getDataFromSessionStorage("session_login9cmd", "passStage");
-	var ncgStake = getDataFromSessionStorage("session_login9cmd", "ncgStake");
-	var APBaseOnStake = getDataFromSessionStorage("session_login9cmd","APBaseOnStake");
-	
+    var passStage = getDataFromSessionStorage("session_login9cmd", "passStage");
+    var ncgStake = getDataFromSessionStorage("session_login9cmd", "ncgStake");
+    var APBaseOnStake = getDataFromSessionStorage("session_login9cmd", "APBaseOnStake");
+
     var delayUseNode = parseInt(document.getElementById("delayUseNode").value);
 
     var lobbyLoadingVipElements = document.getElementsByClassName("lobby-loading-vip");
@@ -654,8 +646,8 @@ function fetchDataAvatar_display() {
         lobbyLoadingVipElements[i].style.display = "block";
     }
 
-	// $("#radioStagesweep_fixed span").text(APBaseOnStake);
-	
+    // $("#radioStagesweep_fixed span").text(APBaseOnStake);
+
     var _temp2 = document.getElementsByClassName("lobby-loading-vip image-avatar");
     if (!(armorId === null)) {
         $(".lobby-armorId-view").attr("src", "https://raw.githubusercontent.com/planetarium/NineChronicles/v200020-1/nekoyume/Assets/Resources/UI/Icons/Item/" + armorId + ".png");
@@ -680,7 +672,7 @@ function fetchDataAvatar_display() {
     }
 
     if (!(crystal === null)) {
-        $(".lobby-crystal-bar-view-3 span").numberAnimate("set", crystal);
+        $(".lobby-crystal-bar-view-3 span").numberAnimate("set", crystal.toLocaleString("en-US"));
         var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-crystal-bar-view-4");
         _temp2[0].style.display = "none";
     } else {
@@ -688,7 +680,7 @@ function fetchDataAvatar_display() {
     }
 
     if (!(gold === null)) {
-        $(".lobby-NCG-bar-view-3 span").numberAnimate("set", gold);
+        $(".lobby-NCG-bar-view-3 span").numberAnimate("set", gold.toLocaleString("en-US"));
         var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-NCG-bar-view-4");
         _temp2[0].style.display = "none";
     } else {
@@ -742,12 +734,12 @@ function fetchDataAvatar_display() {
         spansTimeArena.eq(3).numberAnimate("set", s_arena);
         spansTimeArena.eq(4).numberAnimate("set", roundID);
 
-        spansTableBlockNow.eq(0).numberAnimate("set", blockNow);
+        spansTableBlockNow.eq(0).numberAnimate("set", blockNow.toLocaleString("en-US"));
         spansTableBlockNow.eq(1).numberAnimate("set", avgBlock);
         spansTableBlockNow.eq(3).text(url_rpc);
         spansTableBlockNow.eq(2).numberAnimate("set", delayUseNode);
         if (!(donaterBlock === null)) {
-            $(".lobby-donater-view span").numberAnimate("set", donaterBlock - blockNow);
+            $(".lobby-donater-view span").numberAnimate("set", (donaterBlock - blockNow).toLocaleString("en-US"));
         } else {
             $(".lobby-donater-view span").numberAnimate("set", "------");
         }
@@ -768,7 +760,11 @@ function fetchDataAvatar_display() {
             $(".lobby-AP-bar-view-5 span").eq(1).numberAnimate("set", "--");
         }
     }
-	canAutoListItems();
+
+    // Bảng Task use node manager
+    $(".spanActionPotionText").text(actionPoint);
+    $(".spanAPBaseOnStakeText").text(APBaseOnStake);
+    canAutoListItems();
     setTimeout(function () {
         fetchDataAvatar_display();
     }, 5000);
@@ -986,8 +982,8 @@ function save_9cmd_form_data_login() {
     var passwordServer = document.getElementById("passwordServer").value;
 
     // if (url_rpc.startsWith("http://")) {
-        // Sử dụng proxy khi url_rpc bắt đầu bằng "http://"
-        // url_rpc = "https://cors-proxy.fringe.zone/" + url_rpc;
+    // Sử dụng proxy khi url_rpc bắt đầu bằng "http://"
+    // url_rpc = "https://cors-proxy.fringe.zone/" + url_rpc;
     // }
 
     var _9cmd_form_data_login = {
@@ -1029,25 +1025,34 @@ function populateFormWithSavedData() {
     }
 }
 
-/////////// Nhận lệnh từ 1 trong 4 nút lobby
+/////////// Nhận lệnh button_lobby
 document.addEventListener("DOMContentLoaded", function () {
     var buttons = document.getElementsByClassName("button_lobby");
+
+    var modals = {
+        login: $(".lobby_login_modal"),
+        managerUseNode: $(".lobby_manager_use_node_modal"),
+        arena: $(".lobby_arena_modal"),
+        // Thêm các modal khác nếu cần
+    };
 
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener("click", function () {
             var action = this.getAttribute("data-action");
 
-            // Xử lý tác vụ tương ứng
-            if (action === "arena") {
-                addToLog("Mở arena");
-            } else if (action === "stage") {
-                addToLog("Mở adventure");
-            } else if (action === "shop") {
-                addToLog("Mở shop");
-            } else if (action === "craft-upgrade") {
-                addToLog("Mở workshop");
+            if (modals[action]) {
+                toggleModal(modals[action]);
             }
         });
+    }
+
+    function toggleModal(modal) {
+        if (modal.is(":hidden")) {
+            $(".lobby_hide_modal").fadeOut(300);
+            modal.fadeIn(300); // Hiển thị modal với hiệu ứng fade-in trong 300ms
+        } else {
+            modal.fadeOut(300); // Ẩn modal với hiệu ứng fade-out trong 300ms
+        }
     }
 });
 
@@ -1070,12 +1075,12 @@ function node_list(data) {
     addToLog("Duyệt qua từng dữ liệu RPC");
 
     data.forEach(function (item) {
-        if (item.active === "True" & (item.url.startsWith("https://"))) {
+        if ((item.active === "True") & item.url.startsWith("https://")) {
             var optionText = item.name + " • Diff " + item.difference + " • Response " + item.response_time_seconds + "s •  Users " + item.users;
             var optionValue = item.url;
             // if (optionValue.startsWith("http://")) {
-                // Sử dụng proxy khi optionValue bắt đầu bằng "http://"
-                // optionValue = "https://cors-proxy.fringe.zone/" + optionValue;
+            // Sử dụng proxy khi optionValue bắt đầu bằng "http://"
+            // optionValue = "https://cors-proxy.fringe.zone/" + optionValue;
             // }
             var option = $("<option>").text(optionText).attr("value", optionValue);
             $("#url_rpc").append(option);
@@ -1129,386 +1134,374 @@ function listAvatar() {
 
 //////////////////////////////////////////////////////////////////////////////
 
-    function startUseNodeTask(typeAuto) {
-        handleUseNodeTasks.startUseNode(typeAuto);
-    }
+function startUseNodeTask(typeAuto) {
+    handleUseNodeTasks.startUseNode(typeAuto);
+}
 
-    async function RefillAPUseNode() {
-        try {
-			$('#runGifBarUseNode').attr("src", "assets/img/gif/run.gif");
-            const taskOutput = $("#taskOutput");
-            const taskProgress = $("<p>");
+async function RefillAPUseNode() {
+    try {
+        $("#runGifBarUseNode").attr("src", "assets/img/gif/run.gif");
+        const taskOutput = $("#taskOutput");
+        const taskProgress = $("<p>");
 
-            taskOutput.prepend($("<p class='fs-5'>").text("Start Refill AP task"));
-            taskOutput.prepend(taskProgress);
-			await delayUseNode();
-			progress = 0;
-			if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-				taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}
-			taskProgress.text(`Refill AP task progress now: ${progress}%`);
-			await delayUseNode();
-			
-
-			progress = 25;
-			if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-				taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-			taskProgress.text(`Refill AP task progress now: ${progress}%`);
-			await delayUseNode();
-
-			
-			
-			progress = 50;
-			if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-				taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-			taskProgress.text(`Refill AP task progress now: ${progress}%`);
-			await delayUseNode();
-
-
-			progress = 75;
-			if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-				taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-			taskProgress.text(`Refill AP task progress now: ${progress}%`);
-			await delayUseNode();
-
-			
-			progress = 100;
-			if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-				taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-		
-            // for (let progress = 0; progress <= 100; progress += 30) {
-                // if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-                    // taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
-                    // return;
-                // }
-
-                // await delayUseNode();
-                // taskProgress.text(`Refill AP task progress now: ${progress}%`);
-            // }
-
-            taskOutput.prepend($("<p>").text("Refill AP task completed"));
-			$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-
-        } catch (Error) {
-            $("#taskOutput").prepend($("<p>").text(`Error in Refill AP task: ${Error}`));
-			$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
+        taskOutput.prepend($("<p class='fs-5'>").text("Start Refill AP task"));
+        taskOutput.prepend(taskProgress);
+        await delayUseNode();
+        progress = 0;
+        if (!shouldContinue(progress, "on_off_auto_refillAP")) {
+            taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
         }
-    }
+        taskProgress.text(`Refill AP task progress now: ${progress}%`);
+        await delayUseNode();
 
-    async function SweepUseNode() {
-        try {
-			$('#runGifBarUseNode').attr("src", "assets/img/gif/run.gif");
-			await delayUseNode();
-            const taskOutput = $("#taskOutput");
-            const taskProgress = $("<p>");
-
-            taskOutput.prepend($("<p class='fs-5'>").text("Start Sweep task"));
-            taskOutput.prepend(taskProgress);
-
-			progress = 0;
-			if (!shouldContinue(progress, "on_off_auto_sweep")) {
-				taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-			taskProgress.text(`Sweep task progress now: ${progress}%`);
-			await delayUseNode();
-
-
-			progress = 25;
-			if (!shouldContinue(progress, "on_off_auto_sweep")) {
-				taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-			taskProgress.text(`Sweep task progress now: ${progress}%`);
-			await delayUseNode();
-
-			
-			
-			progress = 50;
-			if (!shouldContinue(progress, "on_off_auto_sweep")) {
-				taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-			taskProgress.text(`Sweep task progress now: ${progress}%`);
-			await delayUseNode();
-
-
-			progress = 75;
-			if (!shouldContinue(progress, "on_off_auto_sweep")) {
-				taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-			taskProgress.text(`Sweep task progress now: ${progress}%`);
-			await delayUseNode();
-
-			
-			progress = 100;
-			if (!shouldContinue(progress, "on_off_auto_sweep")) {
-				taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
-				$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-				return;
-			}		
-
-            taskOutput.prepend($("<p>").text("Sweep task completed"));
-			$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
-        } catch (Error) {
-            $("#taskOutput").prepend($("<p>").text(`Error in Sweep task: ${Error}`));
-			$('#runGifBarUseNode').attr("src", "assets/img/gif/run.png");
+        progress = 25;
+        if (!shouldContinue(progress, "on_off_auto_refillAP")) {
+            taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
         }
+        taskProgress.text(`Refill AP task progress now: ${progress}%`);
+        await delayUseNode();
+
+        progress = 50;
+        if (!shouldContinue(progress, "on_off_auto_refillAP")) {
+            taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+        taskProgress.text(`Refill AP task progress now: ${progress}%`);
+        await delayUseNode();
+
+        progress = 75;
+        if (!shouldContinue(progress, "on_off_auto_refillAP")) {
+            taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+        taskProgress.text(`Refill AP task progress now: ${progress}%`);
+        await delayUseNode();
+
+        progress = 100;
+        if (!shouldContinue(progress, "on_off_auto_refillAP")) {
+            taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+
+        // for (let progress = 0; progress <= 100; progress += 30) {
+        // if (!shouldContinue(progress, "on_off_auto_refillAP")) {
+        // taskOutput.prepend($("<p>").text(`Refill AP task stop by user, completed ${progress}%`));
+        // return;
+        // }
+
+        // await delayUseNode();
+        // taskProgress.text(`Refill AP task progress now: ${progress}%`);
+        // }
+
+        taskOutput.prepend($("<p>").text("Refill AP task completed"));
+        $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+    } catch (Error) {
+        $("#taskOutput").prepend($("<p>").text(`Error in Refill AP task: ${Error}`));
+        $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
     }
+}
 
-    function shouldContinue(progress, autoOnOffCheck) {
-        const continueUseNodeCheckbox = document.getElementById("continueUseNodeCheckbox");
-        const autoOnOffCheckbox = document.getElementById(autoOnOffCheck);
+async function SweepUseNode() {
+    try {
+        $("#runGifBarUseNode").attr("src", "assets/img/gif/run.gif");
+        await delayUseNode();
+        const taskOutput = $("#taskOutput");
+        const taskProgress = $("<p>");
 
-        // $(".progress-bar").css("width", progress + "%").attr("aria-valuenow", progress);
-		addDataForSessionStorage("tempNineCMD", "taskUseNodePercentageNow",progress);
-        return continueUseNodeCheckbox.checked && autoOnOffCheckbox.checked;
+        taskOutput.prepend($("<p class='fs-5'>").text("Start Sweep task"));
+        taskOutput.prepend(taskProgress);
+
+        progress = 0;
+        if (!shouldContinue(progress, "on_off_auto_sweep")) {
+            taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+        taskProgress.text(`Sweep task progress now: ${progress}%`);
+        await delayUseNode();
+
+        progress = 25;
+        if (!shouldContinue(progress, "on_off_auto_sweep")) {
+            taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+        taskProgress.text(`Sweep task progress now: ${progress}%`);
+        await delayUseNode();
+
+        progress = 50;
+        if (!shouldContinue(progress, "on_off_auto_sweep")) {
+            taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+        taskProgress.text(`Sweep task progress now: ${progress}%`);
+        await delayUseNode();
+
+        progress = 75;
+        if (!shouldContinue(progress, "on_off_auto_sweep")) {
+            taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+        taskProgress.text(`Sweep task progress now: ${progress}%`);
+        await delayUseNode();
+
+        progress = 100;
+        if (!shouldContinue(progress, "on_off_auto_sweep")) {
+            taskOutput.prepend($("<p>").text(`Sweep task stop by user, completed ${progress}%`));
+            $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+            return;
+        }
+
+        taskOutput.prepend($("<p>").text("Sweep task completed"));
+        $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+    } catch (Error) {
+        $("#taskOutput").prepend($("<p>").text(`Error in Sweep task: ${Error}`));
+        $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
     }
+}
 
-    const handleUseNodeTasks = {
-        isUseNodeBusy: false,
-        pendingUseNodeTasks: [],
+function shouldContinue(progress, autoOnOffCheck) {
+    const continueUseNodeCheckbox = document.getElementById("continueUseNodeCheckbox");
+    const autoOnOffCheckbox = document.getElementById(autoOnOffCheck);
 
-        startUseNode: function (typeAuto) {
-            this.pendingUseNodeTasks.push({ typeAuto });
-            this.processUseNodeTasks();
-        },
+    // $(".progress-bar").css("width", progress + "%").attr("aria-valuenow", progress);
+    addDataForSessionStorage("tempNineCMD", "taskUseNodePercentageNow", progress);
+    return continueUseNodeCheckbox.checked && autoOnOffCheckbox.checked;
+}
 
-        processUseNodeTasks: async function () {
-            if (this.isUseNodeBusy || this.pendingUseNodeTasks.length === 0) {
-                return;
-            }
+const handleUseNodeTasks = {
+    isUseNodeBusy: false,
+    pendingUseNodeTasks: [],
 
-            this.isUseNodeBusy = true;
-            const task = this.pendingUseNodeTasks.shift();
-            const typeAuto = task.typeAuto;
+    startUseNode: function (typeAuto) {
+        this.pendingUseNodeTasks.push({ typeAuto });
+        this.processUseNodeTasks();
+    },
 
-            if (typeAuto === "refillAP" && document.getElementById("on_off_auto_refillAP").checked && document.getElementById("continueUseNodeCheckbox").checked) {
-                await RefillAPUseNode();
-            } else if (typeAuto === "sweep" && document.getElementById("on_off_auto_sweep").checked && document.getElementById("continueUseNodeCheckbox").checked) {
-                await SweepUseNode();
-            }
+    processUseNodeTasks: async function () {
+        if (this.isUseNodeBusy || this.pendingUseNodeTasks.length === 0) {
+            return;
+        }
 
-            this.isUseNodeBusy = false;
-            this.processUseNodeTasks();
-            updateTaskInfo();
-        },
-    };
+        this.isUseNodeBusy = true;
+        const task = this.pendingUseNodeTasks.shift();
+        const typeAuto = task.typeAuto;
 
-    function updateTaskInfo() {
-        const taskCountSpan = $("#taskCount");
-        const taskListSpan = $("#taskList");
-        const taskListItems = $("#taskListItems");
+        if (typeAuto === "refillAP" && document.getElementById("on_off_auto_refillAP").checked && document.getElementById("continueUseNodeCheckbox").checked) {
+            await RefillAPUseNode();
+        } else if (typeAuto === "sweep" && document.getElementById("on_off_auto_sweep").checked && document.getElementById("continueUseNodeCheckbox").checked) {
+            await SweepUseNode();
+        }
 
-        const taskCount = handleUseNodeTasks.pendingUseNodeTasks.length;
-        const taskList = handleUseNodeTasks.pendingUseNodeTasks
-			.map((task, index) => `
+        this.isUseNodeBusy = false;
+        this.processUseNodeTasks();
+        updateTaskInfo();
+    },
+};
+
+function updateTaskInfo() {
+    const taskCountSpan = $("#taskCount");
+    const taskListSpan = $("#taskList");
+    const taskListItems = $("#taskListItems");
+
+    const taskCount = handleUseNodeTasks.pendingUseNodeTasks.length;
+    const taskList = handleUseNodeTasks.pendingUseNodeTasks
+        .map(
+            (task, index) => `
 				<li class="list-group-item d-flex justify-content-between align-items-center listTaskUseNode-${task.typeAuto}">
 					<span>${task.typeAuto}</span>
 					<img class="delete-task" onclick="deleteTask(${index})" src="assets/img/Common/UI_Common/button_gold_close.png"></img>
 				</li>
-			`)
-            .join("");
+			`
+        )
+        .join("");
 
-        taskCountSpan.text(taskCount);
-        taskListSpan.text(taskCount);
-        taskListItems.html(taskList);
+    taskCountSpan.text(taskCount);
+    taskListSpan.text(taskCount);
+    taskListItems.html(taskList);
+}
+
+function deleteTask(index) {
+    handleUseNodeTasks.pendingUseNodeTasks.splice(index, 1);
+    updateTaskInfo();
+}
+
+// Xóa tất cả các công việc đang chờ
+function deleteAllTasks() {
+    handleUseNodeTasks.pendingUseNodeTasks = [];
+    updateTaskInfo();
+}
+
+function tryUseNode_refillAP() {
+    // if (getDataFromSessionStorage("tempNineCMD", "canAuto") !== true) {
+    // showNotification("Cann't start refill ap task, check <mark>Can auto?</mark>", "info", 5000);
+    // return;
+    // };
+    if (!$("#continueUseNodeCheckbox").prop("checked")) {
+        showNotification("Cann't start refill ap task, check <mark>Continue use node?</mark>", "info", 5000);
+        return;
+    }
+    if (!$("#on_off_auto_refillAP").prop("checked")) {
+        showNotification("Cann't start refill ap task, check <mark>On / off auto refill AP</mark>", "info", 5000);
+        return;
+    }
+    startUseNodeTask("refillAP");
+}
+
+function tryUseNode_sweep() {
+    if (getDataFromSessionStorage("tempNineCMD", "canAuto") !== true) {
+        showNotification("Cann't start sweep task, check <mark>Can auto?</mark>", "info", 5000);
+        return;
+    }
+    if (!$("#continueUseNodeCheckbox").prop("checked")) {
+        showNotification("Cann't start sweep task, check <mark>Continue use node?</mark>", "info", 5000);
+        return;
+    }
+    if (!$("#on_off_auto_sweep").prop("checked")) {
+        showNotification("Cann't start sweep task, check <mark>On / off auto sweep</mark>", "info", 5000);
+        return;
     }
 
-    function deleteTask(index) {
-        handleUseNodeTasks.pendingUseNodeTasks.splice(index, 1);
-        updateTaskInfo();
-    }
-
-	// Xóa tất cả các công việc đang chờ
-	function deleteAllTasks() {
-		handleUseNodeTasks.pendingUseNodeTasks = [];
-		updateTaskInfo();
-	}
-
-    function tryUseNode_refillAP() {
-	// if (getDataFromSessionStorage("tempNineCMD", "canAuto") !== true) {
-		// showNotification("Cann't start refill ap task, check <mark>Can auto?</mark>", "info", 5000);
-		// return;
-	// };
-	if (!$('#continueUseNodeCheckbox').prop('checked')) {
-		showNotification("Cann't start refill ap task, check <mark>Continue use node?</mark>", "info", 5000);
-		return;
-	}
-	if (!$('#on_off_auto_refillAP').prop('checked')) {
-		showNotification("Cann't start refill ap task, check <mark>On / off auto refill AP</mark>", "info", 5000);
-		return;
-	}
-	startUseNodeTask("refillAP");
-    }
-
-    function tryUseNode_sweep() {
-	if (getDataFromSessionStorage("tempNineCMD", "canAuto") !== true) {
-		showNotification("Cann't start sweep task, check <mark>Can auto?</mark>", "info", 5000);
-		return;
-	};
-	if (!$('#continueUseNodeCheckbox').prop('checked')) {
-		showNotification("Cann't start sweep task, check <mark>Continue use node?</mark>", "info", 5000);
-		return;
-	}
-	if (!$('#on_off_auto_sweep').prop('checked')) {
-		showNotification("Cann't start sweep task, check <mark>On / off auto sweep</mark>", "info", 5000);
-		return;
-	}	
-
-	startUseNodeTask("sweep");
-
-    }
-	function checkAllswitch_useNodeTask() {
-		$(".switch-useNodeTask").prop("checked", true);
-	};	
-
+    startUseNodeTask("sweep");
+}
+function checkAllswitch_useNodeTask() {
+    $(".switch-useNodeTask").prop("checked", true);
+}
 
 function canAutoListItems() {
-  const isDonater = getDataFromSessionStorage("tempNineCMD","isDonater");
-  const hasUTCFile = getDataFromSessionStorage("tempNineCMD","hasUTCFile");
-  const passwordOk = getDataFromSessionStorage("tempNineCMD","passwordOk");
-  const serverOk = getDataFromSessionStorage("tempNineCMD","serverOk");  
-  const errorYourServer = getDataFromSessionStorage("tempNineCMD","errorYourServer");
-  
-  const items = [];
-  let counter = 4;  
+    const isDonater = getDataFromSessionStorage("tempNineCMD", "isDonater");
+    const hasUTCFile = getDataFromSessionStorage("tempNineCMD", "hasUTCFile");
+    const passwordOk = getDataFromSessionStorage("tempNineCMD", "passwordOk");
+    const serverOk = getDataFromSessionStorage("tempNineCMD", "serverOk");
+    const errorYourServer = getDataFromSessionStorage("tempNineCMD", "errorYourServer");
 
-  // Is Donater
-  if (isDonater === true) {
-    items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Is donater?</li>');
-	counter--;
-  } else if (isDonater === false) {
-    items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Is donater?</li>');
-  } else {
-    items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Is donater?</li>');
-  }
+    const items = [];
+    let counter = 4;
 
-  // Has UTC File
-  if (hasUTCFile === true) {
-    items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Has UTC file?</li>');
-	counter--;
-  } else if (hasUTCFile === false) {
-    items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Has UTC file?</li>');
-  } else {
-    items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Has UTC file?</li>');
-  }
+    // Is Donater
+    if (isDonater === true) {
+        items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Is donater?</li>');
+        counter--;
+    } else if (isDonater === false) {
+        items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Is donater?</li>');
+    } else {
+        items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Is donater?</li>');
+    }
 
-  // Password Ok
-  if (passwordOk === true) {
-    items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Password ok?</li>');
-	counter--;
-  } else if (passwordOk === false) {
-    items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Password ok?</li>');
-  } else {
-    items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Password ok?</li>');
-  }
+    // Has UTC File
+    if (hasUTCFile === true) {
+        items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Has UTC file?</li>');
+        counter--;
+    } else if (hasUTCFile === false) {
+        items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Has UTC file?</li>');
+    } else {
+        items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Has UTC file?</li>');
+    }
 
-  // Your Server Ok
-  if (serverOk === true) {
-    items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Your server ok?</li>');
-	counter--;
-  } else if (serverOk === false) {
-    items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Your server ok?</li>');
-  } else {
-    items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Your server ok?</li>');
-  }
+    // Password Ok
+    if (passwordOk === true) {
+        items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Password ok?</li>');
+        counter--;
+    } else if (passwordOk === false) {
+        items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Password ok?</li>');
+    } else {
+        items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Password ok?</li>');
+    }
 
-  // Has error
-  if (errorYourServer === null) {
-    items.push('<li class="list-group-item list-group-item-light"><i class="bi bi-circle"></i> Has error?</li>');
-  } else if (errorYourServer === '') {
-    items.push('<li class="list-group-item list-group-item-light"><i class="bi bi-circle"></i> Has error?</li>');
-  } else {
-    items.push(`<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Has error? (${errorYourServer})</li>`);
-  }
+    // Your Server Ok
+    if (serverOk === true) {
+        items.push('<li class="list-group-item list-group-item-success"><i class="bi bi-check-circle"></i> Your server ok?</li>');
+        counter--;
+    } else if (serverOk === false) {
+        items.push('<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Your server ok?</li>');
+    } else {
+        items.push('<li class="list-group-item list-group-item-dark"><i class="bi bi-question-circle"></i> Your server ok?</li>');
+    }
 
-  const listHtml = `<ul class="list-group">${items.join('')}</ul>`;
+    // Has error
+    if (errorYourServer === null) {
+        items.push('<li class="list-group-item list-group-item-light"><i class="bi bi-circle"></i> Has error?</li>');
+    } else if (errorYourServer === "") {
+        items.push('<li class="list-group-item list-group-item-light"><i class="bi bi-circle"></i> Has error?</li>');
+    } else {
+        items.push(`<li class="list-group-item list-group-item-danger"><i class="bi bi-x-circle"></i> Has error? (${errorYourServer})</li>`);
+    }
 
-	// Xóa listHtml cũ
-	$('#tabManageCanAuto').empty();
-	if (counter > 0) {
-		$('#warningCanAutoCount').text(counter);
-		$('#warningCanAutoCount').css("display", "block");
-		addDataForSessionStorage("tempNineCMD","canAuto",false);
-	} else {
-		$('#warningCanAutoCount').css("display", "none");
-		addDataForSessionStorage("tempNineCMD","canAuto",true);
-	};
-	// Áp dụng listHtml mới vào thẻ div
-	$('#tabManageCanAuto').html(listHtml);
+    const listHtml = `<ul class="list-group">${items.join("")}</ul>`;
+
+    // Xóa listHtml cũ
+    $("#tabManageCanAuto").empty();
+    if (counter > 0) {
+        $("#warningCanAutoCount").text(counter);
+        $("#warningCanAutoCount").css("display", "block");
+        addDataForSessionStorage("tempNineCMD", "canAuto", false);
+    } else {
+        $("#warningCanAutoCount").css("display", "none");
+        addDataForSessionStorage("tempNineCMD", "canAuto", true);
+    }
+    // Áp dụng listHtml mới vào thẻ div
+    $("#tabManageCanAuto").html(listHtml);
 }
 
 function randomStageSweep_pick() {
-  var numberItems = document.getElementsByClassName('randomStageSweep_pick');
-  var randomIndex = Math.floor(Math.random() * numberItems.length);
+    var numberItems = document.getElementsByClassName("randomStageSweep_pick");
+    var randomIndex = Math.floor(Math.random() * numberItems.length);
 
-  if (numberItems.length > 0) {
-    // Xóa lớp 'active' khỏi tất cả các phần tử trong danh sách
-    for (var i = 0; i < numberItems.length; i++) {
-      numberItems[i].classList.remove('active');
+    if (numberItems.length > 0) {
+        // Xóa lớp 'active' khỏi tất cả các phần tử trong danh sách
+        for (var i = 0; i < numberItems.length; i++) {
+            numberItems[i].classList.remove("active");
+        }
+
+        var randomItem = numberItems[randomIndex];
+        randomItem.classList.add("active");
+
+        var selectedNumber = randomItem.innerText.split("\n")[0];
+        return selectedNumber;
     }
 
-    var randomItem = numberItems[randomIndex];
-    randomItem.classList.add('active');
-    
-    // Trích xuất số được chọn ngẫu nhiên và loại bỏ đuôi "\nx"
-    var selectedNumber = randomItem.innerText.replace(/\nx/g, '');
-    return selectedNumber;
-  }
-  
-  // Trường hợp không có danh sách, trả về giá trị mặc định hoặc null
-  return null;
+    // Trường hợp không có danh sách, trả về giá trị mặc định hoặc null
+    return null;
 }
 function randomStageSweep_percentage() {
-  var numberItems = document.getElementsByClassName('randomStageSweep_pick');
-  var totalCount = numberItems.length;
+    var numberItems = document.getElementsByClassName("randomStageSweep_pick");
+    var totalCount = numberItems.length;
 
-  // Đếm số lần xuất hiện của từng số
-  var numberCountMap = {};
-  for (var i = 0; i < numberItems.length; i++) {
-    var number = parseInt(numberItems[i].textContent, 10);
-    if (numberCountMap[number]) {
-      numberCountMap[number]++;
-    } else {
-      numberCountMap[number] = 1;
-    }
-  }
-
-  // Tính phần trăm và cập nhật giao diện người dùng cho từng số
-  for (var i = 0; i < numberItems.length; i++) {
-    var number = parseInt(numberItems[i].textContent, 10);
-    var count = numberCountMap[number];
-    var percentage = (count / totalCount) * 100;
-    var percentageElement = numberItems[i].querySelector('.randomStageSweep_percentage');
-
-    // Kiểm tra và tạo phần tử hiển thị phần trăm nếu chưa tồn tại
-    if (!percentageElement) {
-      percentageElement = document.createElement('span');
-      percentageElement.className = 'randomStageSweep_percentage';
-      numberItems[i].appendChild(percentageElement);
+    // Đếm số lần xuất hiện của từng số
+    var numberCountMap = {};
+    for (var i = 0; i < numberItems.length; i++) {
+        var number = parseInt(numberItems[i].textContent, 10);
+        if (numberCountMap[number]) {
+            numberCountMap[number]++;
+        } else {
+            numberCountMap[number] = 1;
+        }
     }
 
-    percentageElement.textContent = percentage.toFixed(2) + '%'; // Hiển thị phần trăm
-  }
+    // Tính phần trăm và cập nhật giao diện người dùng cho từng số
+    for (var i = 0; i < numberItems.length; i++) {
+        var number = parseInt(numberItems[i].textContent, 10);
+        var count = numberCountMap[number];
+        var percentage = (count / totalCount) * 100;
+        var percentageElement = numberItems[i].querySelector(".randomStageSweep_percentage");
+
+        // Kiểm tra và tạo phần tử hiển thị phần trăm nếu chưa tồn tại
+        if (!percentageElement) {
+            percentageElement = document.createElement("span");
+            percentageElement.className = "randomStageSweep_percentage";
+            numberItems[i].appendChild(percentageElement);
+        }
+
+        percentageElement.textContent = percentage.toFixed(2) + "%"; // Hiển thị phần trăm
+    }
 }
 //////////////////////////////////////////////////////////////////////////////
