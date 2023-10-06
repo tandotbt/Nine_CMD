@@ -41,5 +41,5 @@
 - Pay acc không chịu trách nhiệm, use at your own risk!
 
 ## Liên hệ
-###### Discord: [Planetarium/#unoffical-mods/9CMD](https://discord.gg/rWaZEWSNpS)
+###### Group Tele: [🇻🇳[Tiếng Việt] VN Language Nine Chronicles](https://t.me/viNineChronicles)
 ###### Discord: [@tanbt](https://discordapp.com/users/466271401796567071)

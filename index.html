@@ -1,754 +1,881 @@
+<!doctype html>
 <html lang="en" data-bs-theme="dark">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Nine CMD</title>
-        <link rel="apple-touch-icon" sizes="180x180" href="assets/icon/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="assets/icon/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="assets/icon/favicon-16x16.png" />
-        <link rel="manifest" href="assets/icon/site.webmanifest" />
-        <link rel="mask-icon" href="assets/icon/safari-pinned-tab.svg" color="#c0b200" />
-        <link rel="shortcut icon" href="assets/icon/favicon.ico" />
-        <meta name="msapplication-TileColor" content="#ffc40d" />
-        <meta name="msapplication-config" content="assets/icon/browserconfig.xml" />
-        <meta name="theme-color" content="#fff030" />
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nine CMD</title>
+    <meta property="og:title" content="NineCMD" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icon/favicon-16x16.png" />
+    <link rel="manifest" href="assets/icon/site.webmanifest" />
+    <link rel="mask-icon" href="assets/icon/safari-pinned-tab.svg" color="#c0b200" />
+    <link rel="shortcut icon" href="assets/icon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#ffc40d" />
+    <meta name="msapplication-config" content="assets/icon/browserconfig.xml" />
+    <meta name="theme-color" content="#fff030" />
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
 
-        <link href="https://unpkg.com/tabulator-tables@5.5.2/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet" />
-        <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
 
-        <script src="js/lazysizes.min.js" async=""></script>
-        <script src="js/script.js"></script>
-        <script src="js/numberAnimate.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.messagestore.min.js"></script>
 
-        <style>
-            body {
-                font-family: "nineChroniclesFont", monospace;
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/page-jump-to/bootstrap-table-page-jump-to.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/group-by-v2/bootstrap-table-group-by.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/custom-view/bootstrap-table-custom-view.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/defer-url/bootstrap-table-defer-url.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/group-by-v2/bootstrap-table-group-by.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/i18n-enhance/bootstrap-table-i18n-enhance.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/key-events/bootstrap-table-key-events.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/page-jump-to/bootstrap-table-page-jump-to.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+    <script src="js/lazysizes.min.js" async=""></script>
+    <script src="js/const.js"></script>
+    <script src="js/numberAnimate.js"></script>
+
+    <!-- Ngôn ngữ -->
+    <script src="i18n/bootstrap-table-vi-VN.js"></script>
+    <script src="i18n/bootstrap-table-en-US.js"></script>
+
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+
+    <style>
+      body {
+        font-family: "nineChroniclesFont", monospace;
+      }
+
+      .number-font {
+        font-family: "nineChroniclesFont2", monospace;
+      }
+
+      @font-face {
+        font-family: "nineChroniclesFont";
+        src: url(assets/font/kanit-light.otf) format("opentype");
+      }
+
+      @font-face {
+        font-family: "nineChroniclesFont2";
+        src: url(assets/font/PoorStory-Regular.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "ninecmdFont";
+        src: url(assets/font/NotoMono-Regular.ttf) format("truetype");
+      }
+
+    </style>
+
+    <script>
+      document.onreadystatechange = function() {
+        if (document.readyState !== "complete") {
+          document.querySelector("body").style.visibility = "hidden";
+          document.querySelector(".intro_loop").style.visibility = "visible";
+        } else {
+          document.querySelector("body").style.visibility = "visible";
+          setTimeout(function() {
+            $(".intro_loop").fadeOut(2000);
+          }, 6000);
+        }
+      };
+      $(document).ready(function() {
+
+
+        $('.lobby-level-view span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+        $('.lobby-arena-view-4 span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+        //$('.lobby-arena-view-2 span').numberAnimate({
+        //	animationTimes: [500, 1000, 500]
+        //});				
+        $('.lobby-donater-view span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+
+        $('.lobby-AP-bar-view-5 span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+
+        $('.lobby-AP-bar-view-3 span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+
+        $('.lobby-AP-bar-2-view-3 span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+
+        $('.lobby-crystal-bar-view-3 span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+
+        $('.lobby-NCG-bar-view-3 span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+
+        $('.lobby-table-block-now-view span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
+
+        /////////////// Chỉnh kích thước cửa sổ liên tục
+
+        var backgroundAspectRatio = 1920 / 1080;
+
+        $(window).on("load resize", function() {
+          var windowWidth = $(window).width();
+          var windowHeight = $(window).height();
+
+          var backgroundWidth = windowWidth;
+          var backgroundHeight = backgroundWidth / backgroundAspectRatio;
+
+          var zoomPercentage = backgroundHeight / 5.515;
+          if (windowWidth / windowHeight >= backgroundAspectRatio) {
+            zoomPercentage = windowHeight / 5.515;
+          }
+
+          var display_lobby = $(".display_lobby");
+
+          display_lobby.css({
+            width: "0px",
+            height: "0px",
+            transform: "scale(" + zoomPercentage + "%)",
+            overflow: "auto",
+          });
+        });
+
+        document.getElementById('randomStageSweep_add').addEventListener('click', function() {
+          var randomStageSweep_select = document.getElementById('randomStageSweep_select');
+          var number = randomStageSweep_select.value;
+
+          if (number) {
+            var listItem = document.createElement('li');
+            listItem.className = 'list-group-item randomStageSweep_pick d-flex justify-content-between align-items-center';
+            listItem.innerHTML = number + '<button class="btn btn-danger btn-sm deleteButton" type="button">x</button>';
+
+            var randomStageSweep_list = document.getElementById('randomStageSweep_list');
+            randomStageSweep_list.appendChild(listItem);
+            var numberItems = document.getElementsByClassName('randomStageSweep_pick');
+            for (var i = 0; i < numberItems.length; i++) {
+              numberItems[i].classList.remove('active');
             }
+            randomStageSweep_select.value = number;
+            randomStageSweep_percentage();
+          }
+        });
 
-            .number-font {
-                font-family: "nineChroniclesFont2", monospace;
+        document.getElementById('randomStageSweep_list').addEventListener('click', function(event) {
+          if (event.target.classList.contains('deleteButton')) {
+            var listItem = event.target.parentElement;
+            listItem.remove();
+            randomStageSweep_percentage();
+            var numberItems = document.getElementsByClassName('randomStageSweep_pick');
+            for (var i = 0; i < numberItems.length; i++) {
+              numberItems[i].classList.remove('active');
             }
-
-            @font-face {
-                font-family: "nineChroniclesFont";
-                src: url(assets/font/kanit-light.otf) format("opentype");
-            }
-
-            @font-face {
-                font-family: "nineChroniclesFont2";
-                src: url(assets/font/PoorStory-Regular.ttf) format("truetype");
-            }
-
-            @font-face {
-                font-family: "ninecmdFont";
-                src: url(assets/font/NotoMono-Regular.ttf) format("truetype");
-            }
-        </style>
-
-        <script>
-                              $(document).ready(function () {
-
-                                                     $('.lobby-level-view span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-                                                     $('.lobby-arena-view-4 span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-                                                     <!-- $('.lobby-arena-view-2 span').numberAnimate({ -->
-                                                     	<!-- animationTimes: [500, 1000, 500] -->
-                                                     <!-- });				 -->
-                                                     $('.lobby-donater-view span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-
-                                                     $('.lobby-AP-bar-view-5 span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-
-                                                     $('.lobby-AP-bar-view-3 span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-
-                                                     $('.lobby-AP-bar-2-view-3 span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-
-                                                     $('.lobby-crystal-bar-view-3 span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-
-                                                     $('.lobby-NCG-bar-view-3 span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-
-                                                     $('.lobby-table-block-now-view span').numberAnimate({
-                                                     	animationTimes: [500, 1000, 500]
-                                                     });
-
-                                                                 /////////////// Chỉnh kích thước cửa sổ liên tục
-                                                                 //  var display_lobby = $(".display_lobby");
-                                                                 // var display_lobby2 = $(".display_lobby2");
-                                                                 var background = $(".background");
-                                                                 var backgroundAspectRatio = 1920 / 1080;
-
-                                          $(window).on("load resize", function() {
-                                           var windowWidth = $(window).width();
-                                           var windowHeight = $(window).height();
-
-                                           var backgroundWidth = windowWidth;
-                                           var backgroundHeight = backgroundWidth / backgroundAspectRatio;
-
-                                           var zoomPercentage = backgroundHeight / 5.515;
-                                           if (windowWidth / windowHeight >= backgroundAspectRatio) {
-                                             zoomPercentage = windowHeight / 5.515;
-                                           }
-
-                                           var display_lobby2 = $(".display_lobby2");
-                                           var display_lobby = $(".display_lobby");
-
-                                           display_lobby2.css({
-                                             width: "0px",
-                                             transform: "scale(" + zoomPercentage + "%)",
-                                           });
-
-                                           display_lobby.css({
-                                             // transform: "scale(" + zoomPercentage + "%)",
-                                         	zoom: zoomPercentage + "%",
-                                           });
-                                         });
-
-                                 document.getElementById('randomStageSweep_add').addEventListener('click', function() {
-                                   var randomStageSweep_select = document.getElementById('randomStageSweep_select');
-                                   var number = randomStageSweep_select.value;
-
-                                   if (number) {
-                                     var listItem = document.createElement('li');
-                                     listItem.className = 'list-group-item randomStageSweep_pick d-flex justify-content-between align-items-center';
-                                     listItem.innerHTML = number + '<button class="btn btn-danger btn-sm deleteButton" type="button">x</button>';
-
-                                     var randomStageSweep_list = document.getElementById('randomStageSweep_list');
-                                     randomStageSweep_list.appendChild(listItem);
-                              	var numberItems = document.getElementsByClassName('randomStageSweep_pick');
-                              	for (var i = 0; i < numberItems.length; i++) {
-                              	  numberItems[i].classList.remove('active');
-                              	}
-                                     randomStageSweep_select.value = number;
-                              	randomStageSweep_percentage();
-                                   }
-                                 });
-
-                                 document.getElementById('randomStageSweep_list').addEventListener('click', function(event) {
-                                   if (event.target.classList.contains('deleteButton')) {
-                                     var listItem = event.target.parentElement;
-                                     listItem.remove();
-                              	randomStageSweep_percentage();
-                              	var numberItems = document.getElementsByClassName('randomStageSweep_pick');
-                              	for (var i = 0; i < numberItems.length; i++) {
-                              	  numberItems[i].classList.remove('active');
-                              	}
-                                   }
-                                 });
+          }
+        });
 
 
-                                  /////////////// Hành động login
-                                  // Lắng nghe sự kiện submit của form
-                                  document.getElementById("login_form").addEventListener("submit", function (event) {
-                                      addToLog("Bắt đầu submit form login");
-                                      event.preventDefault(); // Ngăn chặn việc gửi form đi
+        /////////////// Hành động login
+        // Lắng nghe sự kiện submit của form
+        document.getElementById("login_form").addEventListener("submit", function(event) {
+          addToLog("Bắt đầu submit form login");
+          event.preventDefault(); // Ngăn chặn việc gửi form đi
 
-                                      var urlServerInput = document.getElementById("url_server_jsonBlod");
-                                      var urlServer = urlServerInput.value;
+          var urlServerInput = document.getElementById("url_server_jsonBlod");
+          var urlServer = urlServerInput.value;
 
-                                      // Kiểm tra độ dài và kí tự đầu tiên của urlServer
-                                      if (urlServer.length !== 19 && urlServer.length > 0 && /^\d+$/.test(urlServer)) {
-                                          var errorDiv = document.createElement("small"); // Tạo phần tử div mới
-                                          errorDiv.className = "text-danger form-text"; // Áp dụng lớp CSS text-danger từ Bootstrap
-                                          errorDiv.innerText = "Your url server incorrect";
+          // Kiểm tra độ dài và kí tự đầu tiên của urlServer
+          if (urlServer.length !== 19 && urlServer.length > 0 && /^\d+$/.test(urlServer)) {
+            var errorDiv = document.createElement("small"); // Tạo phần tử div mới
+            errorDiv.className = "text-danger form-text"; // Áp dụng lớp CSS text-danger từ Bootstrap
+            errorDiv.innerText = "Your url server incorrect";
 
-                                          var formGroup = urlServerInput.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
+            var formGroup = urlServerInput.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
 
-                                          // Xóa các thông báo cũ trước khi thêm thông báo lỗi mới
-                                          var existingErrorDivs = formGroup.querySelectorAll(".text-danger");
-                                          existingErrorDivs.forEach(function (existingErrorDiv) {
-                                              existingErrorDiv.remove();
-                                          });
+            // Xóa các thông báo cũ trước khi thêm thông báo lỗi mới
+            var existingErrorDivs = formGroup.querySelectorAll(".text-danger");
+            existingErrorDivs.forEach(function(existingErrorDiv) {
+              existingErrorDiv.remove();
+            });
 
-                                          formGroup.appendChild(errorDiv); // Thêm thông báo lỗi vào phần tử cha
-                                          return; // Dừng việc xử lý tiếp theo
-                                      }
-                                      showNotification("Login ...", "alert", 10000);
-                                      save_9cmd_form_data_login(); // Lưu dữ liệu từ form vào Local Storage
+            formGroup.appendChild(errorDiv); // Thêm thông báo lỗi vào phần tử cha
+            return; // Dừng việc xử lý tiếp theo
+          }
+          showNotification($.i18n('lobby-login-submit-button') + " ...", "alert", 10000);
+          save_9cmd_form_data_login(); // Lưu dữ liệu từ form vào Local Storage
 
-                                      var submitBtn = document.getElementById("submit_login_form");
-            					submitBtn.classList.add("disabled");
-                                      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Login ...';
-                                      submitBtn.disabled = true;
+          var submitBtn = $("#submit_login_form");
+          submitBtn.addClass("disabled");
+          submitBtn.html($.i18n("lobby-login-submit-button-logged-in"));
+          submitBtn.prop("disabled", true);
 
-                                      fetchDataAvatarAgain();
-                                  });
-                                  // Xóa thông báo lỗi khi người dùng nhấp vào trường url_server_jsonBlod
-                                  document.getElementById("url_server_jsonBlod").addEventListener("focus", function () {
-                                      var formGroup = this.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
-                                      var errorDivs = formGroup.querySelectorAll(".text-danger");
-                                      errorDivs.forEach(function (errorDiv) {
-                                          errorDiv.remove();
-                                      });
-                                  });
-                                  var Address9cInput = document.getElementById("Address9c");
-                                  var Address9cValue = Address9cInput.value;
-                                  // Đăng ký sự kiện khi người dùng nhập xong trường Address9C
-                                  Address9cInput.addEventListener("input", function () {
-                                      var Address9cValue = Address9cInput.value.trim();
+          fetchDataAvatarAgain();
+        });
+        // Xóa thông báo lỗi khi người dùng nhấp vào trường url_server_jsonBlod
+        document.getElementById("url_server_jsonBlod").addEventListener("focus", function() {
+          var formGroup = this.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
+          var errorDivs = formGroup.querySelectorAll(".text-danger");
+          errorDivs.forEach(function(errorDiv) {
+            errorDiv.remove();
+          });
+        });
+        var Address9cInput = document.getElementById("Address9c");
+        var Address9cValue = Address9cInput.value;
+        // Đăng ký sự kiện khi người dùng nhập xong trường Address9C
+        Address9cInput.addEventListener("input", function() {
+          var Address9cValue = Address9cInput.value.trim();
 
-                                      if (Address9cValue.length === 42 && Address9cValue.startsWith("0x")) {
-                                          // Hiển thị trường avatarSelect
-                                          document.getElementById("avatarSelect2").style.display = "block";
-                                          // Hiển thị trường loading_login
-                                          document.getElementById("loading_login").style.display = "block";
-                                          // Tối vùng form
-                                          document.getElementById("login_form").style.opacity = "0.5";
+          if (Address9cValue.length === 42 && Address9cValue.startsWith("0x")) {
+            // Hiển thị trường avatarSelect
+            document.getElementById("avatarSelect2").style.display = "block";
+            // Hiển thị trường loading_login
+            document.getElementById("loading_login").style.display = "block";
+            // Tối vùng form
+            document.getElementById("login_form").style.opacity = "0.5";
 
-                                          // Gọi hàm listAvatar()
-                                          listAvatar();
+            // Gọi hàm listAvatar()
+            listAvatar();
 
-                                          // Ẩn gif loading sau 2 giây (hoặc sau khi xử lý xong)
-                                          setTimeout(function () {
-                                              document.getElementById("login_form").style.opacity = "1"; // Khôi phục độ trong suốt của form
-                                              document.getElementById("loading_login").style.display = "none";
-                                          }, 2000);
-                                      } else {
-                                          // Ẩn trường avatarSelect
-                                          document.getElementById("avatarSelect2").style.display = "none";
-                                      }
-                                  });
+            // Ẩn gif loading sau 2 giây (hoặc sau khi xử lý xong)
+            setTimeout(function() {
+              document.getElementById("login_form").style.opacity = "1"; // Khôi phục độ trong suốt của form
+              document.getElementById("loading_login").style.display = "none";
+            }, 2000);
+          } else {
+            // Ẩn trường avatarSelect
+            document.getElementById("avatarSelect2").style.display = "none";
+          }
+        });
 
-                                  /////////////// Lấy dữ liệu node 1 lần
-                                  // Sử dụng $.getJSON
-                                  // $.getJSON("https://cors-get-proxy.sirjosh.workers.dev/?url=https://api.9capi.com/rpc", function(data) {
-                                  // node_list(data);
-                                  // });
+        /////////////// Lấy dữ liệu node 1 lần
+        // Sử dụng fetch
+        fetch("https://api.9capi.com/rpc")
+          .then((response) => response.json())
+          .then((data) => node_list(data))
+          .catch((error) => node_list_error(error));
+        /////////////// Làm mới info avatar liên tục
+        // Lặp lại yêu cầu fetch sau mỗi 5 giây
+        setInterval(fetch_data_block_now, 5000);
+        // Khởi tạo lần đầu khi trang được tải
+        fetch_data_block_now();
+        updateTurnSweep_range();
+        document.getElementById('turnSweep_range').addEventListener('input', updateTurnSweep_range);
+        $(".switch-useNodeTask").change(function() {
+          var switchGroup = $(this).data("switch-group");
+          var isChecked = $(this).prop("checked");
+          $(".switch-useNodeTask[data-switch-group='" + switchGroup + "']").prop("checked", isChecked);
+        });
 
-                                  // Sử dụng fetch
-                                  fetch("https://api.9capi.com/rpc")
-                                      .then((response) => response.json())
-                                      .then((data) => node_list(data))
-                                      .catch((error) => node_list_error(error));
-                                  /////////////// Làm mới info avatar liên tục
-                                  // Lặp lại yêu cầu fetch sau mỗi 5 giây
-                                  setInterval(fetch_data_block_now, 5000);
-                                  // Khởi tạo lần đầu khi trang được tải
-                                  fetch_data_block_now();
-                      updateTurnSweep_range();
-                      document.getElementById('turnSweep_range').addEventListener('input', updateTurnSweep_range);
-                                  $(".switch-useNodeTask").change(function () {
-                                      var switchGroup = $(this).data("switch-group");
-                                      var isChecked = $(this).prop("checked");
-                                      $(".switch-useNodeTask[data-switch-group='" + switchGroup + "']").prop("checked", isChecked);
-                                  });
+        var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
+          imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
+          imageHeight: 128,
+          imageWidth: 24,
+          backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+          backgroundOpacity: 0,
+        });
 
-                                  var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
-                                      imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
-                                      imageHeight: 128,
-                                      imageWidth: 24,
-                                      backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
-                                      backgroundOpacity: 0,
-                                  });
+        var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
+          imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
+          imageHeight: 128,
+          imageWidth: 24,
+          backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
+          backgroundOpacity: 0,
+        });
 
-                                  var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
-                                      imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
-                                      imageHeight: 128,
-                                      imageWidth: 24,
-                                      backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
-                                      backgroundOpacity: 0,
-                                  });
+        var taskUseNodeBar = $("#taskUseNodeBar").customProgressBar({
+          imageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_mod.png",
+          imageHeight: 246,
+          imageWidth: 18,
+          backgroundImageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_Bg_mod.png",
+          backgroundOpacity: 1,
+        });
 
-                                  var taskUseNodeBar = $("#taskUseNodeBar").customProgressBar({
-                                      imageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_mod.png",
-                                      imageHeight: 246,
-                                      imageWidth: 18,
-                                      backgroundImageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_Bg_mod.png",
-                                      backgroundOpacity: 1,
-                                  });
-
-                                  updateAPBar(APBarLobbyCreat);
-                                  updateAPBar2(APBar2LobbyCreat);
-                                  updatetaskUseNodeBar(taskUseNodeBar);
+        updateAPBar(APBarLobbyCreat);
+        updateAPBar2(APBar2LobbyCreat);
+        updatetaskUseNodeBar(taskUseNodeBar);
 
 
-                                  fetchDataAvatar_display();
+        fetchDataAvatar_display();
 
-            <!-- (function() { -->
-              <!-- var oldLog = console.log; -->
-              <!-- var debugElement = document.getElementById('debug'); -->
 
-              <!-- console.log = function(message) { -->
-                <!-- if (typeof message === 'object') { -->
-                  <!-- debugElement.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : String(message)) + '<br />'; -->
-                <!-- } else { -->
-                  <!-- debugElement.innerHTML += message + '<br />'; -->
-                <!-- } -->
-                <!-- oldLog.apply(console, arguments); -->
-              <!-- }; -->
-            <!-- })(); -->
+        // (function() {
+        // var oldLog = console.log;
+        // var debugElement = document.getElementById('debug');
 
-                              });
-        </script>
-    </head>
-    <body>
-        <!-- <div id="debug"></div>	 -->
-        <div class="noty_lobby display_lobby"></div>
+        // console.log = function(message) {
+        // if (typeof message === 'object') {
+        // debugElement.innerHTML = (JSON && JSON.stringify ? JSON.stringify(message) : String(message)) + '<br />' + debugElement.innerHTML;
+        // } else {
+        // debugElement.innerHTML = message + '<br />' + debugElement.innerHTML;
+        // }
+        // oldLog.apply(console, arguments);
+        // };
+        // })();
+        Noty.setMaxVisible(5);
 
-        <div class="lobby-grid display_lobby2">
-            <img class="background_lobby" src="assets/img/Lobby/Background_all_2.jpg" />
+        // Active list
+        $('#locale-switcher li').click(function() {
+          // Xóa lớp active từ tất cả các phần tử <li>
+          $('#locale-switcher li').removeClass('active');
 
-            <div class="lobby_login_modal lobby_hide_modal" style="display: none;">
-                <img class="button_lobby lobby_login_modal4" data-action="login" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
-                <img class="lobby_login_modal1" src="assets/img/Common/UI_Popup/frameLogin.png" />
-                <div class="lobby_login_modal2"></div>
-                <div class="lobby_login_modal3">
-                    <div class="modal-content" style="height: 415px; overflow-y: auto;">
-                        <img id="loading_login" style="position: absolute; transition: translate(-50%, -50%); top: 42%; z-index: 1; left: 35%; display: none;" src="assets/loading_vip.gif" />
-                        <div class="modal-body">
-                            <div style="text-align: center; zoom: 45%;">
-                                <img src="assets/img/Typephography/Login.png" />
-                            </div>
-                            <form id="login_form" class="overflow-hidden" style="text-align: -webkit-center;">
-                                <div class="form-floating mb-3">
-                                    <input type="text" placeholder="0x***" id="Address9c" name="Address9c" class="form-control" required />
-                                    <small class="form-text text-muted">Look like <i class="user-select-all">0x6374FE5F54CdeD72Ff334d09980270c61BC95186</i></small>
-                                    <label for="Address9c" class="form-label">Nine Chronicles address</label>
-                                </div>
+          // Thêm lớp active vào phần tử <li> được click
+          $(this).addClass('active');
+        });
 
-                                <div class="form-floating mb-3" id="avatarSelect2" style="display: none;">
-                                    <select id="avatarSelect" name="avatarSelect" class="form-select" required>
-                                        <div id="avatarList"></div>
-                                    </select>
-                                    <label for="avatarSelect" class="form-label">Choose avatar</label>
-                                </div>
+      });
 
-                                <div class="form-floating mb-3">
-                                    <input type="password" placeholder="0x***" id="password" name="password" class="form-control" required />
-                                    <label for="password" class="form-label">Password</label>
-                                </div>
+      jQuery(function($) {
 
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" role="switch" id="is-donater" name="donater" class="form-check-input" />
-                                    <label for="is-donater" class="form-label">is donater</label>
-                                </div>
 
-                                <div class="form-floating mb-3">
-                                    <select id="url_rpc" name="url_rpc" class="form-select"></select>
-                                    <label for="url_rpc" class="form-label">Choose node</label>
-                                </div>
-                                <div class="row g-3 text-center">
-                                    <div class="col-6">
-                                        <div class="form-floating">
-                                            <input type="number" placeholder="0000000000000000000" id="url_server_jsonBlod" name="url_server_jsonBlod" class="form-control" />
-                                            <label for="url_server_jsonBlod" class="form-label">Your server</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-floating">
-                                            <input type="password" placeholder="12345" id="passwordServer" name="passwordServer" class="form-control" value="12345" />
-                                            <label for="passwordServer" class="form-label">Password (Default 12345)</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button id="submit_login_form" type="submit" class="btn-ninecmd">Login</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+
+        $.i18n({
+            locale: document.documentElement.lang,
+          })
+          .load({
+            'en': 'i18n/en.json',
+            'vi': 'i18n/vi.json'
+          }).done(function() {
+            $('.locale-switcher').on('click', 'a', function(e) {
+              e.preventDefault();
+              $('.locale-switcher li a').removeClass('active');
+              $(this).addClass('active');
+              console.log($(this).data('locale'));
+              $.i18n().locale = $(this).data('locale');
+              translateLocaleFunc();
+
+            });
+
+            translateLocaleFunc();
+
+
+
+          });
+      });
+
+    </script>
+  </head>
+  <!-- <div id="debug" class="debug"></div> -->
+
+  <body class="lobby-grid display_lobby">
+
+    <img class="intro_loop" src="assets/clip/intro_loop.gif" />
+
+    <img class="background_lobby" src="assets/img/Lobby/Background_all_2.jpg" />
+    <div class="test_check">
+      <button type="button" class="btn btn-outline-success btn-sm" onclick="showNotification($.i18n('lobby-check-notyfi'), 'alert', 5000);
+showNotification($.i18n('lobby-check-notyfi'), 'success', 5000);
+showNotification($.i18n('lobby-check-notyfi'), 'warning', 5000);
+showNotification($.i18n('lobby-check-notyfi'), 'error', 5000);
+showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-check-notyfi">
+        Check
+      </button>
+
+      <button type="button" class="btn btn-outline-success btn-sm needReplaceTrans-autoRefresh translateLocale" data-args-translateLocale="lobby-autoRefreshData,timerFetchDataAvatar_setTimeout" onclick="fetchDataAvatarAgain();">Auto refresh after 300 seconds</button>
+
+      <div class="dropdown">
+        <button class="btn btn-outline-success btn-sm dropdown-toggle translateLocale" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-args-translateLocale="lobby-change-language">
+          <img src="https://flagcdn.com/us.svg" width="30" alt="United States"> Change language
+        </button>
+        <ul class="dropdown-menu locale-switcher">
+          <li><a class="dropdown-item active" href="#" data-locale="en"><img src="https://flagcdn.com/us.svg" width="30" alt="United States"> English</a></li>
+          <li><a class="dropdown-item" href="#" data-locale="vi"><img src="https://flagcdn.com/vn.svg" width="30" alt="Vietnam"> Tiếng Việt</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="lobby_test_modal_arena lobby_hide_modal" style="display: none;">
+      <img class="button_lobby lobby_test_modal_4" data-action="arena" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
+      <img class="lobby_test_modal_1" src="assets/img/Common/UI_Popup/frameLogin.png" />
+      <div class="lobby_test_modal_2"></div>
+    </div>
+
+    <div class="lobby_login_modal lobby_hide_modal" style="display: none;">
+      <img class="button_lobby lobby_login_modal_4" data-action="login" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
+      <img class="lobby_login_modal_1" src="assets/img/Common/UI_Popup/frameLogin.png" />
+      <div class="lobby_login_modal_2"></div>
+      <div class="lobby_login_modal_3">
+        <div class="modal-content" style="height: 415px; overflow-y: auto;">
+          <img id="loading_login" style="position: absolute; transition: translate(-50%, -50%); top: 42%; z-index: 1; left: 35%; display: none;" src="assets/loading_vip.gif" />
+          <div class="modal-body">
+            <div style="
+    /* text-align: center; */
+    /* zoom: 45%; */
+    transform-origin: center top;
+    transform: scale(0.45);
+    width: 485px;
+    height: 70px;
+    ;">
+              <img src="assets/img/Typephography/en/Login.png" data-i18n="[src]Typephography-login-src" />
             </div>
+            <form id="login_form" class="overflow-hidden" style="/* text-align: center; */">
+              <div class="form-floating mb-3">
+                <input type="text" placeholder="0x***" id="Address9c" name="Address9c" class="form-control" required data-i18n="[placeholder]lobby-login-address9c-placeholder" />
+                <small class="form-text text-muted translateLocale" data-args-translateLocale="lobby-login-address9c-noteText">Look like <i class="user-select-all">0x6374FE5F54CdeD72Ff334d09980270c61BC95186</i></small>
+                <label for="Address9c" class="form-label" data-i18n="lobby-login-address9c-label">Nine Chronicles address</label>
+              </div>
 
-            <div class="lobby_manager_use_node_modal lobby_hide_modal" style="display: none;">
-                <img class="button_lobby lobby_manager_use_node_modal4" data-action="managerUseNode" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
-                <img class="lobby_manager_use_node_modal1" src="assets/img/Common/UI_Popup/frameSetingNineCMD.png" />
-                <div class="lobby_manager_use_node_modal2"></div>
-                <div class="lobby_manager_use_node_modal3">
-                    <div class="modal-content" style="height: 430px; overflow-y: auto;">
-                        <div class="modal-body">
-                            <div class="container-xl-fluid overflow-hidden">
-                                <!-- <div class="progress"> -->
-                                <!-- <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div> -->
-                                <!-- </div> -->
-                                <div class="row">
-                                    <div class="col-1">
-                                        <img id="runGifBarUseNode" src="assets/img/gif/run.png" alt="runBarUseNode GIF" />
-                                    </div>
-                                    <div class="col-5">
-                                        <div class="mt-4" style="width: 246px; height: 18px; overflow: hidden;">
-                                            <div style="transform-origin: center; transform: rotate(90deg);" id="taskUseNodeBar"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col" style="text-align: center; zoom: 45%;">
-                                        <img src="assets/img/Typephography/SettingNineCMD.png" />
-                                    </div>
-                                </div>
-                                <div class="row taskOutputAndList">
-                                    <div class="col-6">
-                                        <div id="taskOutput"></div>
-                                    </div>
-                                    <div class="col-6">
-                                        <ul class="list-group list-group-flush list-group-numbered" id="taskListItems"></ul>
-                                    </div>
-                                </div>
-                                <span id="taskListSpan"></span>
+              <div class="form-floating mb-3" id="avatarSelect2" style="display: none;">
+                <select id="avatarSelect" name="avatarSelect" class="form-select" required>
+                  <div id="avatarList"></div>
+                </select>
+                <label for="avatarSelect" class="form-label" data-i18n="lobby-login-avatarSelect-label">Choose avatar</label>
+              </div>
 
-                                <div class="row rounded" style="height: 430px;">
-                                    <div class="col-4" style="height: 100%;">
-                                        <!-- List group -->
-                                        <div class="list-group pt-3 pb-5" id="manageUseNodeList" role="tablist" style="height: 100%; overflow: overlay;">
-                                            <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#tabManageUseNode" role="tab">Manage Use Node</a>
-                                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageCanAuto" role="tab">
-                                                Can auto? <span id="warningCanAutoCount" class="badge bg-danger text-white position-absolute top-50 end-0 translate-middle-y">0</span>
-                                            </a>
-                                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageRefillAP" role="tab">RefillAP setting</a>
-                                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageSweep" role="tab">Sweep setting</a>
-                                            <!-- <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#TEMP" role="tab">TEMP</a> -->
-                                        </div>
-                                    </div>
-                                    <div class="col-8" style="height: 100%;">
-                                        <!-- Tab panes -->
-                                        <div class="tab-content mt-3 pb-5" style="height: 100%; overflow: overlay;">
-                                            <div class="tab-pane active" id="tabManageUseNode" role="tabpanel">
-                                                <div class="row mb-3">
-                                                    <div class="col-md-6">
-                                                        <div class="form-floating">
-                                                            <input type="number" placeholder="6" id="delayUseNode" value="6" min="6" max="60" name="delayUseNode" class="form-control" />
-                                                            <label for="delayUseNode" class="form-label">Delay before use node</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <button onclick="tryUseNode_refillAP();updateTaskInfo();" class="btn btn-primary mb-3">Try refill AP</button>
-                                                        <button onclick="tryUseNode_sweep();updateTaskInfo();" class="btn btn-primary mb-3">Try sweep</button>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <button onclick="deleteAllTasks()" class="btn btn-primary mb-3">Clear all tasks <span id="taskCount" class="badge bg-secondary">0</span></button>
+              <div class="form-floating mb-3">
+                <input type="password" placeholder="0x***" id="password" name="password" class="form-control" required data-i18n="[placeholder]lobby-login-password-placeholder" />
+                <label for="password" class="form-label" data-i18n="lobby-login-password-label">Password</label>
+              </div>
 
-                                                        <button onclick="checkAllswitch_useNodeTask()" class="btn btn-primary mb-3">Turn on all tasks</button>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-3">
-                                                    <div class="col-md-12">
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" role="switch" id="continueUseNodeCheckbox" checked />
-                                                            <label class="form-check-label" for="continueUseNodeCheckbox">Continue use node?</label>
-                                                        </div>
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="refillAP" id="on_off_auto_refillAP" />
-                                                            <label class="form-check-label" for="on_off_auto_refillAP">On / off auto refill AP</label>
-                                                        </div>
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="sweep" id="on_off_auto_sweep" />
-                                                            <label class="form-check-label" for="on_off_auto_sweep">On / off auto sweep</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="tab-pane" id="tabManageCanAuto" role="tabpanel"></div>
-                                            <div class="tab-pane" id="tabManageRefillAP" role="tabpanel">
-                                                2...
-                                            </div>
-                                            <div class="tab-pane" id="tabManageSweep" role="tabpanel">
-                                                <div class="accordion" id="accordionSweepTask">
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header">
-                                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneSweepTask" aria-expanded="true" aria-controls="collapseOneSweepTask">
-                                                                #1 When sweep
-                                                            </button>
-                                                        </h2>
-                                                        <div id="collapseOneSweepTask" class="accordion-collapse collapse show" data-bs-parent="#accordionSweepTask">
-                                                            <div class="accordion-body">
-                                                                Automatically try sweep task when the AP [0 - 120] ≥ <input type="number" value="5" min="0" max="120" /> (AP cost <span class="spanAPBaseOnStakeText"></span>) and the block
-                                                                refill [0 - 1700] ≤
-                                                                <input type="number" value="0" min="0" max="1700" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header">
-                                                            <button
-                                                                class="accordion-button collapsed"
-                                                                type="button"
-                                                                data-bs-toggle="collapse"
-                                                                data-bs-target="#collapseTwoSweepTask"
-                                                                aria-expanded="false"
-                                                                aria-controls="collapseTwoSweepTask"
-                                                            >
-                                                                #2 Stage sweep
-                                                            </button>
-                                                        </h2>
-                                                        <div id="collapseTwoSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
-                                                            <div class="accordion-body">
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="radioStagesweep" id="radioStagesweep_fixed" value="" aria-label="..." checked />
-                                                                    <label id="radioStagesweep_label" class="form-check-label" for="radioStagesweep_fixed">Fixed 1 Stage [1 - <span>0</span>] </label>
-                                                                    <input id="numberStagesweep_fixed" class="form-control" type="number" value="" min="0" max="350" placeholder="Enter 0 or empty to always sweep latest Stage" />
-                                                                </div>
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="radioStagesweep" id="radioStagesweep_random" value="" aria-label="..." />
-                                                                    <label class="form-check-label" for="radioStagesweep_random">Random stage</label>
-                                                                    <div class="row">
-                                                                        <div class="col-md-4">
-                                                                            <input type="number" id="randomStageSweep_select" class="form-control" min="1" max="350" placeholder="Add stage" />
-                                                                        </div>
-                                                                        <div class="col-md-2">
-                                                                            <button id="randomStageSweep_add" class="btn btn-primary" type="button">+</button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <ul id="randomStageSweep_list" class="list-group list-group-numbered"></ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header">
-                                                            <button
-                                                                class="accordion-button collapsed"
-                                                                type="button"
-                                                                data-bs-toggle="collapse"
-                                                                data-bs-target="#collapseThreeSweepTask"
-                                                                aria-expanded="false"
-                                                                aria-controls="collapseThreeSweepTask"
-                                                            >
-                                                                #3 How many AP you spend for sweep
-                                                            </button>
-                                                        </h2>
-                                                        <div id="collapseThreeSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
-                                                            <div class="accordion-body">
-                                                                <p>Have now <span class="spanActionPotionText"></span>/120 AP</p>
-                                                                <p></p>
-                                                                <p>AP cost <span class="spanAPBaseOnStakeText"></span></p>
-                                                                <input type="range" id="turnSweep_range" min="0" max="120" step="5" value="0" />
-                                                                <div>Turn: <span id="turnSweep_number1">0</span> (0 = max <span id="turnSweep_number2">0</span> turn can sweep)</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header">
-                                                            <button
-                                                                class="accordion-button collapsed"
-                                                                type="button"
-                                                                data-bs-toggle="collapse"
-                                                                data-bs-target="#collapseFourSweepTask"
-                                                                aria-expanded="false"
-                                                                aria-controls="collapseFourSweepTask"
-                                                            >
-                                                                #4 Item equipment for sweep
-                                                            </button>
-                                                        </h2>
-                                                        <div id="collapseFourSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
-                                                            <div class="accordion-body">
-                                                                No thing
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header">
-                                                            <button
-                                                                class="accordion-button collapsed"
-                                                                type="button"
-                                                                data-bs-toggle="collapse"
-                                                                data-bs-target="#collapseFiveSweepTask"
-                                                                aria-expanded="false"
-                                                                aria-controls="collapseFiveSweepTask"
-                                                            >
-                                                                #5 Runes for sweep
-                                                            </button>
-                                                        </h2>
-                                                        <div id="collapseFiveSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
-                                                            <div class="accordion-body">
-                                                                No thing
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- <div class="tab-pane" id="TEMP" role="tabpanel"> -->
-                                            <!-- TEMP -->
-                                            <!-- </div> -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+              <div class="form-check form-switch">
+                <input type="checkbox" role="switch" id="is-donater" name="donater" class="form-check-input" />
+                <label for="is-donater" class="form-label" data-i18n="lobby-login-is-donater">registered Donater?</label>
+              </div>
 
-            <div class="lobby_test_modal_arena lobby_hide_modal" style="display: none;">
-                >
-                <img class="button_lobby lobby_test_modal_arena4" data-action="arena" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
-                <img class="lobby_test_modal_arena1" src="assets/img/Common/UI_Popup/frameLogin.png" />
-                <div class="lobby_test_modal_arena2"></div>
-            </div>
-            <div class="test_check">
-                <button
-                    type="button"
-                    class="btn btn-outline-success btn-sm"
-                    onclick="showNotification('Thông báo mẫu', 'alert', 5000);
-showNotification('Thông báo mẫu', 'success', 5000);
-showNotification('Thông báo mẫu Thông báo mẫu', 'warning', 5000);
-showNotification('Thông báo mẫu Thông báo mẫu Thông báo mẫu', 'error', 5000);
-showNotification('Thông báo mẫu', 'info', 5000);"
-                >
-                    Check
-                </button>
+              <div class="form-floating mb-3">
+                <select id="url_rpc" name="url_rpc" class="form-select"></select>
+                <label for="url_rpc" class="form-label" data-i18n="lobby-login-url-rpc">Choose node</label>
+              </div>
+              <div class="row g-3 text-center">
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input type="number" placeholder="0000000000000000000" id="url_server_jsonBlod" name="url_server_jsonBlod" class="form-control" data-i18n="[placeholder]lobby-login-url-server-jsonBlod-placeholder" />
+                    <label for="url_server_jsonBlod" class="form-label" data-i18n="lobby-login-url-server-jsonBlod-label">Your server</label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input type="password" placeholder="12345" id="passwordServer" name="passwordServer" class="form-control" value="12345" data-i18n="[placeholder]lobby-login-url-server-password-placeholder" />
+                    <label for="passwordServer" class="form-label" data-i18n="lobby-login-url-server-password-label">Password (Default 12345)</label>
+                  </div>
+                </div>
+              </div>
 
-                <button type="button" class="btn btn-outline-success btn-sm" onclick="fetchDataAvatarAgain();">Auto refresh 300s</button>
-            </div>
-
-            <div class="button_lobby lobby-arena-view" data-action="arena">
-                <div class="lobby-arena-view-1">
-                    <img src="assets/img/Lobby/ranking_01_mod.png" alt="Arena" />
-                </div>
-                <div class="lobby-arena-view-2">
-                    <div class="badge rounded-pill bg-danger lobby-arena-view-ticket1"><img class="lobby-loading-vip lobby-arena-view-ticket2" style="zoom: 30%;" src="assets/loading_vip.gif" /><span></span></div>
-                </div>
-                <div class="lobby-arena-view-3">
-                    <img src="assets/img/Common/UI_Common/UI_icon_Block.png" />
-                </div>
-                <div class="lobby-arena-view-4">
-                    <span>----</span> (<span>--</span>h <span>--</span>m <span>--</span>s)<br />
-                    (<span>--</span>/20)
-                </div>
-            </div>
-
-            <div class="button_lobby stage-lobby-view" data-action="stage">
-                <img src="assets/img/Lobby/bg_character_main_08.png" alt="Adventure" />
-            </div>
-
-            <div class="button_lobby craft-upgrade-lobby-view" data-action="craft-upgrade">
-                <img src="assets/img/Lobby/bg_character_main_06.png" alt="Workshop" />
-            </div>
-
-            <div class="button_lobby shop-lobby-view" data-action="shop">
-                <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop" />
-            </div>
-
-            <div class="button_lobby login-lobby-view" data-action="login">
-                <div class="image-container">
-                    <img class="lazyload image-avatar lobby-armorId-view" src="assets/loading_small.gif" data-src="assets/img/Common/10200000.png" />
-                    <img style="zoom: 40%;" class="image-avatar lobby-loading-vip" src="assets/loading_vip.gif" />
-                    <img class="lazyload image-avatar" src="assets/loading_small.gif" data-src="assets/img/Common/character_frame_mod.png" />
-                    <div class="lobby-level-view"><span>---</span></div>
-                </div>
-            </div>
-
-            <div class="lobby-name-view"></div>
-
-            <div class="lobby-donater-view"><i class="bi-cart2"></i><span>------</span></div>
-
-            <div class="button_lobby lobby-table-block-now-view hstack gap-3" data-action="managerUseNode">
-                <div class="vr"></div>
-                Block:<span>--------</span>
-                <div class="vr"></div>
-                Avg block time: <span>---</span>s
-                <div class="vr"></div>
-                Delay: <span>---</span>s
-                <div class="vr"></div>
-
-                Node: <span class="d-inline-block text-truncate" style="max-width: 500px;">---</span>
-            </div>
-            <div class="button_lobby lobby-AP-bar-view">
-                <div class="lobby-AP-bar-view-1">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_box.png" />
-                </div>
-                <div class="lobby-AP-bar-view-2">
-                    <div style="width: 128px; height: 24px; overflow: hidden;">
-                        <div style="transform-origin: center; transform: rotate(90deg);" id="APBarLobbyCreat"></div>
-                    </div>
-                </div>
-                <div class="lobby-AP-bar-view-2" style="z-index: 10;">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                </div>
-                <div class="lobby-AP-bar-view-7">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_pink_effect.png" />
-                </div>
-                <div class="lobby-AP-bar-view-3"><span>----</span>/1700</div>
-                <div class="lobby-AP-bar-view-4">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_icon_Block.png" />
-                </div>
-                <div class="lobby-AP-bar-view-5"><span>--</span>h <span>--</span>m</div>
-                <img class="lobby-loading-vip-2 lobby-AP-bar-view-6" src="assets/loading_vip.gif" />
-            </div>
-
-            <div class="button_lobby lobby-AP-bar-2-view">
-                <div class="lobby-AP-bar-2-view-1">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_star.png" />
-                </div>
-                <div class="lobby-AP-bar-2-view-2">
-                    <div style="width: 128px; height: 24px; overflow: hidden;">
-                        <div style="transform-origin: center; transform: rotate(90deg);" id="APBar2LobbyCreat"></div>
-                    </div>
-                </div>
-                <div class="lobby-AP-bar-2-view-2" style="z-index: 10;">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                </div>
-
-                <div class="lobby-AP-bar-2-view-3"><span>---</span>/120</div>
-                <img class="lobby-loading-vip-2 lobby-AP-bar-2-view-4" src="assets/loading_vip.gif" />
-            </div>
-
-            <div class="button_lobby lobby-crystal-bar-view">
-                <div class="lobby-crystal-bar-view-1">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_crystal_big.png" />
-                </div>
-                <div class="lobby-crystal-bar-view-2">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                </div>
-                <div class="lobby-crystal-bar-view-3"><span>------</span></div>
-                <img class="lobby-loading-vip lobby-crystal-bar-view-4" src="assets/loading_vip.gif" />
-            </div>
-            <div class="button_lobby lobby-NCG-bar-view">
-                <div class="lobby-NCG-bar-view-1">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_gold.png" />
-                </div>
-                <div class="lobby-NCG-bar-view-2">
-                    <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
-                </div>
-                <div class="lobby-NCG-bar-view-3"><span>------</span></div>
-                <img class="lobby-loading-vip lobby-NCG-bar-view-4" src="assets/loading_vip.gif" />
-            </div>
-            <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
-                <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
-                <span class="tooltiptext">
-                    <div style="width: 142px; height: 194px; overflow: hidden; transform: scale(0.7); position: relative; top: 0%; right: -9%;">
-                        <div class="form-check form-switch form-check-reverse">
-                            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="refillAP" />
-                            <label class="form-check-label" for="on_off_auto_refillAP">Auto refill</label>
-                            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="sweep" />
-                            <label class="form-check-label" for="on_off_auto_sweep">Auto sweep</label>
-                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_repeat" checked />
-                            <label class="form-check-label" for="on_off_auto_repeat">Auto repeat</label>
-                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_craft" checked />
-                            <label class="form-check-label" for="on_off_auto_craft">Auto craft</label>
-                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_upgrade" checked />
-                            <label class="form-check-label" for="on_off_auto_upgrade">Auto upgrade</label>
-                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_arena" checked />
-                            <label class="form-check-label" for="on_off_auto_arena">Auto arena</label>
-                            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_raid" checked />
-                            <label class="form-check-label" for="on_off_auto_raid">Auto world boss</label>
-                        </div>
-                    </div>
-                </span>
-            </div>
+              <div class="row justify-content-center">
+                <button id="submit_login_form" type="submit" class="col-auto btn-ninecmd" data-i18n="lobby-login-submit-button">Login</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div></div>
-    </body>
+      </div>
+    </div>
+
+    <div class="lobby_manager_use_node_modal lobby_hide_modal" style="display: none;">
+      <img class="button_lobby lobby_manager_use_node_modal_4" data-action="managerUseNode" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
+      <img class="lobby_manager_use_node_modal_1" src="assets/img/Common/UI_Popup/frameSetingNineCMD.png" />
+      <div class="lobby_manager_use_node_modal_2"></div>
+      <div class="lobby_manager_use_node_modal_3">
+        <div class="modal-content" style="height: 430px; overflow-y: auto;">
+          <div class="modal-body">
+            <div class="container-xl-fluid overflow-hidden">
+              <!-- <div class="progress"> -->
+              <!-- <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div> -->
+              <!-- </div> -->
+              <div class="row">
+                <div class="col-1">
+                  <img id="runGifBarUseNode" src="assets/img/gif/run.png" alt="runBarUseNode GIF" />
+                </div>
+                <div class="col-5">
+                  <div class="mt-4" style="width: 246px; height: 18px; overflow: hidden;">
+                    <div style="transform-origin: center; transform: rotate(90deg);" id="taskUseNodeBar"></div>
+                  </div>
+                </div>
+                <div class="col" style="/* zoom: 45%; */text-align: center;transform-origin: right top;transform: scale(0.45);position: absolute;">
+                  <img src="assets/img/Typephography/en/SettingNineCMD.png" data-i18n="[src]Typephography-SettingNineCMD-src" />
+                </div>
+              </div>
+              <div class="row taskOutputAndList">
+                <div class="col-6">
+                  <div id="taskOutput"></div>
+                </div>
+                <div class="col-6">
+                  <ul class="list-group list-group-flush list-group-numbered" id="taskListItems"></ul>
+                </div>
+              </div>
+              <span id="taskListSpan"></span>
+
+              <div class="row rounded" style="height: 430px;">
+                <div class="col-4" style="height: 100%;">
+                  <!-- List group -->
+                  <div class="list-group pt-3 pb-5" id="manageUseNodeList" role="tablist" style="height: 100%; overflow: overlay;">
+                    <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#tabManageUseNode" role="tab" data-i18n="settingNineCMD-tabManageUseNode-nav">Manage Use Node</a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageCanAuto" role="tab">
+                      <div data-i18n="settingNineCMD-tabManageCanAuto-nav">Can auto?</div> <span id="warningCanAutoCount" class="badge bg-danger text-white position-absolute top-50 end-0 translate-middle-y">0</span>
+                    </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageRefillAP" role="tab" data-i18n="settingNineCMD-tabManageRefillAP-nav">RefillAP setting</a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#tabManageSweep" role="tab" data-i18n="settingNineCMD-tabManageSweep-nav">Sweep setting</a>
+                    <!-- <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#TEMP" role="tab">TEMP</a> -->
+                  </div>
+                </div>
+                <div class="col-8" style="height: 100%;">
+                  <!-- Tab panes -->
+                  <div class="tab-content mt-3 pb-5" style="height: 100%; overflow: overlay;">
+                    <div class="tab-pane active" id="tabManageUseNode" role="tabpanel">
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-floating">
+                            <input type="number" placeholder="6" id="delayUseNode" value="6" min="6" max="60" name="delayUseNode" class="form-control" />
+                            <label for="delayUseNode" class="form-label" data-i18n="settingNineCMD-tabManageUseNode-delayUseNode-label">Delay before use node</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <button onclick="tryUseNode_refillAP();updateTaskInfo();" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-tryRefillAP-button">Try Refill AP</button>
+                          <button onclick="tryUseNode_sweep();updateTaskInfo();" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-trySweep-button">Try Sweep</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <button onclick="deleteAllTasks()" class="btn btn-primary mb-3">
+                            <div data-i18n="settingNineCMD-tabManageUseNode-deleteAllTasks-button">Clear all tasks</div> <span id="taskCount" class="badge bg-black">0</span>
+                          </button>
+
+                          <button onclick="checkAllswitch_useNodeTask()" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-checkAllswitch-button">Turn on all</button>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col-md-12">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="continueUseNodeCheckbox" checked />
+                            <label class="form-check-label" for="continueUseNodeCheckbox" data-i18n="settingNineCMD-tabManageUseNode-continueCheckbox-label">Continue use node?</label>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="refillAP" id="on_off_auto_refillAP" />
+                            <label class="form-check-label" for="on_off_auto_refillAP" data-i18n="settingNineCMD-tabManageUseNode-refillAPCheckbox-label">On / off auto Refill AP</label>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="sweep" id="on_off_auto_sweep" />
+                            <label class="form-check-label" for="on_off_auto_sweep" data-i18n="settingNineCMD-tabManageUseNode-sweepCheckbox-label">On / off auto Sweep</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" id="tabManageCanAuto" role="tabpanel"></div>
+                    <div class="tab-pane" id="tabManageRefillAP" role="tabpanel">
+                      2...
+                    </div>
+                    <div class="tab-pane" id="tabManageSweep" role="tabpanel">
+                      <div class="accordion" id="accordionSweepTask">
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneSweepTask" aria-expanded="true" aria-controls="collapseOneSweepTask" data-i18n="settingNineCMD-tabManageSweep-collapseOne-button">
+                              #1 When Sweep?
+                            </button>
+                          </h2>
+                          <div id="collapseOneSweepTask" class="accordion-collapse collapse show" data-bs-parent="#accordionSweepTask">
+                            <div class="accordion-body translateLocale" data-args-translateLocale="settingNineCMD-tabManageSweep-collapseOne-body">
+                              Automatically try Sweep task when the AP [0 - 120] ≥ <input type="number" value="5" min="0" max="120" /> (AP cost <span class="spanAPBaseOnStakeText"></span>) and the block refill [0 - 1700] ≤ <input type="number" value="0" min="0" max="1700" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoSweepTask" aria-expanded="false" aria-controls="collapseTwoSweepTask" data-i18n="settingNineCMD-tabManageSweep-collapseTwo-button">
+                              #2 Select stage Sweep
+                            </button>
+                          </h2>
+                          <div id="collapseTwoSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                            <div class="accordion-body">
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioStagesweep" id="radioStagesweep_fixed" value="" aria-label="..." checked />
+                                <label id="radioStagesweep_label" class="form-check-label translateLocale" data-args-translateLocale="settingNineCMD-tabManageSweep-radioStagesweep-fixed-label" for="radioStagesweep_fixed">Fixed 1 Stage [1 - <span>0</span>]</label>
+                                <input id="numberStagesweep_fixed" class="form-control" type="number" value="" min="0" max="350" placeholder="Enter 0 or empty to always Sweep latest stage" data-i18n="[placeholder]settingNineCMD-tabManageSweep-radioStagesweep-fixed-placeholder" />
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioStagesweep" id="radioStagesweep_random" value="" aria-label="..." />
+                                <label class="form-check-label" for="radioStagesweep_random" data-i18n="settingNineCMD-tabManageSweep-radioStagesweep-random-label">Random stage(s)</label>
+                                <div class="row">
+                                  <div class="col-md-4">
+                                    <input type="number" id="randomStageSweep_select" class="form-control" min="1" max="350" placeholder="Add random stage" data-i18n="[placeholder]settingNineCMD-tabManageSweep-radioStagesweep-random-placeholder" />
+                                  </div>
+                                  <div class="col-md-2">
+                                    <button id="randomStageSweep_add" class="btn btn-primary" type="button">+</button>
+                                  </div>
+                                </div>
+                                <ul id="randomStageSweep_list" class="list-group list-group-numbered"></ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThreeSweepTask" aria-expanded="false" aria-controls="collapseThreeSweepTask" data-i18n="settingNineCMD-tabManageSweep-collapseThree-button">
+                              #3 How many AP you want spend for Sweep?
+                            </button>
+                          </h2>
+                          <div id="collapseThreeSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                            <div class="accordion-body">
+                              <div class="translateLocale" data-args-translateLocale="settingNineCMD-tabManageSweep-collapseThree-apNow">Have now <span class="spanActionPotionText"></span>/120 AP</div>
+                              <div class="translateLocale" data-args-translateLocale="settingNineCMD-tabManageSweep-collapseThree-apCost">AP cost <span class="spanAPBaseOnStakeText"></span></div>
+                              <input type="range" id="turnSweep_range" min="0" max="120" step="5" value="0" />
+                              <div class="translateLocale" data-args-translateLocale="settingNineCMD-tabManageSweep-collapseThree-turnRange">Turn: <span id="turnSweep_number1">0</span> (0 = max <span id="turnSweep_number2">0</span> turn can sweep)</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourSweepTask" aria-expanded="false" aria-controls="collapseFourSweepTask" data-i18n="settingNineCMD-tabManageSweep-collapseFour-button">
+                              #4 Item equipment for Sweep
+                            </button>
+                          </h2>
+                          <div id="collapseFourSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                            <div class="accordion-body">
+                              No thing
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFiveSweepTask" aria-expanded="false" aria-controls="collapseFiveSweepTask" data-i18n="settingNineCMD-tabManageSweep-collapseFive-button">
+                              #5 Runes for Sweep
+                            </button>
+                          </h2>
+                          <div id="collapseFiveSweepTask" class="accordion-collapse collapse" data-bs-parent="#accordionSweepTask">
+                            <div class="accordion-body">
+                              No thing
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="tab-pane" id="TEMP" role="tabpanel"> -->
+                    <!-- TEMP -->
+                    <!-- </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lobby_comment lobby_hide_modal" style="display: none;">
+      <img class="button_lobby lobby_manager_use_node_modal_4" data-action="comments" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
+      <img class="lobby_manager_use_node_modal_1" src="assets/img/Common/UI_Popup/frameSetingNineCMD.png" />
+      <div class="lobby_manager_use_node_modal_2"></div>
+      <div class="lobby_manager_use_node_modal_3 lobby_comment_3">
+        <div class="commentbox"></div>
+        <script src="https://unpkg.com/commentbox.io/dist/commentBox.min.js"></script>
+        <script>
+          commentBox('5735754516922368-proj', {
+            backgroundColor: "#1c1210",
+            textColor: "#fff",
+            subtextColor: "#fff030"
+          })
+
+        </script>
+      </div>
+    </div>
+
+    <div class="lobby_inventory lobby_hide_modal" style="display: none;">
+      <img class="button_lobby lobby_manager_use_node_modal_4" data-action="inventory" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
+      <img class="lobby_manager_use_node_modal_1" src="assets/img/Common/UI_Popup/frameInventory.png" />
+      <div class="lobby_inventory_1_2"></div>
+      <div class="lobby_inventory_1_3">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist" style="/* zoom: 72.9%; */transform: scale(0.73);--bs-nav-tabs-border-width: none;flex-flow: nowrap;transform-origin: left;">
+            <button class="nav-link nav-inventory active" id="nav-inventory-equipment-tab" data-bs-toggle="tab" data-bs-target="#nav-inventory-equipment" type="button" role="tab" aria-controls="nav-inventory-equipment" aria-selected="true"><img src="assets/img/Common/UI_Common/icon_Inventory_01_black_mod.png" /></button>
+            <button class="nav-link nav-inventory" id="nav-inventory-food-tab" data-bs-toggle="tab" data-bs-target="#nav-inventory-food" type="button" role="tab" aria-controls="nav-inventory-food" aria-selected="false"><img src="assets/img/Common/UI_Common/icon_Food_01_black.png" /></button>
+            <button class="nav-link nav-inventory" id="nav-inventory-rune-tab" data-bs-toggle="tab" data-bs-target="#nav-inventory-rune" type="button" role="tab" aria-controls="nav-inventory-rune" aria-selected="false"><img src="assets/img/Common/UI_Common/Icon_Rune_01_Black.png" /></button>
+            <button class="nav-link nav-inventory" id="nav-inventory-material-tab" data-bs-toggle="tab" data-bs-target="#nav-inventory-material" type="button" role="tab" aria-controls="nav-inventory-material" aria-selected="false"><img src="assets/img/Common/UI_Common/icon_Material_01_black_mod.png" /></button>
+            <button class="nav-link nav-inventory" id="nav-inventory-costume-tab" data-bs-toggle="tab" data-bs-target="#nav-inventory-costume" type="button" role="tab" aria-controls="nav-inventory-costume" aria-selected="false"><img src="assets/img/Common/UI_Common/icon_costume_01_black.png" /></button>
+            <button class="nav-link nav-inventory" id="nav-inventory-FungibleAsset-tab" data-bs-toggle="tab" data-bs-target="#nav-inventory-FungibleAsset" type="button" role="tab" aria-controls="nav-inventory-FungibleAsset" aria-selected="false"><img src="assets/img/Common/UI_Common/icon_FungibleAsset_01_black.png" /></button>
+          </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+          <div class="tab-pane fade show active" id="nav-inventory-equipment" role="tabpanel" aria-labelledby="nav-inventory-equipment-tab" tabindex="0">
+
+            <table class="table-inventory" data-sortable="true" data-unique-id="stt" data-show-refresh="true" data-virtual-scroll="false" data-maintain-meta-data="true" data-show-multi-sort="true" data-sort-priority='[{"sortName": "itemSubType","sortOrder":"desc"},{"sortName":"CP","sortOrder":"desc"}]' data-pagination-successively-size=1 data-pagination-use-intermediate="false" data-pagination-pages-by-side=1 data-buttons-order="['columns', 'multipleSort', 'autoRefresh', 'refresh', 'fullscreen', 'customView', 'paginationSwitch']" data-show-columns="true" data-show-columns-search="true" data-sort-reset-page="true" data-sort-empty-last="true" data-toolbar-align="right" data-pagination="true" data-page-size="8" data-page-list="[8, 16, 32, 64, all]" data-show-columns-toggle-all="true" data-search="true" data-visible-search="true" data-search-highlight="false" data-search-accent-neutralise="true" data-show-toggle="false" data-show-fullscreen="true" data-show-pagination-switch="true" data-show-refresh="false" data-show-jump-to="true" data-group-by="true" data-group-by-toggle="true" data-group-by-show-toggle-icon="true" data-group-by-field="itemSubType" data-filter-control="true" data-show-search-clear-button="true" data-key-events="false" data-show-custom-view="true" data-custom-view="customViewFormatter" data-show-custom-view-button="true" data-custom-view-default-view="true" data-auto-refresh="true" data-auto-refresh-interval=150 data-click-to-select="true">
+            </table>
+
+            <template id="profileTemplate">
+
+              <div class="col">
+                <div class="card h-100 text-bg-dark">
+                  <img class="card-img lazyload" src="assets/loading_small.gif" data-src="%IMAGE%" alt="...">
+                  <div class="card-img-overlay">
+
+                  </div>
+                </div>
+              </div>
+
+
+            </template>
+
+
+
+          </div>
+          <div class="tab-pane fade" id="nav-inventory-food" role="tabpanel" aria-labelledby="nav-inventory-food-tab" tabindex="0">Thức ăn</div>
+          <div class="tab-pane fade" id="nav-inventory-rune" role="tabpanel" aria-labelledby="nav-inventory-rune-tab" tabindex="0">Rune</div>
+          <div class="tab-pane fade" id="nav-inventory-material" role="tabpanel" aria-labelledby="nav-inventory-material-tab" tabindex="0">Nguyên liệu</div>
+          <div class="tab-pane fade" id="nav-inventory-costume" role="tabpanel" aria-labelledby="nav-inventory-costume-tab" tabindex="0">Trang phục</div>
+          <div class="tab-pane fade" id="nav-inventory-FungibleAsset" role="tabpanel" aria-labelledby="nav-inventory-FungibleAsset-tab" tabindex="0">Nguyên liệu khác</div>
+        </div>
+
+      </div>
+      <div class="lobby_inventory_2_2"></div>
+      <div class="lobby_inventory_2_3"></div>
+      <div class="lobby_inventory_3_2"></div>
+    </div>
+
+
+    <div class="button_lobby lobby-arena-view" data-action="arena">
+      <div class="lobby-arena-view-1">
+        <img src="assets/img/Lobby/ranking_01_mod.png" alt="Arena" />
+      </div>
+      <div class="lobby-arena-view-2">
+        <div class="badge rounded-pill bg-danger lobby-arena-view-ticket1"><img class="lobby-loading-vip lobby-arena-view-ticket2" src="assets/loading_vip.gif" /><span></span></div>
+      </div>
+      <div class="lobby-arena-view-3">
+        <img src="assets/img/Common/UI_Common/UI_icon_Block.png" />
+      </div>
+      <div class="lobby-arena-view-4">
+        <span>----</span> (<span>--</span>h <span>--</span>m <span>--</span>s)<br />
+        (<span>--</span>/20)
+      </div>
+    </div>
+
+    <div class="button_lobby stage-lobby-view" data-action="stage">
+      <img src="assets/img/Lobby/bg_character_main_08.png" alt="Adventure" />
+    </div>
+
+    <div class="button_lobby craft-upgrade-lobby-view" data-action="craft-upgrade">
+      <img src="assets/img/Lobby/bg_character_main_06.png" alt="Workshop" style="/*! text-align: left; *//*! transform-origin: right top; */transform: scale(1.3);/*! width: 333px; *//*! height: 73px; *//*! position: absolute; */" />
+    </div>
+
+    <div class="button_lobby shop-lobby-view" data-action="shop">
+      <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop" style="/*! text-align: left; *//*! transform-origin: right top; */transform: scale(1.15);/*! width: 333px; *//*! height: 73px; *//*! position: absolute; */" />
+    </div>
+
+    <div class="button_lobby login-lobby-view" data-action="login">
+      <div class="image-container">
+        <img class="lazyload image-avatar lobby-armorId-view" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/10200000.png" />
+        <img style="display: block;transform: scale(0.4);" class="image-avatar lobby-loading-vip" src="assets/loading_vip.gif" />
+        <img class="lazyload image-avatar lobby-frame-view" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/character_frame_mod.png" />
+        <div class="lobby-level-view"><span>---</span></div>
+      </div>
+    </div>
+
+    <div class="lobby-name-view"></div>
+
+    <div class="lobby-donater-view"><i class="bi-cart2"></i><span>------</span></div>
+
+    <div class="button_lobby lobby-table-block-now-view hstack gap-3" data-action="managerUseNode">
+      <div class="vr"></div>
+      Block:<span>--------</span>
+      <div class="vr"></div>
+      Avg block time: <span>---</span>s
+      <div class="vr"></div>
+      Delay: <span>---</span>s
+      <div class="vr"></div>
+      Node: <span class="d-inline-block text-truncate" style="max-width: 500px;">---</span>
+    </div>
+    <div class="button_lobby lobby-AP-bar-view">
+      <div class="lobby-AP-bar-view-1">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_box.png" />
+      </div>
+      <div class="lobby-AP-bar-view-2">
+        <div style="width: 128px; height: 24px; overflow: hidden;">
+          <div style="transform-origin: center; transform: rotate(90deg);" id="APBarLobbyCreat"></div>
+        </div>
+      </div>
+      <div class="lobby-AP-bar-view-2" style="z-index: 10;transform-origin: top;">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+      </div>
+      <div class="lobby-AP-bar-view-7">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_pink_effect.png" />
+      </div>
+      <div class="lobby-AP-bar-view-3"><span>----</span>/1700</div>
+      <div class="lobby-AP-bar-view-4">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_icon_Block.png" />
+      </div>
+      <div class="lobby-AP-bar-view-5"><span>--</span>h <span>--</span>m</div>
+      <img class="lobby-loading-vip-2 lobby-AP-bar-view-6" src="assets/loading_vip.gif" />
+    </div>
+
+    <div class="button_lobby lobby-AP-bar-2-view">
+      <div class="lobby-AP-bar-2-view-1">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_star.png" />
+      </div>
+      <div class="lobby-AP-bar-2-view-2">
+        <div style="width: 128px; height: 24px; overflow: hidden;">
+          <div style="transform-origin: center; transform: rotate(90deg);" id="APBar2LobbyCreat"></div>
+        </div>
+      </div>
+      <div class="lobby-AP-bar-2-view-2" style="z-index: 10;transform-origin: top;">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+      </div>
+
+      <div class="lobby-AP-bar-2-view-3"><span>---</span>/120</div>
+      <img class="lobby-loading-vip-2 lobby-AP-bar-2-view-4" src="assets/loading_vip.gif" />
+    </div>
+
+    <div class="button_lobby lobby-crystal-bar-view">
+      <div class="lobby-crystal-bar-view-1">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_crystal_big.png" />
+      </div>
+      <div class="lobby-crystal-bar-view-2">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+      </div>
+      <div class="lobby-crystal-bar-view-3"><span>------</span></div>
+      <img class="lobby-loading-vip lobby-crystal-bar-view-4" src="assets/loading_vip.gif" />
+    </div>
+    <div class="button_lobby lobby-NCG-bar-view">
+      <div class="lobby-NCG-bar-view-1">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_gold.png" />
+      </div>
+      <div class="lobby-NCG-bar-view-2">
+        <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
+      </div>
+      <div class="lobby-NCG-bar-view-3"><span>------</span></div>
+      <img class="lobby-loading-vip lobby-NCG-bar-view-4" src="assets/loading_vip.gif" />
+    </div>
+
+    <div class="lobby-tool-view">
+      <img class="button_lobby lobby-tool-view-1" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_02.png" data-action="" />
+      <img class="button_lobby lobby-tool-view-2" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_03.png" data-action="inventory" />
+      <img class="button_lobby lobby-tool-view-3" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_06.png" data-action="comments" />
+    </div>
+
+    <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
+      <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
+      <span class="tooltiptext">
+        <div style="width: 142px; height: 194px; overflow: hidden; transform: scale(0.7); position: relative; top: 0%; right: -9%;">
+          <div class="form-check form-switch form-check-reverse">
+            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="refillAP" />
+            <label class="form-check-label" for="on_off_auto_refillAP">Auto refill</label>
+            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="sweep" />
+            <label class="form-check-label" for="on_off_auto_sweep">Auto sweep</label>
+            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_repeat" checked />
+            <label class="form-check-label" for="on_off_auto_repeat">Auto repeat</label>
+            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_craft" checked />
+            <label class="form-check-label" for="on_off_auto_craft">Auto craft</label>
+            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_upgrade" checked />
+            <label class="form-check-label" for="on_off_auto_upgrade">Auto upgrade</label>
+            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_arena" checked />
+            <label class="form-check-label" for="on_off_auto_arena">Auto arena</label>
+            <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_raid" checked />
+            <label class="form-check-label" for="on_off_auto_raid">Auto world boss</label>
+          </div>
+        </div>
+      </span>
+    </div>
+  </body>
+
 </html>
