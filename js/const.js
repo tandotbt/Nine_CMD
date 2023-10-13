@@ -1,3 +1,4 @@
+const urlBlockNow = "https://jsonblob.com/api/jsonBlob/1141252404015915008";
 const pathNineChronicles = "development";
 const pathNineChronicles_armorId = "development";
 const ncgStake5AP = 5000;
@@ -40,3 +41,31 @@ const node_list_default = [{
 ];
 const urlProxy_default = "https://cors-proxy.fringe.zone/";
 const text2replaceNameItem = "ITEM_NAME_";
+const urlPatrolGraphql = "https://patrol.9c.gg/graphql";
+const patrolRewardPolicy = [{
+    level: 1,
+    crystal: 900,
+    silverDust: 6
+  },
+  {
+    level: 150,
+    crystal: 1500,
+    silverDust: 9
+  },
+  {
+    level: 250,
+    crystal: 2400,
+    silverDust: 12
+  }
+];
+const secondWaitRewardPatrol = 43200; // chờ 12 giờ
+const urlListNodeBy9capi = "https://api.9capi.com/rpc";
+const numberNotiShow = 5;
+const listLocaleHaveToTran = {
+  'en': 'i18n/en.json',
+  'vi': 'i18n/vi.json'
+};
+const nineCMDapi = "https://api.tanvpn.tk/";
+const urlArenaData = "https://api.9capi.com/arenaLeaderboard/";
+const url9cscanApi = "https://api.9cscan.com/";
+const urlAllAvatarHaveDCC = "https://api.dccnft.com/v1/9c/avatars/all";

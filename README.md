@@ -28,6 +28,7 @@
 
 ## Tính năng
 - [x] Xem nhanh thông số cơ bản của nhân vật: tên, level, ncg, thời gian refill AP kế tiếp, số AP (actionPotion) ...
+- [x] Tự động nhận quà tuần tra (Patrol Reward)
 - [ ] Refill AP
 - [ ] Repeat / Sweep và % qua ải
 - [ ] Chế tạo / nâng cấp vật phẩm, food

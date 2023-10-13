@@ -1,7 +1,9 @@
 ////
 // Hàm khởi động công việc sử dụng your server với các tham số tùy chỉnh
 function startFuncUseServerTask(dataNeed) {
-  handleFuncUseServerTasks.startFuncUseServer(dataNeed);
+  return new Promise((resolve, reject) => {
+    handleFuncUseServerTasks.startFuncUseServer(dataNeed, resolve, reject);
+  });
 }
 
 async function FuncUseServer(dataNeed) {
@@ -9,10 +11,11 @@ async function FuncUseServer(dataNeed) {
     await requestToYourServer();
 
     console.log(`FuncUseServer task completed with request ${dataNeed}`);
-  } catch (Error) {
-    console.log("Error in FuncUseServer or one of the steps:", Error);
-    showNotification(Error, "error", showNotification_timeShow);
-    throw new Error($.i18n("showNotification-FuncUseServer-error") + Error);
+    showNotification($.i18n("showNotification-FuncUseServer-success"), "success", showNotification_timeShow);
+  } catch (error) {
+    console.log("Error in FuncUseServer or one of the steps:", error);
+    showNotification(error, "error", showNotification_timeShow);
+    throw ($.i18n("showNotification-FuncUseServer-error") + error)
   }
 }
 
@@ -21,9 +24,11 @@ var handleFuncUseServerTasks = {
   isFuncUseServerBusy: false,
   pendingFuncUseServerTasks: [],
 
-  startFuncUseServer: function(dataNeed) {
+  startFuncUseServer: function(dataNeed, resolve, reject) {
     this.pendingFuncUseServerTasks.push({
-      dataNeed
+      dataNeed,
+      resolve,
+      reject
     });
     this.processFuncUseServerTasks();
   },
@@ -40,12 +45,16 @@ var handleFuncUseServerTasks = {
     this.isFuncUseServerBusy = true;
     var task = this.pendingFuncUseServerTasks.shift();
     var dataNeed = task.dataNeed;
+    var resolve = task.resolve;
+    var reject = task.reject;
     console.log(`Processing FuncUseServer task with request ${dataNeed}...`);
     try {
-      var result = await FuncUseServer(dataNeed);
+      await FuncUseServer(dataNeed);
       console.log(`FuncUseServer task completed with request ${dataNeed}`);
-    } catch (Error) {
+      resolve(); // Hàm đã hoàn thành thành công
+    } catch (error) {
       console.log(`Error occurred during FuncUseServer task with request ${dataNeed}`);
+      reject(error); // Hàm đã xảy ra lỗi
     }
 
     this.isFuncUseServerBusy = false;
@@ -88,72 +97,71 @@ function requestToYourServer() {
         console.log("Dữ liệu đã được gửi thành công với yêu cầu " + request);
         await checkChanges(url_Server);
         resolve(); // Gửi tín hiệu hoàn thành Promise
-      } catch (Error) {
-        // console.error("Lỗi khi gửi dữ liệu: " + Error);
-        reject(Error); // Gửi tín hiệu lỗi của Promise
+      } catch (error) {
+        // console.error("Lỗi khi gửi dữ liệu: " + error);
+        reject(error); // Gửi tín hiệu lỗi của Promise
       }
     }
 
-    function checkChanges(url_Server) {
-      return new Promise((resolve, reject) => {
+    async function checkChanges(url_Server) {
+      return new Promise(async (resolve, reject) => {
         let isCheckingChanges = true; // Đánh dấu vòng lặp đang chạy
         let intervalId;
         let counter = 0; // Biến đếm số lần console.log("Server chưa phản hồi")
 
-        function checkServerResponse() {
-          fetch("https://jsonblob.com/api/" + passwordServer + "/" + url_Server)
-            .then(function(response) {
-              if (!response.ok) {
-                throw new Error($.i18n("showNotification-checkServerResponse-error-1") + response.status);
-              }
-              return response.json();
-            })
-            .then(function(data) {
-              var newRand = data.rand;
-              var kqua = data.data;
-              if (newRand > currentRand) {
-                console.log("Số ngẫu nhiên mới: " + newRand);
-                console.log("Lưu lại kqua cho yêu cầu " + request);
-                addDataForSessionStorage("session_login9cmd", request, kqua);
-                addDataForSessionStorage("tempNineCMD", "hasUTCFile", true);
-                addDataForSessionStorage("tempNineCMD", "passwordOk", true);
-                addDataForSessionStorage("tempNineCMD", "serverOk", true);
-                delDataFromSessionStorage("tempNineCMD", "errorYourServer");
+        async function checkServerResponse() {
+          try {
+            const response = await fetch("https://jsonblob.com/api/" + passwordServer + "/" + url_Server);
+            if (!response.ok) {
+              throw ($.i18n("showNotification-checkServerResponse-error-1") + response.status);
+            }
+            const data = await response.json();
+            const newRand = data.rand;
+            const kqua = data.data;
+
+            if (newRand > currentRand) {
+              console.log("Số ngẫu nhiên mới: " + newRand);
+              console.log("Lưu lại kqua cho yêu cầu " + request);
+              addDataForSessionStorage("session_login9cmd", request, kqua);
+              addDataForSessionStorage("tempNineCMD", "hasUTCFile", true);
+              addDataForSessionStorage("tempNineCMD", "passwordOk", true);
+              addDataForSessionStorage("tempNineCMD", "serverOk", true);
+              clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
+              isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
+              resolve(); // Gửi tín hiệu hoàn thành Promise
+            } else if (newRand < currentRand) {
+              console.log("Có lỗi server gửi về");
+              clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
+              isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
+              addDataForSessionStorage("tempNineCMD", "serverOk", true);
+              addDataForSessionStorage("tempNineCMD", "errorYourServer", kqua);
+              throw (" - " + kqua); // Tung ra đối tượng lỗi mới với thông điệp
+            } else {
+              counter++;
+              if (counter > checkServerResponse_countMax) {
                 clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
                 isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-                resolve(); // Gửi tín hiệu hoàn thành Promise
-              } else if (newRand < currentRand) {
-                console.log("Có lỗi server gửi về");
-                clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
-                isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-                addDataForSessionStorage("tempNineCMD", "serverOk", true);
-                addDataForSessionStorage("tempNineCMD", "errorYourServer", kqua);
-                throw new Error(" - " + kqua); // Tung ra đối tượng lỗi mới với thông điệp
+                addDataForSessionStorage("tempNineCMD", "serverOk", false);
+                addDataForSessionStorage("tempNineCMD", "errorYourServer", $.i18n("showNotification-checkServerResponse-error-2", checkServerResponse_countMax));
+                throw ($.i18n("showNotification-checkServerResponse-error-2", checkServerResponse_countMax));
               } else {
-                counter++;
-                if (counter > checkServerResponse_countMax) {
-                  clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
-                  isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-                  addDataForSessionStorage("tempNineCMD", "serverOk", false);
-                  addDataForSessionStorage("tempNineCMD", "errorYourServer", $.i18n("showNotification-checkServerResponse-error-2",checkServerResponse_countMax));
-                  throw new Error($.i18n("showNotification-checkServerResponse-error-2",checkServerResponse_countMax));
-                } else {
-                  console.log("Server chưa phản hồi");
+                console.log("Server chưa phản hồi");
+                if (counter % 10 === 0) {
+                  showNotification($.i18n("showNotification-checkServerResponse-warning", counter), "warning", showNotification_timeShow);
                 }
               }
-            })
-            .catch(function(Error) {
-              // console.error("Lỗi khi kiểm tra dữ liệu: " + Error);
-              delDataFromSessionStorage("tempNineCMD", "hasUTCFile");
-              delDataFromSessionStorage("tempNineCMD", "passwordOk");
-              reject(Error); // Gửi tín hiệu lỗi của Promise (nếu cần thiết)
-            });
+            }
+          } catch (error) {
+            // console.error("Lỗi khi kiểm tra dữ liệu: " + error);
+            delDataFromSessionStorage("tempNineCMD", "hasUTCFile");
+            delDataFromSessionStorage("tempNineCMD", "passwordOk");
+            reject(error); // Gửi tín hiệu lỗi của Promise (nếu cần thiết)
+          }
         }
 
         intervalId = setInterval(checkServerResponse, checkServerResponse_setInterval); // Kiểm tra thay đổi mỗi giây (có thể điều chỉnh thời gian tùy ý)
       });
     }
-
     await sendData();
   });
 }
@@ -162,17 +170,17 @@ function requestToYourServer() {
 // Hàm để gọi fetch và xử lý dữ liệu
 function fetch_data_block_now() {
   // addToLog("Thử lấy block now và avg")
-  fetch("https://jsonblob.com/api/jsonBlob/1141252404015915008")
+  fetch(urlBlockNow)
     .then(function(response) {
       if (!response.ok) {
-        throw new Error($.i18n("showNotification-fetchDataBlockNow-error") + response.status);
+        throw ($.i18n("showNotification-fetchDataBlockNow-error") + response.status);
       }
       return response.json();
     })
     .then(function(data) {
       if (data.hasOwnProperty("message")) {
         var errorMessage = data.message;
-        throw new Error(errorMessage);
+        throw errorMessage;
       }
       return data;
     })
@@ -184,9 +192,9 @@ function fetch_data_block_now() {
       localStorage.setItem("blockNowJson", _temp);
       // addToLog("Hoàn thành lấy block now và avg")
     })
-    .catch(function(Error) {
-      addToLog("lỗi khi lấy block now và avg: " + Error);
-      showNotification(Error, "error", showNotification_timeShow);
+    .catch(function(error) {
+      addToLog("lỗi khi lấy block now và avg: " + error);
+      showNotification(error, "error", showNotification_timeShow);
       localStorage.removeItem("blockNowJson");
       return;
     });
@@ -194,9 +202,9 @@ function fetch_data_block_now() {
 
 function delayUseNode() {
   var delayUseNode1 = document.getElementById("delayUseNode");
-var delayUseNode;
+  var delayUseNode;
   if (delayUseNode1 === null) {
-    showNotification($.i18n("showNotification-delayUseNode") + delayUseNode_default/1000 + "s", "info", delayUseNode_default);
+    showNotification($.i18n("showNotification-delayUseNode") + delayUseNode_default / 1000 + "s", "info", delayUseNode_default);
   } else {
     delayUseNode = parseInt(delayUseNode1.value) * 1000; // Chuyển đổi đơn vị giây thành mili-giây
     showNotification($.i18n("showNotification-delayUseNode") + parseInt(delayUseNode1.value) + "s", "info", delayUseNode);
@@ -210,21 +218,28 @@ var timerFetchDataAvatar;
 
 function fetchDataAvatar() {
   console.log("Bắt đầu fetch avatar");
+  showNotification($.i18n("showNotification-fetchDataAvatar-getData"), "alert", showNotification_timeShow);
   var submitBtn = $("#submit_login_form");
-  Promise.all([getArmorIDandSTT(), fetchDataAvatar_useNode(), checkYourServer(), checkDonaterBlock(), fetchTicketArena(), fetchCSVname()])
+  submitBtn.addClass("disabled");
+  submitBtn.html($.i18n("lobby-login-submit-button-logged-in"));
+  submitBtn.prop("disabled", true);
+  $(".needReplaceTrans-autoRefresh").prop("disabled", true);
+  Promise.all([getArmorIDandSTT(), fetchDataAvatar_useNode(), checkYourServer(), checkDonaterBlock(), fetchTicketArena(), fetchPatrolReward(), fetchCSVname()])
     .then(() => {
       console.log("Kết thúc fetch avatar");
       submitBtn.removeClass("disabled");
       submitBtn.html($.i18n("lobby-login-submit-button"));
       submitBtn.prop("disabled", false);
+      $(".needReplaceTrans-autoRefresh").prop("disabled", false);
+      tryUseNode_All();
     })
-    .catch((Error) => {
-      console.log("Đã xảy ra lỗi trong quá trình fetch avatar:", Error);
+    .catch((error) => {
+      console.log("Đã xảy ra lỗi trong quá trình fetch avatar:", error);
       submitBtn.removeClass("disabled");
       submitBtn.html($.i18n("lobby-login-submit-button"));
       submitBtn.prop("disabled", false);
+      $(".needReplaceTrans-autoRefresh").prop("disabled", false);
     });
-
   timerFetchDataAvatar = setTimeout(fetchDataAvatar, timerFetchDataAvatar_setTimeout);
 }
 
@@ -234,6 +249,22 @@ function fetchDataAvatarAgain() {
 
   // Gọi lại hàm fetchDataAvatar()
   fetchDataAvatar();
+
+}
+
+function tryUseNode_All() {
+  if ($("#continueUseNodeCheckbox").prop("checked")) {
+    var patrolRewardInfo = getDataFromSessionStorage("session_login9cmd", "patrolRewardInfo");
+    if (patrolRewardInfo !== null) {
+      let lastClaimedAt = patrolRewardInfo.lastClaimedAt;
+      let lastClaimedTime = new Date(lastClaimedAt);
+      let timeNow = Math.floor((Date.now() - lastClaimedTime) / 1000);
+      let remainingSeconds = secondWaitRewardPatrol - timeNow;
+      if (remainingSeconds <= 0) {
+        tryUseNode_claimPatrolReward();
+      }
+    }
+  }
 }
 
 // Lấy name, level, ncg, cryslat, AP và time AP
@@ -264,9 +295,9 @@ async function fetchDataAvatar_useNode() {
     var apiResponse = await response.json();
 
     if (apiResponse && apiResponse.data && apiResponse.data.stateQuery) {} else if (apiResponse && apiResponse.errors && apiResponse.errors[0].message) {
-      throw (Error = apiResponse.errors[0].message);
+      throw apiResponse.errors[0].message;
     } else {
-      throw (Error = $.i18n("showNotification-fetchDataAvatarUseNode-apiResponse-error"));
+      throw $.i18n("showNotification-fetchDataAvatarUseNode-apiResponse-error");
     }
 
     // Lưu dữ liệu avatar info
@@ -317,8 +348,8 @@ async function fetchDataAvatar_useNode() {
     avatarInfo.dataEquipments = generateDataEquipments(apiResponse.data.stateQuery.avatar.inventory.equipments);
 
     sessionStorage.setItem("session_login9cmd", JSON.stringify(avatarInfo));
-  } catch (Error) {
-    console.error(Error);
+  } catch (error) {
+    console.error(error);
     delDataFromSessionStorage("session_login9cmd", "name");
     delDataFromSessionStorage("session_login9cmd", "level");
     delDataFromSessionStorage("session_login9cmd", "gold");
@@ -328,8 +359,8 @@ async function fetchDataAvatar_useNode() {
     delDataFromSessionStorage("session_login9cmd", "passStage");
     delDataFromSessionStorage("session_login9cmd", "ncgStake");
     delDataFromSessionStorage("session_login9cmd", "dataEquipments");
-    showNotification($.i18n("showNotification-fetchDataAvatarUseNode-catch-error") + Error, "error", showNotification_timeShow);
-    return Error;
+    showNotification($.i18n("showNotification-fetchDataAvatarUseNode-catch-error") + error, "error", showNotification_timeShow);
+    return error;
   }
 }
 
@@ -341,10 +372,10 @@ async function getArmorIDandSTT() {
     return;
   }
   var avatarAddress = avatarAddress2.toLowerCase();
-  var url = "https://api.9cscan.com/account?address=" + Address9c;
+  var url = url9cscanApi + "account?address=" + Address9c;
   var avatarDCC;
   // Lấy dữ liệu DCC
-  const apiDCCData = await fetch("https://api.dccnft.com/v1/9c/avatars/all");
+  const apiDCCData = await fetch(urlAllAvatarHaveDCC);
 
   if (!apiDCCData.ok) {
     avatarDCC = 0;
@@ -366,14 +397,14 @@ async function getArmorIDandSTT() {
       if (response.ok) {
         return response.json();
       } else if (response.status === 404) {
-        throw new Error($.i18n("showNotification-getArmorIDandSTT-throw-error-1"));
+        throw $.i18n("showNotification-getArmorIDandSTT-throw-error-1");
       } else {
-        throw new Error($.i18n("showNotification-getArmorIDandSTT-throw-error-2") + response.status);
+        throw ($.i18n("showNotification-getArmorIDandSTT-throw-error-2") + response.status);
       }
     })
     .then((data) => {
       if (Array.isArray(data) && data.length === 0) {
-        throw new Error($.i18n("showNotification-getArmorIDandSTT-throw-error-3"));
+        throw $.i18n("showNotification-getArmorIDandSTT-throw-error-3");
       } else {
         return data; // Trả về dữ liệu
       }
@@ -394,10 +425,11 @@ async function getArmorIDandSTT() {
           var armorEquipment = matchingAvatar.avatar.inventory.equipments.find(function(equipment) {
             return equipment.itemSubType === "ARMOR";
           });
-        }
 
-        if (armorEquipment) {
-          armorId = armorEquipment.id;
+
+          if (armorEquipment) {
+            armorId = armorEquipment.id;
+          }
         }
         if (avatarDCC !== 0) {
           armorId = avatarDCC;
@@ -406,12 +438,12 @@ async function getArmorIDandSTT() {
         addDataForSessionStorage("session_login9cmd", "stt", stt);
       }
     })
-    .catch(function(Error) {
-      console.log(Error);
+    .catch(function(error) {
+      console.log(error);
       delDataFromSessionStorage("session_login9cmd", "armorId");
       delDataFromSessionStorage("session_login9cmd", "stt");
-      showNotification($.i18n("showNotification-fetchDataAvatarUseNode-catch-error") + Error, "error", showNotification_timeShow);
-      return Error;
+      showNotification($.i18n("showNotification-fetchDataAvatarUseNode-catch-error") + error, "error", showNotification_timeShow);
+      return error;
     });
 }
 
@@ -422,26 +454,24 @@ async function checkDonaterBlock() {
   if (donater) {
     var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
     var Address9cLower = Address9c.toLowerCase();
-    fetch("https://api.tanvpn.tk/donater?vi=" + Address9cLower)
+    fetch(nineCMDapi + "donater?vi=" + Address9cLower)
       .then(function(response) {
         if (!response.ok) {
-          throw new Error("my server code error" + response.status);
+          throw $.i18n("nineCMDapi-checkDonaterBlock-error-1", response.status);
         }
         return response.json();
       })
       .then(function(data) {
         if (data.length === 0) {
-          throw new Error("No data");
+          throw $.i18n("nineCMDapi-checkDonaterBlock-error-2");
         }
         addDataForSessionStorage("session_login9cmd", "donaterBlock", data[0].block);
         addDataForSessionStorage("tempNineCMD", "isDonater", true);
       })
-      .catch(function(Error) {
+      .catch(function(error) {
         delDataFromSessionStorage("session_login9cmd", "donaterBlock");
-        console.log(Error);
-        return {
-          Error: "Có lỗi xảy ra trong checkDonaterBlock()"
-        };
+        console.log(error);
+        return error;
       });
   }
 }
@@ -453,53 +483,104 @@ async function fetchTicketArena() {
     if (user === null) {
       return;
     }
-    const response = await fetch("https://api.9capi.com/arenaLeaderboard");
+    const response = await fetch(urlArenaData);
 
     const data = await response.json();
 
     if (data.length === 0) {
-      throw new Error("No data arena");
+      throw $.i18n("_9capi-fetchTicketArena-error-1");
     } else {
       const foundUser = data.find((item) => item.avataraddress.toLowerCase() === user.toLowerCase());
 
       if (!foundUser) {
-        throw new Error("Cann't find you in arena");
+        throw $.i18n("_9capi-fetchTicketArena-error-2");
       }
 
       const currentTickets = foundUser.currenttickets;
       addDataForSessionStorage("session_login9cmd", "ticketArena", currentTickets);
     }
-  } catch (Error) {
+  } catch (error) {
     delDataFromSessionStorage("session_login9cmd", "ticketArena");
-    console.log("Lỗi khi nhận ticket Arena " + Error);
+    console.log("Lỗi khi nhận ticket Arena " + error);
   }
 }
+async function fetchPatrolReward() {
+  console.log("fetchPatrolReward start");
+  var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
+  var avatarAddress = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
 
+  try {
+    var post_data_json = {
+      query: `mutation {
+        putAvatar(agentAddress: "${Address9c}", avatarAddress: "${avatarAddress}") {
+          agentAddress
+          avatarAddress
+          claimCount
+          createdAt
+          lastClaimedAt
+          level
+        }
+      }`
+    };
+    let url = urlProxy_default + urlPatrolGraphql;
+    var response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(post_data_json),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    var apiResponse = await response.json();
+    if (apiResponse && apiResponse.data && apiResponse.data.putAvatar) {
+      let level = apiResponse.data.putAvatar.level;
+      let filteredPolicies = patrolRewardPolicy.filter(policy => level >= policy.level);
+      let maxLevelMax = Math.max(...filteredPolicies.map(policy => policy.level));
+      let selectedPolicy = patrolRewardPolicy.find(policy => policy.level === maxLevelMax);
+      if (selectedPolicy) {
+        let temp = {
+          claimCount: apiResponse.data.putAvatar.claimCount,
+          lastClaimedAt: apiResponse.data.putAvatar.lastClaimedAt,
+          crystal: selectedPolicy.crystal,
+          silverDust: selectedPolicy.silverDust
+        };
+        addDataForSessionStorage("session_login9cmd", "patrolRewardInfo", temp);
+      } else {
+        throw $.i18n("showNotification-fetchPatrolReward-apiResponse-error-1");
+      }
+    } else if (apiResponse && apiResponse.errors && apiResponse.errors[0].message) {
+      throw apiResponse.errors[0].message;
+    } else {
+      throw $.i18n("showNotification-fetchPatrolReward-apiResponse-error-2");
+    }
+  } catch (error) {
+    delDataFromSessionStorage("session_login9cmd", "patrolRewardInfo");
+    console.log("Lỗi khi nhận thông tin Patrol Reward " + error);
+  }
+}
 async function checkYourServer() {
   console.log("checkYourServer start");
   // Ktra server
   var url_Server = getDataFromSessionStorage("session_login9cmd", "url_Server");
 
-  if (!(url_Server === null)) {
+  if (url_Server !== null) {
     var passwordServer = getDataFromSessionStorage("session_login9cmd", "passwordServer");
     try {
       var response = await fetch("https://jsonblob.com/api/" + passwordServer + "/" + url_Server);
       if (!response.ok) {
-        throw new Error("code error" + response.status);
+        throw $.i18n("yourServer-checkYourServer-error-1", response.status);
       }
       var data = await response.json();
       if (data.hasOwnProperty("message")) {
         var errorMessage = data.message;
-        throw new Error(errorMessage);
+        throw $.i18n("yourServer-checkYourServer-error-2", errorMessage);
       }
       addDataForSessionStorage("session_login9cmd", "request", "getPublicKey");
       addDataForSessionStorage("session_login9cmd", "dataRequest", "");
       await startFuncUseServerTask("getPublicKey");
-    } catch (Error) {
-      console.log(Error);
-      return {
-        Error: "Có lỗi xảy ra trong checkYourServer()"
-      };
+    } catch (error) {
+      console.log(error);
+      return error
     }
   }
 }
@@ -509,14 +590,14 @@ async function fetchCSVname() {
     const csvUrl = "https://raw.githubusercontent.com/planetarium/NineChronicles/" + pathNineChronicles + "/nekoyume/Assets/StreamingAssets/Localization/item_name.csv";
     const response = await fetch(csvUrl);
     if (!response.ok) {
-      throw new Error('Error fetching CSV: ' + response.status);
+      throw $.i18n("apiGithubNineChronicles-fetchCSVname-error-1", response.status);
     }
     const csvData = await response.text();
     processDataCSVName(csvData);
     await fetchCSVLevelReq();
   } catch (error) {
     // Xử lý lỗi khi tải tệp CSV
-    console.error('Error fetching CSV:', error);
+    console.error(error);
   }
 }
 async function fetchCSVLevelReq() {
@@ -524,7 +605,7 @@ async function fetchCSVLevelReq() {
   const csvUrl = "csv/ItemRequirementSheet.csv";
   const response = await fetch(csvUrl);
   if (!response.ok) {
-    throw new Error('Error fetching CSV: ' + response.status);
+    throw $.i18n("apiGithubNineChronicles-fetchCSVname-error-1", response.status);
   }
   const csvData = await response.text();
   processDataCSVLevelReq(csvData);
@@ -551,7 +632,7 @@ function generateDataEquipments(input) {
       name: itemData.name || "Unknown", // Thêm trường "name" từ dataCSV hoặc một giá trị mặc định "Unknown" nếu không tồn tại
       level_req: itemData.level_req || level_req_default, // Thêm trường "level_req" từ dataCSV hoặc một giá trị mặc định 0 nếu không tồn tại
       mimislevel: itemData.mimislevel || mimislevels_default,
-	image: `https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/Resources/UI/Icons/Item/${itemId}.png`,
+      image: `https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/Resources/UI/Icons/Item/${itemId}.png`,
       id: itemId,
       itemType: item.itemType,
       itemSubType: item.itemSubType,
@@ -563,7 +644,7 @@ function generateDataEquipments(input) {
       exp: item.exp,
       CP: (item.skills !== [] ? Math.round((item.statsMap.hP * mathCP['hP'] + item.statsMap.aTK * mathCP['aTK'] + item.statsMap.dEF * mathCP['dEF'] + item.statsMap.sPD * mathCP['sPD'] + item.statsMap.hIT * mathCP['hIT']) * mathCP['hasSkill']) : Math.round(item.statsMap.hP * mathCP['hP'] + item.statsMap.aTK * mathCP['aTK'] + item.statsMap.dEF * mathCP['dEF'] + item.statsMap.sPD * mathCP['sPD'] + item.statsMap.hIT * mathCP['hIT'])),
       elementalTypeId: item.elementalType === "WIND" ? 4 : item.elementalType === "LAND" ? 3 : item.elementalType === "WATER" ? 2 : item.elementalType === "FIRE" ? 1 : 0,
-      elementalType: item.elementalType === "NORMAL" ? "https://raw.githubusercontent.com/planetarium/NineChronicles/" + pathNineChronicles + "/nekoyume/Assets/Resources/UI/Icons/ElementalType/icon_element_normal.png" : `https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/Resources/UI/Icons/ElementalType/icon_elemental_${item.elementalType.toLowerCase()}.png`,
+      elementalTypeImg: item.elementalType === "NORMAL" ? "https://raw.githubusercontent.com/planetarium/NineChronicles/" + pathNineChronicles + "/nekoyume/Assets/Resources/UI/Icons/ElementalType/icon_element_normal.png" : `https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/Resources/UI/Icons/ElementalType/icon_elemental_${item.elementalType.toLowerCase()}.png`,
       itemId: item.itemId,
       statsMap: item.statsMap,
       skills: skillsData,
@@ -725,6 +806,69 @@ function updateAPBar2(typeBar) {
   }, customProgressBar_setTimeout);
 }
 
+function updatePatrolBar(typeBar) {
+  var patrolRewardInfo = getDataFromSessionStorage("session_login9cmd", "patrolRewardInfo");
+  var spansTimePatrol = $(".lobby-patrol-view-8 span");
+  var _temp2 = document.getElementsByClassName("lobby-patrol-view-7");
+  _temp2[0].style.display = "block";
+  if (patrolRewardInfo !== null) {
+    let lastClaimedAt = patrolRewardInfo.lastClaimedAt;
+    let lastClaimedTime = new Date(lastClaimedAt);
+    let timeNow = Math.floor((Date.now() - lastClaimedTime) / 1000);
+    let remainingSeconds = secondWaitRewardPatrol - timeNow;
+    let hours = Math.floor(remainingSeconds / 3600);
+    let minutes = Math.floor((remainingSeconds % 3600) / 60);
+    let seconds = remainingSeconds % 60;
+
+    $(".lobby_patrolReward_modal_5_6").text(patrolRewardInfo.crystal);
+    $(".lobby_patrolReward_modal_5_7").text(patrolRewardInfo.silverDust);
+    $(".lobby_patrolReward_modal_6 span").eq(0).text(Math.floor(timeNow / 3600));
+    $(".lobby_patrolReward_modal_6 span").eq(1).text(Math.floor((timeNow % 3600) / 60));
+    $(".lobby_patrolReward_modal_5_9_1").text($.i18n("lobby-patrol-claim-button", hours, minutes));
+    spansTimePatrol.eq(0).numberAnimate("set", hours);
+    spansTimePatrol.eq(1).numberAnimate("set", minutes);
+    spansTimePatrol.eq(2).numberAnimate("set", seconds);
+
+    _temp2[0].style.display = "none";
+    if (remainingSeconds <= 0) {
+      typeBar.setPercentage(100);
+      $(".lobby_patrolReward_modal_5_9_1").prop("disabled", false);
+      $(".lobby_patrolReward_modal_5_9_1").removeClass("disabled");
+      $(".lobby-patrol-view").addClass("zoom-in-out");
+      $(".lobby-patrol-view-2").css("filter", "brightness(1)");
+      $(".lobby-patrol-view-4").hide();
+      $(".lobby-patrol-view-6").show();
+    } else {
+      let percentage = (timeNow / secondWaitRewardPatrol) * 100;
+      typeBar.setPercentage(percentage);
+      $(".lobby_patrolReward_modal_5_9_1").prop("disabled", true);
+      $(".lobby_patrolReward_modal_5_9_1").addClass("disabled");
+      $(".lobby-patrol-view").removeClass("zoom-in-out");
+      $(".lobby-patrol-view-2").css("filter", "brightness(0.5)");
+      $(".lobby-patrol-view-4").show();
+      $(".lobby-patrol-view-6").hide();
+    }
+  } else {
+    typeBar.setPercentage(0);
+    $(".lobby_patrolReward_modal_5_9_1").prop("disabled", true);
+    $(".lobby_patrolReward_modal_5_9_1").addClass("disabled");
+    $(".lobby_patrolReward_modal_5_6").text("----");
+    $(".lobby_patrolReward_modal_5_7").text("--");
+    spansTimePatrol.eq(0).numberAnimate("set", "--");
+    spansTimePatrol.eq(1).numberAnimate("set", "--");
+    spansTimePatrol.eq(2).numberAnimate("set", "--");
+    $(".lobby-patrol-view").removeClass("zoom-in-out");
+    $(".lobby-patrol-view-2").css("filter", "brightness(1)");
+    $(".lobby-patrol-view-4").hide();
+    $(".lobby-patrol-view-6").hide();
+    _temp2[0].style.display = "block";
+  }
+
+  setTimeout(function() {
+    updatePatrolBar(typeBar);
+  }, customProgressBar_setTimeout);
+}
+
 function updateTurnSweep_range() {
   var actionPoint = getDataFromSessionStorage("session_login9cmd", "actionPoint");
   var APBaseOnStake = getDataFromSessionStorage("session_login9cmd", "APBaseOnStake");
@@ -770,8 +914,8 @@ function fetchDataAvatar_display() {
   // $("#radioStagesweep_fixed span").text(APBaseOnStake);
 
   var _temp2 = document.getElementsByClassName("lobby-loading-vip image-avatar");
-  if (!(armorId === null)) {
-    if (armorId <= armorId_normal) {
+  if (armorId !== null) {
+    if (armorId < armorId_normal) {
       $(".lobby-armorId-view").attr("src", "https://raw.githubusercontent.com/planetarium/NineChronicles/" + pathNineChronicles + "/nekoyume/Assets/Resources/PFP/" + armorId + ".png");
       $(".lobby-frame-view").attr("src", "assets/img/Common/UI_Common/character_frame_dcc_mod.png");
     } else {
@@ -780,11 +924,11 @@ function fetchDataAvatar_display() {
     }
     _temp2[0].style.display = "none";
   } else {
-    $(".lobby-armorId-view").attr("src", "assets/img/Common/UI_Common/"+armorId_normal+".png");
+    $(".lobby-armorId-view").attr("src", "assets/img/Common/UI_Common/" + armorId_normal + ".png");
     $(".lobby-frame-view").attr("src", "assets/img/Common/UI_Common/character_frame_mod.png");
     _temp2[0].style.display = "block";
   }
-  if (!(level === null)) {
+  if (level !== null) {
     $(".lobby-level-view span").numberAnimate("set", level);
     _temp2[0].style.display = "none";
   } else {
@@ -799,7 +943,7 @@ function fetchDataAvatar_display() {
     _temp2[0].style.display = "block";
   }
 
-  if (!(crystal === null)) {
+  if (crystal !== null) {
     $(".lobby-crystal-bar-view-3 span").numberAnimate("set", crystal.toLocaleString("en-US"));
     var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-crystal-bar-view-4");
     _temp2[0].style.display = "none";
@@ -807,7 +951,7 @@ function fetchDataAvatar_display() {
     $(".lobby-crystal-bar-view-3 span").numberAnimate("set", "------");
   }
 
-  if (!(gold === null)) {
+  if (gold !== null) {
     $(".lobby-NCG-bar-view-3 span").numberAnimate("set", gold.toLocaleString("en-US"));
     var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-NCG-bar-view-4");
     _temp2[0].style.display = "none";
@@ -815,7 +959,7 @@ function fetchDataAvatar_display() {
     $(".lobby-NCG-bar-view-3 span").numberAnimate("set", "------");
   }
 
-  if (!(ticketArena === null)) {
+  if (ticketArena !== null) {
     // $('.lobby-arena-view-2 span').numberAnimate('set', ticketArena);
     $(".lobby-arena-view-ticket1 span").text(ticketArena);
     var _temp2 = document.getElementsByClassName("lobby-loading-vip lobby-arena-view-ticket2");
@@ -825,7 +969,8 @@ function fetchDataAvatar_display() {
     $(".lobby-arena-view-ticket1 span").text("");
   }
 
-  if (!(passStage === null)) {
+
+  if (passStage !== null) {
     $("#radioStagesweep_label span").text(passStage);
   } else {
     $("#radioStagesweep_label span").text("999");
@@ -866,13 +1011,13 @@ function fetchDataAvatar_display() {
     spansTableBlockNow.eq(1).numberAnimate("set", avgBlock);
     spansTableBlockNow.eq(3).text(url_rpc);
     spansTableBlockNow.eq(2).numberAnimate("set", delayUseNode);
-    if (!(donaterBlock === null)) {
+    if (donaterBlock !== null) {
       $(".lobby-donater-view span").numberAnimate("set", (donaterBlock - blockNow).toLocaleString("en-US"));
     } else {
       $(".lobby-donater-view span").numberAnimate("set", "------");
     }
 
-    if (!(dailyRewardReceivedIndex === null)) {
+    if (dailyRewardReceivedIndex !== null) {
       // Tính toán số giây
       let seconds_2 = (dailyRewardReceivedIndex - blockNow + 1700) * avgBlock;
       let seconds = Math.abs(seconds_2);
@@ -1168,6 +1313,7 @@ document.addEventListener("DOMContentLoaded", function() {
     comments: $(".lobby_comment"),
     managerUseNode: $(".lobby_manager_use_node_modal"),
     arena: $(".lobby_arena_modal"),
+    patrol: $(".lobby_patrolReward_modal"),
     // Thêm các modal khác nếu cần
   };
 
@@ -1203,8 +1349,8 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 /////////////// Hàm chọn node từ link api rpc
-function node_list_error(Error) {
-  addToLog("Lỗi khi load data rpc " + Error);
+function node_list_error(error) {
+  addToLog("Lỗi khi load data rpc " + error);
   node_list_default.forEach(function(item) {
     var optionText = item.name + " • " + item.rpc;
     var optionValue = item.url;
@@ -1233,21 +1379,21 @@ function node_list(data) {
 
 function listAvatar() {
   var address = $("#Address9c").val();
-  var url = "https://api.9cscan.com/account?address=" + address;
+  var url = "/account?address=" + address;
 
   fetch(url)
     .then((response) => {
       if (response.ok) {
         return response.json();
       } else if (response.status === 404) {
-        throw new Error("Not found avatar");
+        throw $.i18n("_9cscan-listAvatar-error-1");
       } else {
-        throw new Error("Request failed with status: " + response.status);
+        throw $.i18n("_9cscan-listAvatar-error-2", response.status);
       }
     })
     .then((data) => {
       if (Array.isArray(data) && data.length === 0) {
-        throw new Error("Not found avatar");
+        throw $.i18n("_9cscan-listAvatar-error-1");
       } else {
         return data; // Trả về dữ liệu
       }
@@ -1263,14 +1409,14 @@ function listAvatar() {
         $("#avatarSelect").append($option);
       });
     })
-    .catch(function(Error) {
+    .catch(function(error) {
       // Xóa danh sách hiện có (nếu tồn tại)
       $("#avatarSelect").empty();
 
-      var $option = $("<option>").text(Error).val("");
+      var $option = $("<option>").text(error).val("");
       $("#avatarSelect").append($option);
 
-      console.log("Lỗi: " + Error);
+      console.log("Lỗi: " + error);
     });
 }
 
@@ -1280,54 +1426,169 @@ function startUseNodeTask(typeAuto) {
   handleUseNodeTasks.startUseNode(typeAuto);
 }
 
+async function claimPatrolRewardUseNode() {
+  try {
+    $("#runGifBarUseNode").attr("src", "assets/img/gif/run.gif");
+    const taskOutput = $("#taskOutput");
+    const taskProgress = $("<p>");
+
+    taskOutput.prepend($("<p class='fs-5'>").text($.i18n("task-claimPatrolReward-taskOutput-start")));
+    taskOutput.prepend(taskProgress);
+
+    progress = 0;
+    if (!shouldContinue(progress, "autoClaimPatrolReward-switch")) {
+      taskOutput.prepend($("<p>").text($.i18n("task-claimPatrolReward-taskOutput-stop-by-user", progress)));
+      $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+      return;
+    }
+    taskProgress.text($.i18n("task-claimPatrolReward-taskOutput-progress", progress));
+    var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
+    var avatarAddress = getDataFromSessionStorage("session_login9cmd", "avatarAddress");
+    taskOutput.prepend(`<p>Address: <span class="user-select-all">${Address9c}</span></p>`, `<p>Avatar: <span class="user-select-all">${avatarAddress}</span></p>`);
+    try {
+      var post_data_json = {
+        query: `mutation {
+      claim(agentAddress: "${Address9c}" avatarAddress: "${avatarAddress}")
+    }`
+      };
+      let url = urlProxy_default + urlPatrolGraphql;
+      taskOutput.prepend(`<p>URL: <span class="user-select-all">${url}</span></p>`);
+      taskOutput.prepend(`<p>Send: <span class="user-select-all">${JSON.stringify(post_data_json)}</span></p>`);
+      var response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(post_data_json),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      var apiResponse = await response.json();
+      taskOutput.prepend(`<p>Receive: <span class="user-select-all">${JSON.stringify(apiResponse)}</span> </p>`);
+
+      if (apiResponse && apiResponse.data && apiResponse.data.claim !== null) {
+        const checkStatusSuccess = $("<p class='bg-success text-white'>");
+        const checkStatusFailure = $("<p class='bg-danger text-white'>");
+        const checkStatusStaging = $("<p class='bg-info text-white'>");
+        const checkStatusInvalid = $("<p class='bg-dark text-white'>");
+
+        $("#taskOutput").prepend(checkStatusSuccess.text("Success: 0"), checkStatusFailure.text("Failure: 0"), checkStatusStaging.text("Staging: 0"), checkStatusInvalid.text("Invalid: 0"));
+
+        let transArray = [apiResponse.data.claim];
+        let numTrans = 1;
+        for (let trans of transArray) {
+          $("#taskOutput").prepend("Check status 25 times • Transaction " + numTrans + " • " + trans);
+          let successCount = 0;
+          let stagingCount = 0;
+          let failureCount = 0;
+          let invalidCount = 0;
+
+          for (let i = 0; i <= 25; i += 1) {
+            const response = await fetch(`${url9cscanApi}transactions/${trans}/status`);
+            const data = await response.json();
+
+            if (data.status === 'SUCCESS') {
+              showNotification($.i18n("showNotification-tryUseNode-claimPatrolReward-checkStatus-success"), "success", showNotification_timeShow);
+              successCount++;
+              checkStatusSuccess.text("Success: " + successCount);
+              i += 25;
+            } else if (data.status === 'STAGING') {
+              stagingCount++;
+              checkStatusStaging.text("Staging: " + stagingCount);
+              if (i == 25) {
+                showNotification($.i18n("showNotification-tryUseNode-claimPatrolReward-checkStatus-staging"), "info", showNotification_timeShow);
+              }
+            } else if (data.status === 'FAILURE') {
+              showNotification($.i18n("showNotification-tryUseNode-claimPatrolReward-checkStatus-failure"), "error", showNotification_timeShow);
+              failureCount++;
+              checkStatusFailure.text("Failure: " + failureCount);
+              i += 25;
+            } else if (data.status === 'INVALID') {
+              invalidCount++;
+              checkStatusInvalid.text("Invalid: " + invalidCount);
+              i += 5;
+              if (i >= 25) {
+                showNotification($.i18n("showNotification-tryUseNode-claimPatrolReward-checkStatus-invalid"), "warning", showNotification_timeShow);
+              }
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+          }
+        }
+      } else if (apiResponse && apiResponse.errors && apiResponse.errors[0].message) {
+        throw apiResponse.errors[0].message;
+      } else {
+        throw $.i18n("showNotification-fetchPatrolReward-apiResponse-error-2");
+      }
+    } catch (error) {
+      delDataFromSessionStorage("session_login9cmd", "patrolRewardInfo");
+      console.log("Lỗi khi nhận quà Patrol" + error);
+      throw error;
+    }
+    progress = 100;
+    if (!shouldContinue(progress, "autoClaimPatrolReward-switch")) {
+      taskOutput.prepend($("<p>").text($.i18n("task-claimPatrolReward-taskOutput-stop-by-user", progress)));
+      $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+      return;
+    }
+
+    taskOutput.prepend($("<p>").text($.i18n("task-claimPatrolReward-taskOutput-completed")));
+    $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+  } catch (error) {
+    $("#taskOutput").prepend($("<p>").text($.i18n("task-claimPatrolReward-taskOutput-error", error)));
+    showNotification($.i18n("task-claimPatrolReward-taskOutput-error", error), "error", showNotification_timeShow);
+    $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
+  }
+}
+
+
+
 async function RefillAPUseNode() {
   try {
     $("#runGifBarUseNode").attr("src", "assets/img/gif/run.gif");
     const taskOutput = $("#taskOutput");
     const taskProgress = $("<p>");
 
-    taskOutput.prepend($("<p class='fs-5'>").text($.i18n("task-refill-AP-taskOutput-start")));
+    taskOutput.prepend($("<p class='fs-5'>").text($.i18n("task-refillAP-taskOutput-start")));
     taskOutput.prepend(taskProgress);
     await delayUseNode();
     progress = 0;
     if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-      taskOutput.prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-stop-by-user", progress)));
+      taskOutput.prepend($("<p>").text($.i18n("task-refillAP-taskOutput-stop-by-user", progress)));
       $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
       return;
     }
-    taskProgress.text($.i18n("task-refill-AP-taskOutput-progress", progress));
+    taskProgress.text($.i18n("task-refillAP-taskOutput-progress", progress));
     await delayUseNode();
 
     progress = 25;
     if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-      taskOutput.prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-stop-by-user", progress)));
+      taskOutput.prepend($("<p>").text($.i18n("task-refillAP-taskOutput-stop-by-user", progress)));
       $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
       return;
     }
-    taskProgress.text($.i18n("task-refill-AP-taskOutput-progress", progress));
+    taskProgress.text($.i18n("task-refillAP-taskOutput-progress", progress));
     await delayUseNode();
 
     progress = 50;
     if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-      taskOutput.prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-stop-by-user", progress)));
+      taskOutput.prepend($("<p>").text($.i18n("task-refillAP-taskOutput-stop-by-user", progress)));
       $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
       return;
     }
-    taskProgress.text($.i18n("task-refill-AP-taskOutput-progress", progress));
+    taskProgress.text($.i18n("task-refillAP-taskOutput-progress", progress));
     await delayUseNode();
 
     progress = 75;
     if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-      taskOutput.prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-stop-by-user", progress)));
+      taskOutput.prepend($("<p>").text($.i18n("task-refillAP-taskOutput-stop-by-user", progress)));
       $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
       return;
     }
-    taskProgress.text($.i18n("task-refill-AP-taskOutput-progress", progress));
+    taskProgress.text($.i18n("task-refillAP-taskOutput-progress", progress));
     await delayUseNode();
 
     progress = 100;
     if (!shouldContinue(progress, "on_off_auto_refillAP")) {
-      taskOutput.prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-stop-by-user", progress)));
+      taskOutput.prepend($("<p>").text($.i18n("task-refillAP-taskOutput-stop-by-user", progress)));
       $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
       return;
     }
@@ -1342,10 +1603,10 @@ async function RefillAPUseNode() {
     // taskProgress.text(`Refill AP task progress now: ${progress}%`);
     // }
 
-    taskOutput.prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-completed")));
+    taskOutput.prepend($("<p>").text($.i18n("task-refillAP-taskOutput-completed")));
     $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
-  } catch (Error) {
-    $("#taskOutput").prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-error", Error)));
+  } catch (error) {
+    $("#taskOutput").prepend($("<p>").text($.i18n("task-refillAP-taskOutput-error", error)));
     $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
   }
 }
@@ -1405,11 +1666,13 @@ async function SweepUseNode() {
 
     taskOutput.prepend($("<p>").text($.i18n("task-sweep-taskOutput-completed")));
     $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
-  } catch (Error) {
-    $("#taskOutput").prepend($("<p>").text($.i18n("task-refill-AP-taskOutput-error", Error)));
+  } catch (error) {
+    $("#taskOutput").prepend($("<p>").text($.i18n("task-sweep-taskOutput-error", error)));
     $("#runGifBarUseNode").attr("src", "assets/img/gif/run.png");
   }
 }
+
+
 
 function shouldContinue(progress, autoOnOffCheck) {
   const continueUseNodeCheckbox = document.getElementById("continueUseNodeCheckbox");
@@ -1442,6 +1705,9 @@ const handleUseNodeTasks = {
       await RefillAPUseNode();
     } else if (typeAuto === "sweep" && document.getElementById("on_off_auto_sweep").checked && document.getElementById("continueUseNodeCheckbox").checked) {
       await SweepUseNode();
+    } else if (typeAuto === "claimPatrolReward" && document.getElementById("autoClaimPatrolReward-switch").checked && document.getElementById("continueUseNodeCheckbox").checked) {
+      await claimPatrolRewardUseNode();
+      fetchDataAvatarAgain();
     }
 
     this.isUseNodeBusy = false;
@@ -1484,11 +1750,24 @@ function deleteAllTasks() {
   updateTaskInfo();
 }
 
+function tryUseNode_claimPatrolReward() {
+  showNotification($.i18n("showNotification-tryUseNode-tryClaimPatrolReward"), "alert", showNotification_timeShow);
+  if (!$("#continueUseNodeCheckbox").prop("checked")) {
+    showNotification($.i18n("showNotification-tryUseNode-claimPatrolReward-info-1"), "info", showNotification_timeShow);
+    return;
+  }
+  if (!$("#autoClaimPatrolReward-switch").prop("checked")) {
+    showNotification($.i18n("showNotification-tryUseNode-claimPatrolReward-info-2"), "info", showNotification_timeShow);
+    return;
+  }
+  startUseNodeTask("claimPatrolReward");
+}
+
 function tryUseNode_refillAP() {
   if (getDataFromSessionStorage("tempNineCMD", "canAuto") !== true) {
     showNotification($.i18n("showNotification-tryUseNode-refillAP-info-1"), "info", showNotification_timeShow);
     return;
-  };
+  }
   if (!$("#continueUseNodeCheckbox").prop("checked")) {
     showNotification($.i18n("showNotification-tryUseNode-refillAP-info-2"), "info", showNotification_timeShow);
     return;
@@ -1842,122 +2121,118 @@ function creatTableInventory() {
         }
       ],
       [{
-          field: 'skills.skillId',
-          title: 'Skill id',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'skills.skillChance',
-          title: 'Skill chance',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'skills.skillElementalType',
-          title: 'Skill elemental type',
-          sortable: true,
-          align: 'center',
-          filterControl: 'select',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'skills.skillPower',
-          title: 'Skill power',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'skills.skillReferencedStatType',
-          title: 'Skill referenced stat type',
-          sortable: true,
-          align: 'center',
-          filterControl: 'select',
-          visible: false
-        }, {
-          field: 'skills.skillStatPowerRatio',
-          title: 'Skill stat power ratio',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'stat.baseValue',
-          title: 'Stat base value',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'stat.additionalValue',
-          title: 'Stat additional value',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'stat.totalValue',
-          title: 'Total value',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'stat.statType',
-          title: 'Stat type',
-          sortable: true,
-          align: 'center',
-          filterControl: 'select',
-          visible: false
-        }
-
-        , {
-          field: 'statsMap.aTK',
-          title: 'ATK',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'statsMap.cRI',
-          title: 'CRI',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'statsMap.dEF',
-          title: 'DEF',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'statsMap.hIT',
-          title: 'HIT',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'statsMap.hP',
-          title: 'HP',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }, {
-          field: 'statsMap.sPD',
-          title: 'SPD',
-          sortable: true,
-          align: 'center',
-          filterControl: 'input',
-          visible: false
-        }
-      ]
+        field: 'skills.skillId',
+        title: 'Skill id',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'skills.skillChance',
+        title: 'Skill chance',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'skills.skillElementalType',
+        title: 'Skill elemental type',
+        sortable: true,
+        align: 'center',
+        filterControl: 'select',
+        visible: false
+      }, {
+        field: 'skills.skillPower',
+        title: 'Skill power',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'skills.skillReferencedStatType',
+        title: 'Skill referenced stat type',
+        sortable: true,
+        align: 'center',
+        filterControl: 'select',
+        visible: false
+      }, {
+        field: 'skills.skillStatPowerRatio',
+        title: 'Skill stat power ratio',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'stat.baseValue',
+        title: 'Stat base value',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'stat.additionalValue',
+        title: 'Stat additional value',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'stat.totalValue',
+        title: 'Total value',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'stat.statType',
+        title: 'Stat type',
+        sortable: true,
+        align: 'center',
+        filterControl: 'select',
+        visible: false
+      }, {
+        field: 'statsMap.aTK',
+        title: 'ATK',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'statsMap.cRI',
+        title: 'CRI',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'statsMap.dEF',
+        title: 'DEF',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'statsMap.hIT',
+        title: 'HIT',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'statsMap.hP',
+        title: 'HP',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }, {
+        field: 'statsMap.sPD',
+        title: 'SPD',
+        sortable: true,
+        align: 'center',
+        filterControl: 'input',
+        visible: false
+      }]
     ],
     data: [],
   }
@@ -2025,7 +2300,10 @@ function processDataCSVName(csvData) {
   // Lấy cột được chọn dựa trên ngôn ngữ hiện tại
   let selectedColumn = 'English';
   const currentLanguage = $.i18n().locale;
-const langCSV_default = {en: "English", vi:"Vietnam"};
+  const langCSV_default = {
+    en: "English",
+    vi: "Vietnam"
+  };
   if (langCSV_default[currentLanguage]) {
     selectedColumn = langCSV_default[currentLanguage];
   }
@@ -2099,8 +2377,8 @@ function processDataCSVLevelReq(csvData) {
 }
 ////////////////////////
 function translateLocaleFunc() {
-// Thay thế các biến vào data-args-translateLocale
-document.querySelector('.needReplaceTrans-autoRefresh').setAttribute('data-args-translateLocale', document.querySelector('.needReplaceTrans-autoRefresh').getAttribute('data-args-translateLocale').replace('timerFetchDataAvatar_setTimeout', timerFetchDataAvatar_setTimeout/1000));
+  // Thay thế các biến vào data-args-translateLocale
+  document.querySelector('.needReplaceTrans-autoRefresh').setAttribute('data-args-translateLocale', document.querySelector('.needReplaceTrans-autoRefresh').getAttribute('data-args-translateLocale').replace('timerFetchDataAvatar_setTimeout', timerFetchDataAvatar_setTimeout / 1000));
 
   $('html').i18n(); // data-i18n="[placeholder]lobby-login-address9c-placeholder"
   $('.translateLocale').each(function() {

@@ -93,17 +93,15 @@
         }
       };
       $(document).ready(function() {
-
-
         $('.lobby-level-view span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
         $('.lobby-arena-view-4 span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-        //$('.lobby-arena-view-2 span').numberAnimate({
-        //	animationTimes: [500, 1000, 500]
-        //});				
+        $('.lobby-patrol-view-8 span').numberAnimate({
+          animationTimes: [500, 1000, 500]
+        });
         $('.lobby-donater-view span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
@@ -204,7 +202,7 @@
           if (urlServer.length !== 19 && urlServer.length > 0 && /^\d+$/.test(urlServer)) {
             var errorDiv = document.createElement("small"); // Tạo phần tử div mới
             errorDiv.className = "text-danger form-text"; // Áp dụng lớp CSS text-danger từ Bootstrap
-            errorDiv.innerText = "Your url server incorrect";
+            errorDiv.innerText = $.i18n("lobby-login-yourServer-text-error");
 
             var formGroup = urlServerInput.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
 
@@ -217,13 +215,8 @@
             formGroup.appendChild(errorDiv); // Thêm thông báo lỗi vào phần tử cha
             return; // Dừng việc xử lý tiếp theo
           }
-          showNotification($.i18n('lobby-login-submit-button') + " ...", "alert", 10000);
+          showNotification($.i18n('lobby-login-submit-button') + " ...", "alert", delayUseNode_default);
           save_9cmd_form_data_login(); // Lưu dữ liệu từ form vào Local Storage
-
-          var submitBtn = $("#submit_login_form");
-          submitBtn.addClass("disabled");
-          submitBtn.html($.i18n("lobby-login-submit-button-logged-in"));
-          submitBtn.prop("disabled", true);
 
           fetchDataAvatarAgain();
         });
@@ -265,13 +258,13 @@
 
         /////////////// Lấy dữ liệu node 1 lần
         // Sử dụng fetch
-        fetch("https://api.9capi.com/rpc")
+        fetch(urlListNodeBy9capi)
           .then((response) => response.json())
           .then((data) => node_list(data))
           .catch((error) => node_list_error(error));
         /////////////// Làm mới info avatar liên tục
-        // Lặp lại yêu cầu fetch sau mỗi 5 giây
-        setInterval(fetch_data_block_now, 5000);
+        // Lặp lại yêu cầu fetch sau mỗi fetchDataAvatar_display_setTimeout giây
+        setInterval(fetch_data_block_now, fetchDataAvatar_display_setTimeout);
         // Khởi tạo lần đầu khi trang được tải
         fetch_data_block_now();
         updateTurnSweep_range();
@@ -306,9 +299,18 @@
           backgroundOpacity: 1,
         });
 
+        var progressBarPatrol = $("#progressBarPatrol").customProgressBar({
+          imageUrl: "assets/img/Common/Other/Patrol/PatrolGauge_01_mod.png",
+          imageHeight: 460,
+          imageWidth: 60,
+          backgroundImageUrl: "assets/img/Common/Other/Patrol/PatrolGauge_Bg_mod.png",
+          backgroundOpacity: 1,
+        });
+
         updateAPBar(APBarLobbyCreat);
         updateAPBar2(APBar2LobbyCreat);
         updatetaskUseNodeBar(taskUseNodeBar);
+        updatePatrolBar(progressBarPatrol);
 
 
         fetchDataAvatar_display();
@@ -327,7 +329,7 @@
         // oldLog.apply(console, arguments);
         // };
         // })();
-        Noty.setMaxVisible(5);
+        Noty.setMaxVisible(numberNotiShow);
 
         // Active list
         $('#locale-switcher li').click(function() {
@@ -347,10 +349,7 @@
         $.i18n({
             locale: document.documentElement.lang,
           })
-          .load({
-            'en': 'i18n/en.json',
-            'vi': 'i18n/vi.json'
-          }).done(function() {
+          .load(listLocaleHaveToTran).done(function() {
             $('.locale-switcher').on('click', 'a', function(e) {
               e.preventDefault();
               $('.locale-switcher li a').removeClass('active');
@@ -400,10 +399,32 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
 
     </div>
 
-    <div class="lobby_test_modal_arena lobby_hide_modal" style="display: none;">
-      <img class="button_lobby lobby_test_modal_4" data-action="arena" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
-      <img class="lobby_test_modal_1" src="assets/img/Common/UI_Popup/frameLogin.png" />
-      <div class="lobby_test_modal_2"></div>
+    <div class="lobby_patrolReward_modal lobby_hide_modal" style="display: none;">
+      <img class="button_lobby lobby_login_modal_4" data-action="patrol" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
+      <img class="lobby_login_modal_1" src="assets/img/Common/UI_Popup/frameMedium.png" />
+      <div class="lobby_login_modal_2"></div>
+      <div class="lobby_patrolReward_modal_3" data-i18n="lobby-patrol-timeReward-text-1">Patroll Reward</div>
+      <div class="lobby_patrolReward_modal_4" data-i18n="lobby-patrol-timeReward-text-2">THE HIGHER YOUR LEVEL, THE HIGHER YOUR REWARDS!</div>
+      <div class="lobby_patrolReward_modal_6 translateLocale" data-args-translateLocale="lobby-patrol-timeReward-text-3">Patrol Time <img src="assets/img/Common/Other/Icon/Icon_Clock.png" /><span>--</span>h <span>--</span>m</div>
+      <div class="lobby_patrolReward_modal_5">
+        <img src="assets/img/gif/Patrol.gif" class="lobby_patrolReward_modal_5_1" />
+        <img src="assets/img/Common/Other/Icon/item_bg_Normal.png" class="lobby_patrolReward_modal_5_2" />
+        <img src="assets/img/Common/Other/Icon/item_bg_Normal.png" class="lobby_patrolReward_modal_5_3" />
+        <img src="https://raw.githubusercontent.com/planetarium/NineChronicles/development/nekoyume/Assets/Resources/UI/Icons/Item/800201.png" class="lobby_patrolReward_modal_5_4" />
+        <img src="assets/img/Common/UI_Common/CRYSTAL.png" class="lobby_patrolReward_modal_5_5" />
+        <span class="lobby_patrolReward_modal_5_6">----</span>
+        <span class="lobby_patrolReward_modal_5_7">--</span>
+        <div class="lobby_patrolReward_modal_5_8">
+          <div style="transform-origin: center; transform: rotate(90deg);" id="progressBarPatrol"></div>
+        </div>
+        <div class="row gap-2 lobby_patrolReward_modal_5_9">
+          <button onclick="tryUseNode_claimPatrolReward();updateTaskInfo();" class="col-9 btn-ninecmd translateLocale lobby_patrolReward_modal_5_9_1" data-args-translateLocale="lobby-patrol-claim-button,--,--">Remaining Time About --h --m</button>
+          <div class="col-3 form-check form-switch">
+            <input type="checkbox" role="switch" class="form-check-input switch-useNodeTask" data-switch-group="claimPatrolReward" />
+            <label for="autoClaimPatrolReward-switch" class="form-label">auto claim</label>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="lobby_login_modal lobby_hide_modal" style="display: none;">
@@ -476,6 +497,12 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       </div>
     </div>
 
+    <div class="lobby_test_modal_arena lobby_hide_modal" style="display: none;">
+      <img class="button_lobby lobby_test_modal_4" data-action="arena" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
+      <img class="lobby_test_modal_1" src="assets/img/Common/UI_Popup/frameLogin.png" />
+      <div class="lobby_test_modal_2"></div>
+    </div>
+
     <div class="lobby_manager_use_node_modal lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_manager_use_node_modal_4" data-action="managerUseNode" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_manager_use_node_modal_1" src="assets/img/Common/UI_Popup/frameSetingNineCMD.png" />
@@ -535,8 +562,10 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                           </div>
                         </div>
                         <div class="col-md-6">
+                          <button onclick="tryUseNode_claimPatrolReward();updateTaskInfo();" class="btn btn-primary mb-3">Try claim Patrol Reward</button>
                           <button onclick="tryUseNode_refillAP();updateTaskInfo();" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-tryRefillAP-button">Try Refill AP</button>
                           <button onclick="tryUseNode_sweep();updateTaskInfo();" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-trySweep-button">Try Sweep</button>
+
                         </div>
                       </div>
                       <div class="row">
@@ -551,16 +580,19 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                       <div class="row mt-3">
                         <div class="col-md-12">
                           <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="continueUseNodeCheckbox" checked />
+                            <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" id="continueUseNodeCheckbox" data-switch-group="useNode" />
                             <label class="form-check-label" for="continueUseNodeCheckbox" data-i18n="settingNineCMD-tabManageUseNode-continueCheckbox-label">Continue use node?</label>
-                          </div>
-                          <div class="form-check form-switch">
+
+                            <input type="checkbox" role="switch" id="autoClaimPatrolReward-switch" name="autoClaimPatrolRewardSwitch" class="form-check-input switch-useNodeTask" data-switch-group="claimPatrolReward" />
+                            <label for="autoClaimPatrolReward-switch" class="form-label" data-i18n="settingNineCMD-tabManageUseNode-claimPatrolRewardCheckbox-label">On / off auto claim Patrol Reward</label>
+
+
                             <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="refillAP" id="on_off_auto_refillAP" />
                             <label class="form-check-label" for="on_off_auto_refillAP" data-i18n="settingNineCMD-tabManageUseNode-refillAPCheckbox-label">On / off auto Refill AP</label>
-                          </div>
-                          <div class="form-check form-switch">
+
                             <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="sweep" id="on_off_auto_sweep" />
                             <label class="form-check-label" for="on_off_auto_sweep" data-i18n="settingNineCMD-tabManageUseNode-sweepCheckbox-label">On / off auto Sweep</label>
+
                           </div>
                         </div>
                       </div>
@@ -701,7 +733,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="nav-inventory-equipment" role="tabpanel" aria-labelledby="nav-inventory-equipment-tab" tabindex="0">
 
-            <table class="table-inventory" data-sortable="true" data-unique-id="stt" data-show-refresh="true" data-virtual-scroll="false" data-maintain-meta-data="true" data-show-multi-sort="true" data-sort-priority='[{"sortName": "itemSubType","sortOrder":"desc"},{"sortName":"CP","sortOrder":"desc"}]' data-pagination-successively-size=1 data-pagination-use-intermediate="false" data-pagination-pages-by-side=1 data-buttons-order="['columns', 'multipleSort', 'autoRefresh', 'refresh', 'fullscreen', 'customView', 'paginationSwitch']" data-show-columns="true" data-show-columns-search="true" data-sort-reset-page="true" data-sort-empty-last="true" data-toolbar-align="right" data-pagination="true" data-page-size="8" data-page-list="[8, 16, 32, 64, all]" data-show-columns-toggle-all="true" data-search="true" data-visible-search="true" data-search-highlight="false" data-search-accent-neutralise="true" data-show-toggle="false" data-show-fullscreen="true" data-show-pagination-switch="true" data-show-refresh="false" data-show-jump-to="true" data-group-by="true" data-group-by-toggle="true" data-group-by-show-toggle-icon="true" data-group-by-field="itemSubType" data-filter-control="true" data-show-search-clear-button="true" data-key-events="false" data-show-custom-view="true" data-custom-view="customViewFormatter" data-show-custom-view-button="true" data-custom-view-default-view="true" data-auto-refresh="true" data-auto-refresh-interval=150 data-click-to-select="true">
+            <table class="table-inventory" data-sortable="true" data-unique-id="stt" data-show-refresh="true" data-virtual-scroll="false" data-maintain-meta-data="true" data-show-multi-sort="true" data-sort-priority='[{"sortName": "itemSubType","sortOrder":"desc"},{"sortName":"CP","sortOrder":"desc"}]' data-pagination-successively-size=1 data-pagination-use-intermediate="false" data-pagination-pages-by-side=1 data-buttons-order="['columns', 'multipleSort', 'autoRefresh', 'refresh', 'fullscreen', 'customView', 'paginationSwitch']" data-show-columns="true" data-show-columns-search="true" data-sort-reset-page="true" data-sort-empty-last="true" data-toolbar-align="right" data-pagination="true" data-page-size="8" data-page-list="[8, 16, 32, 64, all]" data-show-columns-toggle-all="true" data-search="true" data-visible-search="true" data-search-highlight="false" data-search-accent-neutralise="true" data-show-toggle="false" data-show-fullscreen="true" data-show-pagination-switch="true" data-show-jump-to="true" data-group-by="true" data-group-by-toggle="true" data-group-by-show-toggle-icon="true" data-group-by-field="itemSubType" data-filter-control="true" data-show-search-clear-button="true" data-key-events="false" data-show-custom-view="true" data-custom-view="customViewFormatter" data-show-custom-view-button="true" data-custom-view-default-view="true" data-auto-refresh="true" data-auto-refresh-interval=150 data-click-to-select="true">
             </table>
 
             <template id="profileTemplate">
@@ -853,25 +885,64 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       <img class="button_lobby lobby-tool-view-3" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_06.png" data-action="comments" />
     </div>
 
+    <div class="button_lobby lobby-patrol-view" data-action="patrol">
+      <div class="lobby-patrol-view-1">
+        <img src="assets/img/Lobby/Main_Patrol_01.png" alt="Patrol Main" />
+      </div>
+      <div class="lobby-patrol-view-2">
+        <img src="assets/img/Common/Other/Patrol/PatrolReward.png" alt="Patrol Reward" />
+      </div>
+      <div class="lobby-patrol-view-3">
+        <img src="assets/img/Common/Other/Lobby/UI_icon_patrol.png" alt="Patrol UI Icon" />
+      </div>
+      <div class="lobby-patrol-view-4" style="display: none;">
+        <img class="lobby-patrol-view-4-1" src="assets/img/gif/run.gif" alt="runGifPatrol GIF" />
+        <span class="lobby-patrol-view-4-2" data-i18n="lobby-patrol-patrolling">Patrolling...</span>
+      </div>
+      <div class="lobby-patrol-view-5">
+        <img src="assets/img/Typephography/en/patrollReward.png" data-i18n="[src]Typephography-patrollReward-src" />
+      </div>
+      <div class="lobby-patrol-view-6" style="display: none;">
+        <img class="lobby-patrol-view-4-3" src="assets/img/gif/patrollAura.gif" alt="patrollAura GIF" />
+        <img class="lobby-patrol-view-4-4" src="assets/img/gif/patrollAura2.gif" alt="patrollAura2 GIF" />
+      </div>
+      <img class="lobby-patrol-view-7" src="assets/loading_vip.gif" />
+      <div class="lobby-patrol-view-8"><span>--</span>h <span>--</span>m <span>--</span>s</div>
+      <!-- <div class="lobby-arena-view-2"> -->
+      <!-- <div class="badge rounded-pill bg-danger lobby-arena-view-ticket1"><img class="lobby-loading-vip lobby-arena-view-ticket2" src="assets/loading_vip.gif" /><span></span></div> -->
+      <!-- </div> -->
+      <!-- <div class="lobby-arena-view-3"> -->
+      <!-- <img src="assets/img/Common/UI_Common/UI_icon_Block.png" /> -->
+      <!-- </div> -->
+      <!-- <div class="lobby-arena-view-4"> -->
+      <!-- <span>----</span> (<span>--</span>h <span>--</span>m <span>--</span>s)<br /> -->
+      <!-- (<span>--</span>/20) -->
+      <!-- </div> -->
+    </div>
+
     <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
       <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
       <span class="tooltiptext">
-        <div style="width: 142px; height: 194px; overflow: hidden; transform: scale(0.7); position: relative; top: 0%; right: -9%;">
+        <div style="width: 147px;height: 279px;overflow: hidden;transform: translateX(21px) translateY(-10px) scale(0.7);">
           <div class="form-check form-switch form-check-reverse">
+            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="useNode" />
+            <label class="form-check-label" for="continueUseNodeCheckbox">use auto?</label>
+            <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="claimPatrolReward" />
+            <label class="form-check-label" for="autoClaimPatrolReward-switch">auto Patrol</label>
             <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="refillAP" />
-            <label class="form-check-label" for="on_off_auto_refillAP">Auto refill</label>
+            <label class="form-check-label" for="on_off_auto_refillAP">auto Refill</label>
             <input class="form-check-input switch-useNodeTask" type="checkbox" data-switch-group="sweep" />
-            <label class="form-check-label" for="on_off_auto_sweep">Auto sweep</label>
+            <label class="form-check-label" for="on_off_auto_sweep">auto Sweep</label>
             <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_repeat" checked />
-            <label class="form-check-label" for="on_off_auto_repeat">Auto repeat</label>
+            <label class="form-check-label" for="on_off_auto_repeat">auto Repeat</label>
             <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_craft" checked />
-            <label class="form-check-label" for="on_off_auto_craft">Auto craft</label>
+            <label class="form-check-label" for="on_off_auto_craft">auto Craft</label>
             <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_upgrade" checked />
-            <label class="form-check-label" for="on_off_auto_upgrade">Auto upgrade</label>
+            <label class="form-check-label" for="on_off_auto_upgrade">auto Upgrade</label>
             <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_arena" checked />
-            <label class="form-check-label" for="on_off_auto_arena">Auto arena</label>
+            <label class="form-check-label" for="on_off_auto_arena">auto Arena</label>
             <input class="form-check-input switch-useNodeTask" type="checkbox" id="on_off_auto_raid" checked />
-            <label class="form-check-label" for="on_off_auto_raid">Auto world boss</label>
+            <label class="form-check-label" for="on_off_auto_raid">auto World Boss</label>
           </div>
         </div>
       </span>
