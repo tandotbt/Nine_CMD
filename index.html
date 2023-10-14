@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
-
   <head>
     <meta charset="UTF-8" />
     <title>Nine CMD</title>
@@ -14,26 +13,19 @@
     <meta name="msapplication-TileColor" content="#ffc40d" />
     <meta name="msapplication-config" content="assets/icon/browserconfig.xml" />
     <meta name="theme-color" content="#fff030" />
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.messagestore.min.js"></script>
-
     <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css" rel="stylesheet">
     <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/page-jump-to/bootstrap-table-page-jump-to.min.css" rel="stylesheet">
     <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/group-by-v2/bootstrap-table-group-by.css" rel="stylesheet">
     <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
-
     <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/custom-view/bootstrap-table-custom-view.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/defer-url/bootstrap-table-defer-url.min.js"></script>
@@ -46,40 +38,31 @@
     <script src="js/lazysizes.min.js" async=""></script>
     <script src="js/const.js"></script>
     <script src="js/numberAnimate.js"></script>
-
     <!-- Ngôn ngữ -->
     <script src="i18n/bootstrap-table-vi-VN.js"></script>
     <script src="i18n/bootstrap-table-en-US.js"></script>
-
     <script src="js/script.js"></script>
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
-
     <style>
       body {
         font-family: "nineChroniclesFont", monospace;
       }
-
       .number-font {
         font-family: "nineChroniclesFont2", monospace;
       }
-
       @font-face {
         font-family: "nineChroniclesFont";
         src: url(assets/font/kanit-light.otf) format("opentype");
       }
-
       @font-face {
         font-family: "nineChroniclesFont2";
         src: url(assets/font/PoorStory-Regular.ttf) format("truetype");
       }
-
       @font-face {
         font-family: "ninecmdFont";
         src: url(assets/font/NotoMono-Regular.ttf) format("truetype");
       }
-
     </style>
-
     <script>
       document.onreadystatechange = function() {
         if (document.readyState !== "complete") {
@@ -105,49 +88,36 @@
         $('.lobby-donater-view span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-
         $('.lobby-AP-bar-view-5 span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-
         $('.lobby-AP-bar-view-3 span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-
         $('.lobby-AP-bar-2-view-3 span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-
         $('.lobby-crystal-bar-view-3 span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-
         $('.lobby-NCG-bar-view-3 span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-
         $('.lobby-table-block-now-view span').numberAnimate({
           animationTimes: [500, 1000, 500]
         });
-
         /////////////// Chỉnh kích thước cửa sổ liên tục
-
         var backgroundAspectRatio = 1920 / 1080;
-
         $(window).on("load resize", function() {
           var windowWidth = $(window).width();
           var windowHeight = $(window).height();
-
           var backgroundWidth = windowWidth;
           var backgroundHeight = backgroundWidth / backgroundAspectRatio;
-
           var zoomPercentage = backgroundHeight / 5.515;
           if (windowWidth / windowHeight >= backgroundAspectRatio) {
             zoomPercentage = windowHeight / 5.515;
           }
-
           var display_lobby = $(".display_lobby");
-
           display_lobby.css({
             width: "0px",
             height: "0px",
@@ -155,16 +125,13 @@
             overflow: "auto",
           });
         });
-
         document.getElementById('randomStageSweep_add').addEventListener('click', function() {
           var randomStageSweep_select = document.getElementById('randomStageSweep_select');
           var number = randomStageSweep_select.value;
-
           if (number) {
             var listItem = document.createElement('li');
             listItem.className = 'list-group-item randomStageSweep_pick d-flex justify-content-between align-items-center';
             listItem.innerHTML = number + '<button class="btn btn-danger btn-sm deleteButton" type="button">x</button>';
-
             var randomStageSweep_list = document.getElementById('randomStageSweep_list');
             randomStageSweep_list.appendChild(listItem);
             var numberItems = document.getElementsByClassName('randomStageSweep_pick');
@@ -175,7 +142,6 @@
             randomStageSweep_percentage();
           }
         });
-
         document.getElementById('randomStageSweep_list').addEventListener('click', function(event) {
           if (event.target.classList.contains('deleteButton')) {
             var listItem = event.target.parentElement;
@@ -187,37 +153,29 @@
             }
           }
         });
-
-
         /////////////// Hành động login
         // Lắng nghe sự kiện submit của form
         document.getElementById("login_form").addEventListener("submit", function(event) {
           addToLog("Bắt đầu submit form login");
           event.preventDefault(); // Ngăn chặn việc gửi form đi
-
           var urlServerInput = document.getElementById("url_server_jsonBlod");
           var urlServer = urlServerInput.value;
-
           // Kiểm tra độ dài và kí tự đầu tiên của urlServer
           if (urlServer.length !== 19 && urlServer.length > 0 && /^\d+$/.test(urlServer)) {
             var errorDiv = document.createElement("small"); // Tạo phần tử div mới
             errorDiv.className = "text-danger form-text"; // Áp dụng lớp CSS text-danger từ Bootstrap
             errorDiv.innerText = $.i18n("lobby-login-yourServer-text-error");
-
             var formGroup = urlServerInput.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
-
             // Xóa các thông báo cũ trước khi thêm thông báo lỗi mới
             var existingErrorDivs = formGroup.querySelectorAll(".text-danger");
             existingErrorDivs.forEach(function(existingErrorDiv) {
               existingErrorDiv.remove();
             });
-
             formGroup.appendChild(errorDiv); // Thêm thông báo lỗi vào phần tử cha
             return; // Dừng việc xử lý tiếp theo
           }
           showNotification($.i18n('lobby-login-submit-button') + " ...", "alert", delayUseNode_default);
           save_9cmd_form_data_login(); // Lưu dữ liệu từ form vào Local Storage
-
           fetchDataAvatarAgain();
         });
         // Xóa thông báo lỗi khi người dùng nhấp vào trường url_server_jsonBlod
@@ -233,7 +191,6 @@
         // Đăng ký sự kiện khi người dùng nhập xong trường Address9C
         Address9cInput.addEventListener("input", function() {
           var Address9cValue = Address9cInput.value.trim();
-
           if (Address9cValue.length === 42 && Address9cValue.startsWith("0x")) {
             // Hiển thị trường avatarSelect
             document.getElementById("avatarSelect2").style.display = "block";
@@ -241,10 +198,8 @@
             document.getElementById("loading_login").style.display = "block";
             // Tối vùng form
             document.getElementById("login_form").style.opacity = "0.5";
-
             // Gọi hàm listAvatar()
             listAvatar();
-
             // Ẩn gif loading sau 2 giây (hoặc sau khi xử lý xong)
             setTimeout(function() {
               document.getElementById("login_form").style.opacity = "1"; // Khôi phục độ trong suốt của form
@@ -255,7 +210,6 @@
             document.getElementById("avatarSelect2").style.display = "none";
           }
         });
-
         /////////////// Lấy dữ liệu node 1 lần
         // Sử dụng fetch
         fetch(urlListNodeBy9capi)
@@ -274,7 +228,6 @@
           var isChecked = $(this).prop("checked");
           $(".switch-useNodeTask[data-switch-group='" + switchGroup + "']").prop("checked", isChecked);
         });
-
         var APBarLobbyCreat = $("#APBarLobbyCreat").customProgressBar({
           imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_mod.png",
           imageHeight: 128,
@@ -282,7 +235,6 @@
           backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
           backgroundOpacity: 0,
         });
-
         var APBar2LobbyCreat = $("#APBar2LobbyCreat").customProgressBar({
           imageUrl: "assets/img/Common/UI_Common/UI_bar_02_pink_yellow_mod.png",
           imageHeight: 128,
@@ -290,7 +242,6 @@
           backgroundImageUrl: "assets/img/Common/UI_Common/UI_bar_02_bg_mod.png",
           backgroundOpacity: 0,
         });
-
         var taskUseNodeBar = $("#taskUseNodeBar").customProgressBar({
           imageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_mod.png",
           imageHeight: 246,
@@ -298,7 +249,6 @@
           backgroundImageUrl: "assets/img/Common/UI_WorldBoss/WB_WaveGauge_Bg_mod.png",
           backgroundOpacity: 1,
         });
-
         var progressBarPatrol = $("#progressBarPatrol").customProgressBar({
           imageUrl: "assets/img/Common/Other/Patrol/PatrolGauge_01_mod.png",
           imageHeight: 460,
@@ -306,20 +256,14 @@
           backgroundImageUrl: "assets/img/Common/Other/Patrol/PatrolGauge_Bg_mod.png",
           backgroundOpacity: 1,
         });
-
         updateAPBar(APBarLobbyCreat);
         updateAPBar2(APBar2LobbyCreat);
         updatetaskUseNodeBar(taskUseNodeBar);
         updatePatrolBar(progressBarPatrol);
-
-
         fetchDataAvatar_display();
-
-
         // (function() {
         // var oldLog = console.log;
         // var debugElement = document.getElementById('debug');
-
         // console.log = function(message) {
         // if (typeof message === 'object') {
         // debugElement.innerHTML = (JSON && JSON.stringify ? JSON.stringify(message) : String(message)) + '<br />' + debugElement.innerHTML;
@@ -330,22 +274,15 @@
         // };
         // })();
         Noty.setMaxVisible(numberNotiShow);
-
         // Active list
         $('#locale-switcher li').click(function() {
           // Xóa lớp active từ tất cả các phần tử <li>
           $('#locale-switcher li').removeClass('active');
-
           // Thêm lớp active vào phần tử <li> được click
           $(this).addClass('active');
         });
-
       });
-
       jQuery(function($) {
-
-
-
         $.i18n({
             locale: document.documentElement.lang,
           })
@@ -357,24 +294,15 @@
               console.log($(this).data('locale'));
               $.i18n().locale = $(this).data('locale');
               translateLocaleFunc();
-
             });
-
             translateLocaleFunc();
-
-
-
           });
       });
-
     </script>
   </head>
   <!-- <div id="debug" class="debug"></div> -->
-
   <body class="lobby-grid display_lobby">
-
     <img class="intro_loop" src="assets/clip/intro_loop.gif" />
-
     <img class="background_lobby" src="assets/img/Lobby/Background_all_2.jpg" />
     <div class="test_check">
       <button type="button" class="btn btn-outline-success btn-sm" onclick="showNotification($.i18n('lobby-check-notyfi'), 'alert', 5000);
@@ -384,9 +312,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'error', 5000);
 showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-check-notyfi">
         Check
       </button>
-
       <button type="button" class="btn btn-outline-success btn-sm needReplaceTrans-autoRefresh translateLocale" data-args-translateLocale="lobby-autoRefreshData,timerFetchDataAvatar_setTimeout" onclick="fetchDataAvatarAgain();">Auto refresh after 300 seconds</button>
-
       <div class="dropdown">
         <button class="btn btn-outline-success btn-sm dropdown-toggle translateLocale" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-args-translateLocale="lobby-change-language">
           <img src="https://flagcdn.com/us.svg" width="30" alt="United States"> Change language
@@ -396,9 +322,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
           <li><a class="dropdown-item" href="#" data-locale="vi"><img src="https://flagcdn.com/vn.svg" width="30" alt="Vietnam"> Tiếng Việt</a></li>
         </ul>
       </div>
-
     </div>
-
     <div class="lobby_patrolReward_modal lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_login_modal_4" data-action="patrol" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_login_modal_1" src="assets/img/Common/UI_Popup/frameMedium.png" />
@@ -426,7 +350,6 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         </div>
       </div>
     </div>
-
     <div class="lobby_login_modal lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_login_modal_4" data-action="login" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_login_modal_1" src="assets/img/Common/UI_Popup/frameLogin.png" />
@@ -435,14 +358,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         <div class="modal-content" style="height: 415px; overflow-y: auto;">
           <img id="loading_login" style="position: absolute; transition: translate(-50%, -50%); top: 42%; z-index: 1; left: 35%; display: none;" src="assets/loading_vip.gif" />
           <div class="modal-body">
-            <div style="
-    /* text-align: center; */
-    /* zoom: 45%; */
-    transform-origin: center top;
-    transform: scale(0.45);
-    width: 485px;
-    height: 70px;
-    ;">
+            <div style="transform-origin: center top;transform: scale(0.45);width: 485px;height: 70px;">
               <img src="assets/img/Typephography/en/Login.png" data-i18n="[src]Typephography-login-src" />
             </div>
             <form id="login_form" class="overflow-hidden" style="/* text-align: center; */">
@@ -451,24 +367,20 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                 <small class="form-text text-muted translateLocale" data-args-translateLocale="lobby-login-address9c-noteText">Look like <i class="user-select-all">0x6374FE5F54CdeD72Ff334d09980270c61BC95186</i></small>
                 <label for="Address9c" class="form-label" data-i18n="lobby-login-address9c-label">Nine Chronicles address</label>
               </div>
-
               <div class="form-floating mb-3" id="avatarSelect2" style="display: none;">
                 <select id="avatarSelect" name="avatarSelect" class="form-select" required>
                   <div id="avatarList"></div>
                 </select>
                 <label for="avatarSelect" class="form-label" data-i18n="lobby-login-avatarSelect-label">Choose avatar</label>
               </div>
-
               <div class="form-floating mb-3">
                 <input type="password" placeholder="0x***" id="password" name="password" class="form-control" required data-i18n="[placeholder]lobby-login-password-placeholder" />
                 <label for="password" class="form-label" data-i18n="lobby-login-password-label">Password</label>
               </div>
-
               <div class="form-check form-switch">
                 <input type="checkbox" role="switch" id="is-donater" name="donater" class="form-check-input" />
                 <label for="is-donater" class="form-label" data-i18n="lobby-login-is-donater">registered Donater?</label>
               </div>
-
               <div class="form-floating mb-3">
                 <select id="url_rpc" name="url_rpc" class="form-select"></select>
                 <label for="url_rpc" class="form-label" data-i18n="lobby-login-url-rpc">Choose node</label>
@@ -487,7 +399,6 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                   </div>
                 </div>
               </div>
-
               <div class="row justify-content-center">
                 <button id="submit_login_form" type="submit" class="col-auto btn-ninecmd" data-i18n="lobby-login-submit-button">Login</button>
               </div>
@@ -496,13 +407,11 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         </div>
       </div>
     </div>
-
     <div class="lobby_test_modal_arena lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_test_modal_4" data-action="arena" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_test_modal_1" src="assets/img/Common/UI_Popup/frameLogin.png" />
       <div class="lobby_test_modal_2"></div>
     </div>
-
     <div class="lobby_manager_use_node_modal lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_manager_use_node_modal_4" data-action="managerUseNode" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_manager_use_node_modal_1" src="assets/img/Common/UI_Popup/frameSetingNineCMD.png" />
@@ -565,7 +474,6 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                           <button onclick="tryUseNode_claimPatrolReward();updateTaskInfo();" class="btn btn-primary mb-3">Try claim Patrol Reward</button>
                           <button onclick="tryUseNode_refillAP();updateTaskInfo();" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-tryRefillAP-button">Try Refill AP</button>
                           <button onclick="tryUseNode_sweep();updateTaskInfo();" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-trySweep-button">Try Sweep</button>
-
                         </div>
                       </div>
                       <div class="row">
@@ -573,7 +481,6 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                           <button onclick="deleteAllTasks()" class="btn btn-primary mb-3">
                             <div data-i18n="settingNineCMD-tabManageUseNode-deleteAllTasks-button">Clear all tasks</div> <span id="taskCount" class="badge bg-black">0</span>
                           </button>
-
                           <button onclick="checkAllswitch_useNodeTask()" class="btn btn-primary mb-3" data-i18n="settingNineCMD-tabManageUseNode-checkAllswitch-button">Turn on all</button>
                         </div>
                       </div>
@@ -582,17 +489,12 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                           <div class="form-check form-switch">
                             <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" id="continueUseNodeCheckbox" data-switch-group="useNode" />
                             <label class="form-check-label" for="continueUseNodeCheckbox" data-i18n="settingNineCMD-tabManageUseNode-continueCheckbox-label">Continue use node?</label>
-
                             <input type="checkbox" role="switch" id="autoClaimPatrolReward-switch" name="autoClaimPatrolRewardSwitch" class="form-check-input switch-useNodeTask" data-switch-group="claimPatrolReward" />
                             <label for="autoClaimPatrolReward-switch" class="form-label" data-i18n="settingNineCMD-tabManageUseNode-claimPatrolRewardCheckbox-label">On / off auto claim Patrol Reward</label>
-
-
                             <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="refillAP" id="on_off_auto_refillAP" />
                             <label class="form-check-label" for="on_off_auto_refillAP" data-i18n="settingNineCMD-tabManageUseNode-refillAPCheckbox-label">On / off auto Refill AP</label>
-
                             <input class="form-check-input switch-useNodeTask" type="checkbox" role="switch" data-switch-group="sweep" id="on_off_auto_sweep" />
                             <label class="form-check-label" for="on_off_auto_sweep" data-i18n="settingNineCMD-tabManageUseNode-sweepCheckbox-label">On / off auto Sweep</label>
-
                           </div>
                         </div>
                       </div>
@@ -696,7 +598,6 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         </div>
       </div>
     </div>
-
     <div class="lobby_comment lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_manager_use_node_modal_4" data-action="comments" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_manager_use_node_modal_1" src="assets/img/Common/UI_Popup/frameSetingNineCMD.png" />
@@ -710,11 +611,9 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
             textColor: "#fff",
             subtextColor: "#fff030"
           })
-
         </script>
       </div>
     </div>
-
     <div class="lobby_inventory lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_manager_use_node_modal_4" data-action="inventory" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_manager_use_node_modal_1" src="assets/img/Common/UI_Popup/frameInventory.png" />
@@ -732,12 +631,9 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="nav-inventory-equipment" role="tabpanel" aria-labelledby="nav-inventory-equipment-tab" tabindex="0">
-
             <table class="table-inventory" data-sortable="true" data-unique-id="stt" data-show-refresh="true" data-virtual-scroll="false" data-maintain-meta-data="true" data-show-multi-sort="true" data-sort-priority='[{"sortName": "itemSubType","sortOrder":"desc"},{"sortName":"CP","sortOrder":"desc"}]' data-pagination-successively-size=1 data-pagination-use-intermediate="false" data-pagination-pages-by-side=1 data-buttons-order="['columns', 'multipleSort', 'autoRefresh', 'refresh', 'fullscreen', 'customView', 'paginationSwitch']" data-show-columns="true" data-show-columns-search="true" data-sort-reset-page="true" data-sort-empty-last="true" data-toolbar-align="right" data-pagination="true" data-page-size="8" data-page-list="[8, 16, 32, 64, all]" data-show-columns-toggle-all="true" data-search="true" data-visible-search="true" data-search-highlight="false" data-search-accent-neutralise="true" data-show-toggle="false" data-show-fullscreen="true" data-show-pagination-switch="true" data-show-jump-to="true" data-group-by="true" data-group-by-toggle="true" data-group-by-show-toggle-icon="true" data-group-by-field="itemSubType" data-filter-control="true" data-show-search-clear-button="true" data-key-events="false" data-show-custom-view="true" data-custom-view="customViewFormatter" data-show-custom-view-button="true" data-custom-view-default-view="true" data-auto-refresh="true" data-auto-refresh-interval=150 data-click-to-select="true">
             </table>
-
             <template id="profileTemplate">
-
               <div class="col">
                 <div class="card h-100 text-bg-dark">
                   <img class="card-img lazyload" src="assets/loading_small.gif" data-src="%IMAGE%" alt="...">
@@ -746,12 +642,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                   </div>
                 </div>
               </div>
-
-
             </template>
-
-
-
           </div>
           <div class="tab-pane fade" id="nav-inventory-food" role="tabpanel" aria-labelledby="nav-inventory-food-tab" tabindex="0">Thức ăn</div>
           <div class="tab-pane fade" id="nav-inventory-rune" role="tabpanel" aria-labelledby="nav-inventory-rune-tab" tabindex="0">Rune</div>
@@ -759,17 +650,17 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
           <div class="tab-pane fade" id="nav-inventory-costume" role="tabpanel" aria-labelledby="nav-inventory-costume-tab" tabindex="0">Trang phục</div>
           <div class="tab-pane fade" id="nav-inventory-FungibleAsset" role="tabpanel" aria-labelledby="nav-inventory-FungibleAsset-tab" tabindex="0">Nguyên liệu khác</div>
         </div>
-
       </div>
       <div class="lobby_inventory_2_2"></div>
       <div class="lobby_inventory_2_3"></div>
       <div class="lobby_inventory_3_2"></div>
     </div>
-
-
     <div class="button_lobby lobby-arena-view" data-action="arena">
       <div class="lobby-arena-view-1">
-        <img src="assets/img/Lobby/ranking_01_mod.png" alt="Arena" />
+        <img src="assets/img/Lobby/ranking_01.png" alt="Arena" style="transform: translateX(-8px) translateY(-30px) scale(0.85);filter: brightness(1.1);">
+        <img src="assets/img/Typephography/en/arena.png" data-i18n="[src]Typephography-arena-src" alt="Arena title" style="transform: translateX(-195px) translateY(-320px) scale(0.3);">
+        <img src="assets/img/Lobby/arenaIcon.png" alt="Arena icon" style="transform: translateX(120px) translateY(-585px) scale(0.9);">
+        <img src="assets/img/Lobby/npcArenaIdle.gif" alt="Arena npc" style="transform: translateX(44px) translateY(-520px) scale(1);">
       </div>
       <div class="lobby-arena-view-2">
         <div class="badge rounded-pill bg-danger lobby-arena-view-ticket1"><img class="lobby-loading-vip lobby-arena-view-ticket2" src="assets/loading_vip.gif" /><span></span></div>
@@ -782,19 +673,28 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         (<span>--</span>/20)
       </div>
     </div>
-
-    <div class="button_lobby stage-lobby-view" data-action="stage">
-      <img src="assets/img/Lobby/bg_character_main_08.png" alt="Adventure" />
+	<div class="button_lobby stage-lobby-view" data-action="stage">
+      <img src="assets/img/Lobby/bg_character_main_08.png" alt="Adventure 1" style="transform: translateX(-18px) translateY(-6px) scale(0.86);">
+      <img src="assets/img/Typephography/en/adventure.png" data-i18n="[src]Typephography-adventure-src" alt="Adventure title" style="transform: translateX(-210px) translateY(-120px) scale(0.3);">
+      <img src="assets/img/Lobby/stageIcon.png" alt="Adventure icon" style="transform: translateX(175px) translateY(-345px) scale(0.9);">
+      <img src="assets/img/Lobby/npcStageIdle.gif" alt="Adventure npc" style="transform: translateX(95px) translateY(-250px) scale(0.9);">
     </div>
-
     <div class="button_lobby craft-upgrade-lobby-view" data-action="craft-upgrade">
-      <img src="assets/img/Lobby/bg_character_main_06.png" alt="Workshop" style="/*! text-align: left; *//*! transform-origin: right top; */transform: scale(1.3);/*! width: 333px; *//*! height: 73px; *//*! position: absolute; */" />
+      <img src="assets/img/Lobby/bg_character_main_06.png" alt="Workshop 1" style="transform: translateX(17px) translateY(12px) scale(1.1);" />
+      <img src="assets/img/Typephography/en/craft.png" data-i18n="[src]Typephography-workshop-src" alt="Workshop title" style="transform: translateX(-80px) translateY(-195px) scale(0.3);">
+      <img src="assets/img/Lobby/craftIcon.png" alt="Workshop icon" style="transform: translateX(225px) translateY(-340px) scale(0.9);">
+      <img src="assets/img/Lobby/fire.gif" alt="Workshop fire" style="transform: translateX(60px) translateY(-405px) scale(0.44) rotate(10deg);filter: opacity(0.5) blur(8px);">
+      <img src="assets/img/Lobby/npcGrindIdle.gif" alt="Workshop npc grind" style="transform: translateX(100px) translateY(-510px) scale(1.3);" />
+      <img src="assets/img/Lobby/npcCraftIdle.gif" alt="Workshop npc craft" style="transform: translateX(117px) translateY(-515px) scale(1.2);" />
     </div>
-
     <div class="button_lobby shop-lobby-view" data-action="shop">
-      <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop" style="/*! text-align: left; *//*! transform-origin: right top; */transform: scale(1.15);/*! width: 333px; *//*! height: 73px; *//*! position: absolute; */" />
+      <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop 01" style="transform: translateX(2px) translateY(-2px) scale(0.86);">
+      <img src="assets/img/Lobby/npcShopIdle.gif" alt="Shop NPC" style="transform: translateX(193px) translateY(-210px) scale(1);">
+      <img src="assets/img/Lobby/shop_01.png" alt="Shop 02" style="transform: translateX(19px) translateY(-216px) scale(0.86);">
+      <img src="assets/img/Lobby/shop_01_01.png" alt="Shop 03" style="transform: translateX(-93px) translateY(-181px) scale(1);">
+      <img src="assets/img/Typephography/en/shop.png" data-i18n="[src]Typephography-shop-src" alt="Shop title" style="transform: translateX(3px) translateY(-443px) scale(0.28)">
+      <img src="assets/img/Lobby/shopIcon.png" alt="Shop icon" style="transform: translateX(295px) translateY(-582px) scale(0.9)">
     </div>
-
     <div class="button_lobby login-lobby-view" data-action="login">
       <div class="image-container">
         <img class="lazyload image-avatar lobby-armorId-view" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/10200000.png" />
@@ -803,11 +703,8 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         <div class="lobby-level-view"><span>---</span></div>
       </div>
     </div>
-
     <div class="lobby-name-view"></div>
-
     <div class="lobby-donater-view"><i class="bi-cart2"></i><span>------</span></div>
-
     <div class="button_lobby lobby-table-block-now-view hstack gap-3" data-action="managerUseNode">
       <div class="vr"></div>
       Block:<span>--------</span>
@@ -840,7 +737,6 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       <div class="lobby-AP-bar-view-5"><span>--</span>h <span>--</span>m</div>
       <img class="lobby-loading-vip-2 lobby-AP-bar-view-6" src="assets/loading_vip.gif" />
     </div>
-
     <div class="button_lobby lobby-AP-bar-2-view">
       <div class="lobby-AP-bar-2-view-1">
         <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_star.png" />
@@ -853,11 +749,9 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       <div class="lobby-AP-bar-2-view-2" style="z-index: 10;transform-origin: top;">
         <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_bar_02_bg.png" />
       </div>
-
       <div class="lobby-AP-bar-2-view-3"><span>---</span>/120</div>
       <img class="lobby-loading-vip-2 lobby-AP-bar-2-view-4" src="assets/loading_vip.gif" />
     </div>
-
     <div class="button_lobby lobby-crystal-bar-view">
       <div class="lobby-crystal-bar-view-1">
         <img class="lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_Common/UI_main_icon_crystal_big.png" />
@@ -878,22 +772,20 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       <div class="lobby-NCG-bar-view-3"><span>------</span></div>
       <img class="lobby-loading-vip lobby-NCG-bar-view-4" src="assets/loading_vip.gif" />
     </div>
-
     <div class="lobby-tool-view">
       <img class="button_lobby lobby-tool-view-1" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_02.png" data-action="" />
       <img class="button_lobby lobby-tool-view-2" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_03.png" data-action="inventory" />
       <img class="button_lobby lobby-tool-view-3" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_06.png" data-action="comments" />
     </div>
-
     <div class="button_lobby lobby-patrol-view" data-action="patrol">
-      <div class="lobby-patrol-view-1">
-        <img src="assets/img/Lobby/Main_Patrol_01.png" alt="Patrol Main" />
-      </div>
+      <!-- <div class="lobby-patrol-view-1"> -->
+      <!-- <img src="assets/img/Lobby/Main_Patrol_01.png" alt="Patrol Main" /> -->
+      <!-- </div> -->
       <div class="lobby-patrol-view-2">
         <img src="assets/img/Common/Other/Patrol/PatrolReward.png" alt="Patrol Reward" />
       </div>
       <div class="lobby-patrol-view-3">
-        <img src="assets/img/Common/Other/Lobby/UI_icon_patrol.png" alt="Patrol UI Icon" />
+        <img src="assets/img/Lobby/patrolIcon.png" alt="Patrol icon" />
       </div>
       <div class="lobby-patrol-view-4" style="display: none;">
         <img class="lobby-patrol-view-4-1" src="assets/img/gif/run.gif" alt="runGifPatrol GIF" />
@@ -908,18 +800,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       </div>
       <img class="lobby-patrol-view-7" src="assets/loading_vip.gif" />
       <div class="lobby-patrol-view-8"><span>--</span>h <span>--</span>m <span>--</span>s</div>
-      <!-- <div class="lobby-arena-view-2"> -->
-      <!-- <div class="badge rounded-pill bg-danger lobby-arena-view-ticket1"><img class="lobby-loading-vip lobby-arena-view-ticket2" src="assets/loading_vip.gif" /><span></span></div> -->
-      <!-- </div> -->
-      <!-- <div class="lobby-arena-view-3"> -->
-      <!-- <img src="assets/img/Common/UI_Common/UI_icon_Block.png" /> -->
-      <!-- </div> -->
-      <!-- <div class="lobby-arena-view-4"> -->
-      <!-- <span>----</span> (<span>--</span>h <span>--</span>m <span>--</span>s)<br /> -->
-      <!-- (<span>--</span>/20) -->
-      <!-- </div> -->
     </div>
-
     <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
       <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
       <span class="tooltiptext">
@@ -948,5 +829,4 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       </span>
     </div>
   </body>
-
 </html>

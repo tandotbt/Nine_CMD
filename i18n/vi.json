@@ -3,10 +3,14 @@
     "authors": [
       "tanbt"
     ],
-    "last-updated": "13-10-2023",
+    "last-updated": "14-10-2023",
     "locale": "vi"
   },
   "lobby-change-language": "<img src=\"https://flagcdn.com/vn.svg\" width=\"30\" alt=\"Vietnam\"> Đổi ngôn ngữ",
+  "Typephography-shop-src": "assets/img/Typephography/vi/shop.png",
+  "Typephography-workshop-src": "assets/img/Typephography/vi/craft.png",
+  "Typephography-arena-src": "assets/img/Typephography/vi/arena.png",
+  "Typephography-adventure-src": "assets/img/Typephography/vi/adventure.png",  
   "Typephography-patrollReward-src": "assets/img/Typephography/vi/patrollReward.png",
   "Typephography-login-src": "assets/img/Typephography/vi/Login.png",
   "Typephography-SettingNineCMD-src": "assets/img/Typephography/vi/SettingNineCMD.png",

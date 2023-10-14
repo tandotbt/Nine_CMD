@@ -1379,7 +1379,7 @@ function node_list(data) {
 
 function listAvatar() {
   var address = $("#Address9c").val();
-  var url = "/account?address=" + address;
+  var url = url9cscanApi + "account?address=" + address;
 
   fetch(url)
     .then((response) => {
