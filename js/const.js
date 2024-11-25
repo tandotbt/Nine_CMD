@@ -5,7 +5,7 @@ const ncgStake5AP = 5000;
 const ncgStake4AP = 500000;
 const armorId_normal = 10200000;
 const level_req_default = 0;
-const mimislevels_normal = 0;
+const mimislevels_default = 0;
 const mathCP = {
   hP: 0.7,
   aTK: 10.5,
@@ -39,8 +39,7 @@ const node_list_default = [{
     url: "https://9c-main-rpc-3.nine-chronicles.com/graphql"
   },
 ];
-const urlProxy_default = "https://cors-proxy.fringe.zone/";
-const text2replaceNameItem = "ITEM_NAME_";
+const urlProxy_default = "https://cors-proxy.fringe.zone";
 const urlPatrolGraphql = "https://patrol.9c.gg/graphql";
 const patrolRewardPolicy = [{
     level: 1,
@@ -65,7 +64,28 @@ const listLocaleHaveToTran = {
   'en': 'i18n/en.json',
   'vi': 'i18n/vi.json'
 };
-const nineCMDapi = "https://api.tanvpn.tk/";
-const urlArenaData = "https://api.9capi.com/arenaLeaderboard/";
-const url9cscanApi = "https://api.9cscan.com/";
+const langCSV_default = {
+en: "English",
+vi: "Vietnam"
+};
+const network9cBoard = "9c-main"
+const nineCMDapi = "https://api.tanvpn.tk";
+const urlArenaData = "https://api.9capi.com/arenaLeaderboard";
+const url9cscanApi = "https://api.9cscan.com";
 const urlAllAvatarHaveDCC = "https://api.dccnft.com/v1/9c/avatars/all";
+const networkCSV9cBoard = "9c-main";
+const urlsCSVDataFirst = [
+	`${nineCMDapi}/get9cBoardCSV?network=${networkCSV9cBoard}&csv=ItemRequirementSheet`,
+	`https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/StreamingAssets/Localization/item_name.csv`,
+	`https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/StreamingAssets/Localization/world_name.csv`,
+	`https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/StreamingAssets/Localization/rune_name.csv`,
+	// Thêm các URL khác nếu cần
+];
+
+const fileNamesCSVDataFirst = [
+	"ItemRequirementSheet",
+	"item_name",
+	"world_name",
+	"rune_name",
+	// Thêm các tên tệp khác nếu cần
+];

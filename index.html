@@ -41,7 +41,9 @@
     <!-- Ngôn ngữ -->
     <script src="i18n/bootstrap-table-vi-VN.js"></script>
     <script src="i18n/bootstrap-table-en-US.js"></script>
+	<script src="js/papaparse.min.js"></script>
     <script src="js/script.js"></script>
+	
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <style>
       body {
@@ -113,9 +115,9 @@
           var windowHeight = $(window).height();
           var backgroundWidth = windowWidth;
           var backgroundHeight = backgroundWidth / backgroundAspectRatio;
-          var zoomPercentage = backgroundHeight / 5.515;
+          var zoomPercentage = backgroundHeight / 5.58;
           if (windowWidth / windowHeight >= backgroundAspectRatio) {
-            zoomPercentage = windowHeight / 5.515;
+            zoomPercentage = windowHeight / 5.58;
           }
           var display_lobby = $(".display_lobby");
           display_lobby.css({
@@ -158,33 +160,9 @@
         document.getElementById("login_form").addEventListener("submit", function(event) {
           addToLog("Bắt đầu submit form login");
           event.preventDefault(); // Ngăn chặn việc gửi form đi
-          var urlServerInput = document.getElementById("url_server_jsonBlod");
-          var urlServer = urlServerInput.value;
-          // Kiểm tra độ dài và kí tự đầu tiên của urlServer
-          if (urlServer.length !== 19 && urlServer.length > 0 && /^\d+$/.test(urlServer)) {
-            var errorDiv = document.createElement("small"); // Tạo phần tử div mới
-            errorDiv.className = "text-danger form-text"; // Áp dụng lớp CSS text-danger từ Bootstrap
-            errorDiv.innerText = $.i18n("lobby-login-yourServer-text-error");
-            var formGroup = urlServerInput.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
-            // Xóa các thông báo cũ trước khi thêm thông báo lỗi mới
-            var existingErrorDivs = formGroup.querySelectorAll(".text-danger");
-            existingErrorDivs.forEach(function(existingErrorDiv) {
-              existingErrorDiv.remove();
-            });
-            formGroup.appendChild(errorDiv); // Thêm thông báo lỗi vào phần tử cha
-            return; // Dừng việc xử lý tiếp theo
-          }
           showNotification($.i18n('lobby-login-submit-button') + " ...", "alert", delayUseNode_default);
           save_9cmd_form_data_login(); // Lưu dữ liệu từ form vào Local Storage
           fetchDataAvatarAgain();
-        });
-        // Xóa thông báo lỗi khi người dùng nhấp vào trường url_server_jsonBlod
-        document.getElementById("url_server_jsonBlod").addEventListener("focus", function() {
-          var formGroup = this.closest(".form-floating"); // Tìm phần tử cha gần nhất có lớp CSS .mb-3
-          var errorDivs = formGroup.querySelectorAll(".text-danger");
-          errorDivs.forEach(function(errorDiv) {
-            errorDiv.remove();
-          });
         });
         var Address9cInput = document.getElementById("Address9c");
         var Address9cValue = Address9cInput.value;
@@ -281,28 +259,64 @@
           // Thêm lớp active vào phần tử <li> được click
           $(this).addClass('active');
         });
+	
+		
+// Lắng nghe và hiển thị modal item inventory
+const exampleModal = $('#exampleModal');
+
+exampleModal.on('show.bs.modal', function(event) {
+  // itemView that triggered the modal
+  const itemView = event.relatedTarget;
+  
+  // Extract info from data-bs-* attributes
+  const tableType = itemView.getAttribute('data-bs-table');
+  const uniqueId = itemView.getAttribute('data-bs-uniqueId');
+  const dataItem = $(tableType).bootstrapTable('getRowByUniqueId', uniqueId);
+  // Update the modal's content
+  const testSpan = $('.test-span', exampleModal);
+  testSpan.text(`New data ${dataItem.stt}`);
+});	
+		
       });
-      jQuery(function($) {
-        $.i18n({
-            locale: document.documentElement.lang,
-          })
-          .load(listLocaleHaveToTran).done(function() {
-            $('.locale-switcher').on('click', 'a', function(e) {
-              e.preventDefault();
-              $('.locale-switcher li a').removeClass('active');
-              $(this).addClass('active');
-              console.log($(this).data('locale'));
-              $.i18n().locale = $(this).data('locale');
-              translateLocaleFunc();
-            });
+jQuery(function($) {
+    // Kiểm tra nếu đã có giá trị locale trong localStorage
+    const savedLocale = localStorage.getItem("locale");
+    if (savedLocale) {
+        $.i18n().locale = savedLocale;
+    } else {
+        // Sử dụng giá trị locale từ document.documentElement.lang
+        $.i18n().locale = document.documentElement.lang;
+    }
+
+    $.i18n().load(listLocaleHaveToTran).done(function() {
+        $('.locale-switcher').on('click', 'a', function(e) {
+            e.preventDefault();
+            $('.locale-switcher li a').removeClass('active');
+            $(this).addClass('active');
+            console.log($(this).data('locale'));
+            $.i18n().locale = $(this).data('locale');
+
+            // Lưu giá trị locale vào localStorage
+            localStorage.setItem("locale", $.i18n().locale);
+
             translateLocaleFunc();
-          });
-      });
+        });
+        translateLocaleFunc();
+    });
+});
+
     </script>
   </head>
   <!-- <div id="debug" class="debug"></div> -->
-  <body class="lobby-grid display_lobby">
-    <img class="intro_loop" src="assets/clip/intro_loop.gif" />
+  <body class="lobby-grid display_lobby" style="visibility: hidden;">
+    <!-- <img class="intro_loop" src="assets/clip/loading_entering.gif" /> -->
+<video class="intro_loop" autoplay loop muted poster="assets/clip/loading_entering.jpg">
+  <source src="assets/clip/loading_entering.mp4" type="video/mp4">
+  <source src="assets/clip/loading_entering.webm" type="video/webm">
+	Your browser does not support the video tag.
+</video>
+
+
     <img class="background_lobby" src="assets/img/Lobby/Background_all_2.jpg" />
     <div class="test_check">
       <button type="button" class="btn btn-outline-success btn-sm" onclick="showNotification($.i18n('lobby-check-notyfi'), 'alert', 5000);
@@ -322,7 +336,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
           <li><a class="dropdown-item" href="#" data-locale="vi"><img src="https://flagcdn.com/vn.svg" width="30" alt="Vietnam"> Tiếng Việt</a></li>
         </ul>
       </div>
-    </div>
+    </div>	
     <div class="lobby_patrolReward_modal lobby_hide_modal" style="display: none;">
       <img class="button_lobby lobby_login_modal_4" data-action="patrol" src="assets/img/Common/UI_MainMenu/UI_icon_Mainmenu_main2.png" />
       <img class="lobby_login_modal_1" src="assets/img/Common/UI_Popup/frameMedium.png" />
@@ -332,8 +346,8 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       <div class="lobby_patrolReward_modal_6 translateLocale" data-args-translateLocale="lobby-patrol-timeReward-text-3">Patrol Time <img src="assets/img/Common/Other/Icon/Icon_Clock.png" /><span>--</span>h <span>--</span>m</div>
       <div class="lobby_patrolReward_modal_5">
         <img src="assets/img/gif/Patrol.gif" class="lobby_patrolReward_modal_5_1" />
-        <img src="assets/img/Common/Other/Icon/item_bg_Normal.png" class="lobby_patrolReward_modal_5_2" />
-        <img src="assets/img/Common/Other/Icon/item_bg_Normal.png" class="lobby_patrolReward_modal_5_3" />
+        <img src="assets/img/Common/UI_ItemGrade/item_bg_1.png" class="lobby_patrolReward_modal_5_2" />
+        <img src="assets/img/Common/UI_ItemGrade/item_bg_1.png" class="lobby_patrolReward_modal_5_3" />
         <img src="https://raw.githubusercontent.com/planetarium/NineChronicles/development/nekoyume/Assets/Resources/UI/Icons/Item/800201.png" class="lobby_patrolReward_modal_5_4" />
         <img src="assets/img/Common/UI_Common/CRYSTAL.png" class="lobby_patrolReward_modal_5_5" />
         <span class="lobby_patrolReward_modal_5_6">----</span>
@@ -386,18 +400,18 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
                 <label for="url_rpc" class="form-label" data-i18n="lobby-login-url-rpc">Choose node</label>
               </div>
               <div class="row g-3 text-center">
-                <div class="col-6">
+                <div class="col-12">
                   <div class="form-floating">
-                    <input type="number" placeholder="0000000000000000000" id="url_server_jsonBlod" name="url_server_jsonBlod" class="form-control" data-i18n="[placeholder]lobby-login-url-server-jsonBlod-placeholder" />
-                    <label for="url_server_jsonBlod" class="form-label" data-i18n="lobby-login-url-server-jsonBlod-label">Your server</label>
+                    <input type="text" placeholder="https://api.com" id="url_server_python" name="url_server_python" class="form-control" data-i18n="[placeholder]lobby-login-url-server-python-placeholder" />
+                    <label for="url_server_python" class="form-label" data-i18n="lobby-login-url-server-python-label">Your server</label>
                   </div>
                 </div>
-                <div class="col-6">
-                  <div class="form-floating">
-                    <input type="password" placeholder="12345" id="passwordServer" name="passwordServer" class="form-control" value="12345" data-i18n="[placeholder]lobby-login-url-server-password-placeholder" />
-                    <label for="passwordServer" class="form-label" data-i18n="lobby-login-url-server-password-label">Password (Default 12345)</label>
-                  </div>
-                </div>
+                <!-- <div class="col-6"> -->
+                  <!-- <div class="form-floating"> -->
+                    <!-- <input type="password" placeholder="12345" id="passwordServer" name="passwordServer" class="form-control" value="12345" data-i18n="[placeholder]lobby-login-url-server-password-placeholder" /> -->
+                    <!-- <label for="passwordServer" class="form-label" data-i18n="lobby-login-url-server-password-label">Password (Default 12345)</label> -->
+                  <!-- </div> -->
+                <!-- </div> -->
               </div>
               <div class="row justify-content-center">
                 <button id="submit_login_form" type="submit" class="col-auto btn-ninecmd" data-i18n="lobby-login-submit-button">Login</button>
@@ -631,15 +645,22 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="nav-inventory-equipment" role="tabpanel" aria-labelledby="nav-inventory-equipment-tab" tabindex="0">
-            <table class="table-inventory" data-sortable="true" data-unique-id="stt" data-show-refresh="true" data-virtual-scroll="false" data-maintain-meta-data="true" data-show-multi-sort="true" data-sort-priority='[{"sortName": "itemSubType","sortOrder":"desc"},{"sortName":"CP","sortOrder":"desc"}]' data-pagination-successively-size=1 data-pagination-use-intermediate="false" data-pagination-pages-by-side=1 data-buttons-order="['columns', 'multipleSort', 'autoRefresh', 'refresh', 'fullscreen', 'customView', 'paginationSwitch']" data-show-columns="true" data-show-columns-search="true" data-sort-reset-page="true" data-sort-empty-last="true" data-toolbar-align="right" data-pagination="true" data-page-size="8" data-page-list="[8, 16, 32, 64, all]" data-show-columns-toggle-all="true" data-search="true" data-visible-search="true" data-search-highlight="false" data-search-accent-neutralise="true" data-show-toggle="false" data-show-fullscreen="true" data-show-pagination-switch="true" data-show-jump-to="true" data-group-by="true" data-group-by-toggle="true" data-group-by-show-toggle-icon="true" data-group-by-field="itemSubType" data-filter-control="true" data-show-search-clear-button="true" data-key-events="false" data-show-custom-view="true" data-custom-view="customViewFormatter" data-show-custom-view-button="true" data-custom-view-default-view="true" data-auto-refresh="true" data-auto-refresh-interval=150 data-click-to-select="true">
+            <table data-maintain-meta-data="true" class="table-inventory" data-sortable="true" data-unique-id="stt" data-show-refresh="true" data-virtual-scroll="false" data-maintain-meta-data="true" data-show-multi-sort="true" data-sort-priority='[{"sortName": "itemSubType","sortOrder":"desc"},{"sortName":"CP","sortOrder":"desc"}]' data-pagination-successively-size=1 data-pagination-use-intermediate="false" data-pagination-pages-by-side=1 data-buttons-order="['columns', 'multipleSort', 'autoRefresh', 'refresh', 'fullscreen', 'customView', 'paginationSwitch']" data-show-columns="true" data-show-columns-search="true" data-sort-reset-page="true" data-sort-empty-last="true" data-toolbar-align="right" data-pagination="true" data-page-size="8" data-page-list="[8, 16, 32, 64, all]" data-show-columns-toggle-all="true" data-search="true" data-visible-search="true" data-search-highlight="false" data-search-accent-neutralise="true" data-show-toggle="false" data-show-fullscreen="true" data-show-pagination-switch="true" data-show-jump-to="true" data-group-by="true" data-group-by-toggle="true" data-group-by-show-toggle-icon="true" data-group-by-field="itemSubType" data-filter-control="true" data-show-search-clear-button="true" data-key-events="false" data-show-custom-view="true" data-custom-view="funcCreatImgItem" data-show-custom-view-button="true" data-custom-view-default-view="true" data-auto-refresh="true" data-auto-refresh-interval=150 data-click-to-select="true">
             </table>
-            <template id="profileTemplate">
-              <div class="col">
+            <template id="templateCreatImgItem">
+              <div class="col" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-table=".table-inventory" data-bs-uniqueId="%UNIQUE_STT%">
                 <div class="card h-100 text-bg-dark">
-                  <img class="card-img lazyload" src="assets/loading_small.gif" data-src="%IMAGE%" alt="...">
-                  <div class="card-img-overlay">
+				<img class="card-img lazyload" src="assets/loading_small.gif" data-src="assets/img/Common/UI_ItemGrade/item_bg_%GRADE-1%.png" />
+                  
+                  <div class="card-img-overlay" style="padding: 10%;">
+<img class="card-img lazyload" src="assets/loading_small.gif" data-src="%IMAGE%" alt="item">
+<img class="lazyload" style="width: 30%;position: absolute;top: 0px;left: 0px;" src="assets/loading_small.gif" data-src="assets/img/Common/UI_ItemGrade/Item_option_bg_%GRADE-2%.png" alt="label">
+<img class="lazyload" style="display: %ISEQUIP%;width: 40%;position: absolute;top: 0px;right: 0px;" src="assets/loading_small.gif" data-src="assets/img/Common/UI_ItemGrade/UI_icon_equip.png" alt="isEquip">
 
-                  </div>
+<div class="template-item-option-group">%OPTIONICON%</div>
+<p class="template-item-level">  <span class="template-text-effect">+%LEVEL%</span></p>
+
+				  </div>
                 </div>
               </div>
             </template>
@@ -660,7 +681,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         <img src="assets/img/Lobby/ranking_01.png" alt="Arena" style="transform: translateX(-8px) translateY(-30px) scale(0.85);filter: brightness(1.1);">
         <img src="assets/img/Typephography/en/arena.png" data-i18n="[src]Typephography-arena-src" alt="Arena title" style="transform: translateX(-195px) translateY(-320px) scale(0.3);">
         <img src="assets/img/Lobby/arenaIcon.png" alt="Arena icon" style="transform: translateX(120px) translateY(-585px) scale(0.9);">
-        <img src="assets/img/Lobby/npcArenaIdle.gif" alt="Arena npc" style="transform: translateX(44px) translateY(-520px) scale(1);">
+        <img src="assets/img/Lobby/npcArenaIdle.gif" alt="Arena npc" style="transform: translateX(44px) translateY(-520px) scale(1);filter: brightness(1.2);">
       </div>
       <div class="lobby-arena-view-2">
         <div class="badge rounded-pill bg-danger lobby-arena-view-ticket1"><img class="lobby-loading-vip lobby-arena-view-ticket2" src="assets/loading_vip.gif" /><span></span></div>
@@ -687,13 +708,13 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       <img src="assets/img/Lobby/npcGrindIdle.gif" alt="Workshop npc grind" style="transform: translateX(100px) translateY(-510px) scale(1.3);" />
       <img src="assets/img/Lobby/npcCraftIdle.gif" alt="Workshop npc craft" style="transform: translateX(117px) translateY(-515px) scale(1.2);" />
     </div>
-    <div class="button_lobby shop-lobby-view" data-action="shop">
-      <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop 01" style="transform: translateX(2px) translateY(-2px) scale(0.86);">
-      <img src="assets/img/Lobby/npcShopIdle.gif" alt="Shop NPC" style="transform: translateX(193px) translateY(-210px) scale(1);">
-      <img src="assets/img/Lobby/shop_01.png" alt="Shop 02" style="transform: translateX(19px) translateY(-216px) scale(0.86);">
-      <img src="assets/img/Lobby/shop_01_01.png" alt="Shop 03" style="transform: translateX(-93px) translateY(-181px) scale(1);">
-      <img src="assets/img/Typephography/en/shop.png" data-i18n="[src]Typephography-shop-src" alt="Shop title" style="transform: translateX(3px) translateY(-443px) scale(0.28)">
-      <img src="assets/img/Lobby/shopIcon.png" alt="Shop icon" style="transform: translateX(295px) translateY(-582px) scale(0.9)">
+	<div class="button_lobby shop-lobby-view" data-action="shop">
+      <img src="assets/img/Lobby/bg_character_main_07_mod.png" alt="Shop 01" style="transform: translateX(-24px) translateY(-21px) scale(0.86);">
+      <img src="assets/img/Lobby/npcShopIdle.gif" alt="Shop NPC" style="transform: translateX(160px) translateY(-228px) scale(1);">
+      <img src="assets/img/Lobby/shop_01.png" alt="Shop 02" style="transform: translateX(-7px) translateY(-233px) scale(0.86);">
+      <img src="assets/img/Lobby/shop_01_01.png" alt="Shop 03" style="transform: translateX(178px) translateY(-317px) scale(1);">
+      <img src="assets/img/Typephography/en/shop.png" data-i18n="[src]Typephography-shop-src" alt="Shop title" style="transform: translateX(-55px) translateY(-496px) scale(0.28);">
+      <img src="assets/img/Lobby/shopIcon.png" alt="Shop icon" style="transform: translateX(247px) translateY(-634px) scale(0.9);">
     </div>
     <div class="button_lobby login-lobby-view" data-action="login">
       <div class="image-container">
@@ -801,7 +822,7 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
       <img class="lobby-patrol-view-7" src="assets/loading_vip.gif" />
       <div class="lobby-patrol-view-8"><span>--</span>h <span>--</span>m <span>--</span>s</div>
     </div>
-    <div style="visibility: visible;" class="tooltip-custom button_lobby lobby-info-tooltip-view">
+    <div class="tooltip-custom button_lobby lobby-info-tooltip-view">
       <img src="assets/img/Icons/System/UI_icon_Popup_04.png" />
       <span class="tooltiptext">
         <div style="width: 147px;height: 279px;overflow: hidden;transform: translateX(21px) translateY(-10px) scale(0.7);">
@@ -828,5 +849,25 @@ showNotification($.i18n('lobby-check-notyfi'), 'info', 5000);" data-i18n="lobby-
         </div>
       </span>
     </div>
+<button style="
+    grid-row: 12 / 19;
+    grid-column: 1 / 16;
+    z-index: 20;
+" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>	
+<!-- Modal -->
+<div style="grid-area: 1 / 1 / 62 / 111;" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="
+    grid-template: repeat(49, 10px) / repeat(93, 10px);
+    display: grid;
+">
+    <div class="lobby_item_view">
+      <img class="lobby_item_view_1" src="assets/img/Common/UI_ItemGrade/UI_bg_frame_05_mod2.png" />
+	  <img class="lobby_item_view_2" src="assets/img/Common/UI_ItemGrade/UI_box_gold_01_head.png" />
+		<span class="test-span"></span>
+    </div>
+  </div>
+</div>	
   </body>
 </html>

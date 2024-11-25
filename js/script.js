@@ -1,171 +1,30 @@
-////
-// Hàm khởi động công việc sử dụng your server với các tham số tùy chỉnh
-function startFuncUseServerTask(dataNeed) {
-  return new Promise((resolve, reject) => {
-    handleFuncUseServerTasks.startFuncUseServer(dataNeed, resolve, reject);
-  });
-}
-
-async function FuncUseServer(dataNeed) {
-  try {
-    await requestToYourServer();
-
-    console.log(`FuncUseServer task completed with request ${dataNeed}`);
-    showNotification($.i18n("showNotification-FuncUseServer-success"), "success", showNotification_timeShow);
-  } catch (error) {
-    console.log("Error in FuncUseServer or one of the steps:", error);
-    showNotification(error, "error", showNotification_timeShow);
-    throw ($.i18n("showNotification-FuncUseServer-error") + error)
-  }
-}
-
-// Đối tượng quản lý công việc và hiển thị thông báo
-var handleFuncUseServerTasks = {
-  isFuncUseServerBusy: false,
-  pendingFuncUseServerTasks: [],
-
-  startFuncUseServer: function(dataNeed, resolve, reject) {
-    this.pendingFuncUseServerTasks.push({
-      dataNeed,
-      resolve,
-      reject
-    });
-    this.processFuncUseServerTasks();
-  },
-
-  processFuncUseServerTasks: async function() {
-    if (this.isFuncUseServerBusy) {
-      return;
-    }
-
-    if (this.pendingFuncUseServerTasks.length === 0) {
-      return;
-    }
-
-    this.isFuncUseServerBusy = true;
-    var task = this.pendingFuncUseServerTasks.shift();
-    var dataNeed = task.dataNeed;
-    var resolve = task.resolve;
-    var reject = task.reject;
-    console.log(`Processing FuncUseServer task with request ${dataNeed}...`);
+async function getCSVDataFirst() {
     try {
-      await FuncUseServer(dataNeed);
-      console.log(`FuncUseServer task completed with request ${dataNeed}`);
-      resolve(); // Hàm đã hoàn thành thành công
-    } catch (error) {
-      console.log(`Error occurred during FuncUseServer task with request ${dataNeed}`);
-      reject(error); // Hàm đã xảy ra lỗi
-    }
-
-    this.isFuncUseServerBusy = false;
-    this.processFuncUseServerTasks();
-  },
-};
-
-function requestToYourServer() {
-  return new Promise(async (resolve, reject) => {
-    var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
-    var password = getDataFromSessionStorage("session_login9cmd", "password");
-    var url_Server = getDataFromSessionStorage("session_login9cmd", "url_Server");
-    var passwordServer = getDataFromSessionStorage("session_login9cmd", "passwordServer");
-
-    var request = getDataFromSessionStorage("session_login9cmd", "request");
-    var dataRequest = getDataFromSessionStorage("session_login9cmd", "dataRequest");
-
-    var intervalId = null; // Lưu trữ ID của interval
-    var isCheckingChanges = false; // Biến kiểm tra xem vòng lặp đang chạy hay không
-    var currentRand = null; // Lưu trữ số ngẫu nhiên hiện tại
-
-    async function sendData() {
-      var rand = Math.floor(Math.random() * 10000) + 1; // Tạo số ngẫu nhiên từ 1 đến 100
-      currentRand = rand; // Lưu trữ số ngẫu nhiên hiện tại
-      var data = {
-        rand: rand,
-        Address9c: Address9c,
-        password: password,
-        request: request,
-        data: dataRequest,
-      };
-      try {
-        await fetch("https://jsonblob.com/api/" + passwordServer + "/" + url_Server, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        console.log("Dữ liệu đã được gửi thành công với yêu cầu " + request);
-        await checkChanges(url_Server);
-        resolve(); // Gửi tín hiệu hoàn thành Promise
-      } catch (error) {
-        // console.error("Lỗi khi gửi dữ liệu: " + error);
-        reject(error); // Gửi tín hiệu lỗi của Promise
-      }
-    }
-
-    async function checkChanges(url_Server) {
-      return new Promise(async (resolve, reject) => {
-        let isCheckingChanges = true; // Đánh dấu vòng lặp đang chạy
-        let intervalId;
-        let counter = 0; // Biến đếm số lần console.log("Server chưa phản hồi")
-
-        async function checkServerResponse() {
-          try {
-            const response = await fetch("https://jsonblob.com/api/" + passwordServer + "/" + url_Server);
+        const responses = await Promise.all(urlsCSVDataFirst.map(url => fetch(url)));
+        let index = 0; // Biến đếm để đánh số các phần tử
+        const csvDataArray = await Promise.all(responses.map(response => {
             if (!response.ok) {
-              throw ($.i18n("showNotification-checkServerResponse-error-1") + response.status);
+                throw fileNamesCSVDataFirst[index]; // Ném exception với tên của file lỗi
             }
-            const data = await response.json();
-            const newRand = data.rand;
-            const kqua = data.data;
+            index++; // Tăng biến đếm sau mỗi lần lặp
+            return response.text();
+        }));
 
-            if (newRand > currentRand) {
-              console.log("Số ngẫu nhiên mới: " + newRand);
-              console.log("Lưu lại kqua cho yêu cầu " + request);
-              addDataForSessionStorage("session_login9cmd", request, kqua);
-              addDataForSessionStorage("tempNineCMD", "hasUTCFile", true);
-              addDataForSessionStorage("tempNineCMD", "passwordOk", true);
-              addDataForSessionStorage("tempNineCMD", "serverOk", true);
-              clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
-              isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-              resolve(); // Gửi tín hiệu hoàn thành Promise
-            } else if (newRand < currentRand) {
-              console.log("Có lỗi server gửi về");
-              clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
-              isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-              addDataForSessionStorage("tempNineCMD", "serverOk", true);
-              addDataForSessionStorage("tempNineCMD", "errorYourServer", kqua);
-              throw (" - " + kqua); // Tung ra đối tượng lỗi mới với thông điệp
-            } else {
-              counter++;
-              if (counter > checkServerResponse_countMax) {
-                clearTimeout(intervalId); // Dừng vòng lặp kiểm tra
-                isCheckingChanges = false; // Đánh dấu vòng lặp không còn chạy
-                addDataForSessionStorage("tempNineCMD", "serverOk", false);
-                addDataForSessionStorage("tempNineCMD", "errorYourServer", $.i18n("showNotification-checkServerResponse-error-2", checkServerResponse_countMax));
-                throw ($.i18n("showNotification-checkServerResponse-error-2", checkServerResponse_countMax));
-              } else {
-                console.log("Server chưa phản hồi");
-                if (counter % 10 === 0) {
-                  showNotification($.i18n("showNotification-checkServerResponse-warning", counter), "warning", showNotification_timeShow);
-                }
-              }
-            }
-          } catch (error) {
-            // console.error("Lỗi khi kiểm tra dữ liệu: " + error);
-            delDataFromSessionStorage("tempNineCMD", "hasUTCFile");
-            delDataFromSessionStorage("tempNineCMD", "passwordOk");
-            reject(error); // Gửi tín hiệu lỗi của Promise (nếu cần thiết)
-          }
-        }
+        const resultsArray = await Promise.all(csvDataArray.map(csvData => Papa.parse(csvData, {
+            header: true,
+            // Cấu hình khác (nếu có) ...
+        })));
 
-        intervalId = setInterval(checkServerResponse, checkServerResponse_setInterval); // Kiểm tra thay đổi mỗi giây (có thể điều chỉnh thời gian tùy ý)
-      });
+        resultsArray.forEach((results, index) => {
+            const nameCSV = fileNamesCSVDataFirst[index]; // Đặt tên cho biến nameCSV dựa trên tên tệp CSV
+            addDataForSessionStorage('tempCSV', nameCSV, results.data); // Dữ liệu JSON đã được chuyển đổi cho từng URL
+        });
+    } catch (error) {
+        console.error("Lỗi khi nhận data CSV");
     }
-    await sendData();
-  });
 }
 
+getCSVDataFirst();
 /////////////// Làm mới info avatar liên tục
 // Hàm để gọi fetch và xử lý dữ liệu
 function fetch_data_block_now() {
@@ -224,7 +83,7 @@ function fetchDataAvatar() {
   submitBtn.html($.i18n("lobby-login-submit-button-logged-in"));
   submitBtn.prop("disabled", true);
   $(".needReplaceTrans-autoRefresh").prop("disabled", true);
-  Promise.all([getArmorIDandSTT(), fetchDataAvatar_useNode(), checkYourServer(), checkDonaterBlock(), fetchTicketArena(), fetchPatrolReward(), fetchCSVname()])
+  Promise.all([getArmorIDandSTT(), fetchDataAvatar_useNode(), checkYourServer(), checkDonaterBlock(), fetchTicketArena(), fetchPatrolReward()])
     .then(() => {
       console.log("Kết thúc fetch avatar");
       submitBtn.removeClass("disabled");
@@ -372,7 +231,7 @@ async function getArmorIDandSTT() {
     return;
   }
   var avatarAddress = avatarAddress2.toLowerCase();
-  var url = url9cscanApi + "account?address=" + Address9c;
+  var url = url9cscanApi + "/account?address=" + Address9c;
   var avatarDCC;
   // Lấy dữ liệu DCC
   const apiDCCData = await fetch(urlAllAvatarHaveDCC);
@@ -454,7 +313,7 @@ async function checkDonaterBlock() {
   if (donater) {
     var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
     var Address9cLower = Address9c.toLowerCase();
-    fetch(nineCMDapi + "donater?vi=" + Address9cLower)
+    fetch(nineCMDapi + "/statusDonater?agentAddress=" + Address9cLower)
       .then(function(response) {
         if (!response.ok) {
           throw $.i18n("nineCMDapi-checkDonaterBlock-error-1", response.status);
@@ -465,11 +324,20 @@ async function checkDonaterBlock() {
         if (data.length === 0) {
           throw $.i18n("nineCMDapi-checkDonaterBlock-error-2");
         }
-        addDataForSessionStorage("session_login9cmd", "donaterBlock", data[0].block);
-        addDataForSessionStorage("tempNineCMD", "isDonater", true);
+		if (data[0].blockEnd > data[0].blockTry) {
+			addDataForSessionStorage("session_login9cmd", "donaterBlock", data[0].blockEnd);
+			addDataForSessionStorage("tempNineCMD", "isDonater", true);
+			addDataForSessionStorage("tempNineCMD", "isTryDonater", false);
+		} else {
+			addDataForSessionStorage("session_login9cmd", "donaterBlock", data[0].blockTry);
+			addDataForSessionStorage("tempNineCMD", "isDonater", true);
+			addDataForSessionStorage("tempNineCMD", "isTryDonater", true);
+		}
       })
       .catch(function(error) {
         delDataFromSessionStorage("session_login9cmd", "donaterBlock");
+		delDataFromSessionStorage("tempNineCMD", "isDonater");
+		delDataFromSessionStorage("tempNineCMD", "isTryDonater");
         console.log(error);
         return error;
       });
@@ -522,7 +390,7 @@ async function fetchPatrolReward() {
         }
       }`
     };
-    let url = urlProxy_default + urlPatrolGraphql;
+    let url = urlProxy_default + "/" + urlPatrolGraphql;
     var response = await fetch(url, {
       method: "POST",
       body: JSON.stringify(post_data_json),
@@ -560,38 +428,70 @@ async function fetchPatrolReward() {
 }
 async function checkYourServer() {
   console.log("checkYourServer start");
-  // Ktra server
+  // Ktra server và mật khẩu bằng cách lấy public Key
   var url_Server = getDataFromSessionStorage("session_login9cmd", "url_Server");
-
   if (url_Server !== null) {
-    var passwordServer = getDataFromSessionStorage("session_login9cmd", "passwordServer");
+	var Address9c = getDataFromSessionStorage("session_login9cmd", "Address9c");
+	var password = getDataFromSessionStorage("session_login9cmd", "password");
+    // var passwordServer = getDataFromSessionStorage("session_login9cmd", "passwordServer");
     try {
-      var response = await fetch("https://jsonblob.com/api/" + passwordServer + "/" + url_Server);
+      var post_data_json = {
+		"agentAddress": Address9c,
+		"password": password,
+		"locale": $.i18n().locale
+      };
+      let url = "//" + url_Server + "/publicKey";
+      var response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(post_data_json),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
-        throw $.i18n("yourServer-checkYourServer-error-1", response.status);
+		addDataForSessionStorage("tempNineCMD", "serverOk", false);
+		delDataFromSessionStorage("tempNineCMD", "hasUTCFile");  
+		throw "Request to server failed: " + response.status + " " + response.statusText;
       }
-      var data = await response.json();
-      if (data.hasOwnProperty("message")) {
-        var errorMessage = data.message;
-        throw $.i18n("yourServer-checkYourServer-error-2", errorMessage);
-      }
-      addDataForSessionStorage("session_login9cmd", "request", "getPublicKey");
-      addDataForSessionStorage("session_login9cmd", "dataRequest", "");
-      await startFuncUseServerTask("getPublicKey");
+      var apiResponse = await response.json();
+      if (apiResponse.error == 0) {
+		addDataForSessionStorage("tempNineCMD", "hasUTCFile", true);
+		addDataForSessionStorage("tempNineCMD", "passwordOk", true);
+		addDataForSessionStorage("tempNineCMD", "serverOk", true);
+		addDataForSessionStorage("session_login9cmd", "publicKey", apiResponse.message);
+		delDataFromSessionStorage("tempNineCMD", "errorYourServer");
+		console.log("Nhận public key ok");
+      } else if ((apiResponse.error == 10001) || (apiResponse.error == 10002)) {
+		addDataForSessionStorage("tempNineCMD", "hasUTCFile", false);  
+		addDataForSessionStorage("tempNineCMD", "serverOk", true);
+		throw apiResponse.message;
+	  } else {
+		delDataFromSessionStorage("tempNineCMD", "hasUTCFile");  
+		addDataForSessionStorage("tempNineCMD", "serverOk", true);
+		throw apiResponse.message;
+	  }
     } catch (error) {
       console.log(error);
-      return error
+	  delDataFromSessionStorage("tempNineCMD", "passwordOk");
+	  addDataForSessionStorage("tempNineCMD", "errorYourServer", error);
+	  delDataFromSessionStorage("session_login9cmd", "publicKey");
+	  showNotification(error, 'error', showNotification_timeShow);
     }
   }
 }
 
 async function fetchCSVname() {
   try {
-    const csvUrl = "https://raw.githubusercontent.com/planetarium/NineChronicles/" + pathNineChronicles + "/nekoyume/Assets/StreamingAssets/Localization/item_name.csv";
+	  let nameCSV = "item_name"
+    const csvUrl = `https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/StreamingAssets/Localization/${nameCSV}.csv`;
     const response = await fetch(csvUrl);
     if (!response.ok) {
+		  const csvUrl = `csv/${nameCSV}.csv`;
+  const response = await fetch(csvUrl);
+  if (!response.ok) {  
       throw $.i18n("apiGithubNineChronicles-fetchCSVname-error-1", response.status);
-    }
+}  
+  }
     const csvData = await response.text();
     processDataCSVName(csvData);
     await fetchCSVLevelReq();
@@ -601,21 +501,52 @@ async function fetchCSVname() {
   }
 }
 async function fetchCSVLevelReq() {
-
-  const csvUrl = "csv/ItemRequirementSheet.csv";
+	let locale = $.i18n().locale
+	let nameCSV = "ItemRequirementSheet"
+  const csvUrl = `${nineCMDapi}/get9cBoardCSV?network=${network9cBoard}&csv=${nameCSV}&locale=${locale}`;
   const response = await fetch(csvUrl);
-  if (!response.ok) {
-    throw $.i18n("apiGithubNineChronicles-fetchCSVname-error-1", response.status);
-  }
+	if (!response.ok) {
+		  const csvUrl = `csv/${nameCSV}.csv`;
+  const response = await fetch(csvUrl);
+  if (!response.ok) {  
+      throw $.i18n("apiGithubNineChronicles-fetchCSVname-error-1", response.status);
+}  
+  }  
   const csvData = await response.text();
   processDataCSVLevelReq(csvData);
 }
 
+function getDataFromCSV(data, searchKey, item_id, labels) {
+  const item = data.find(item => item[searchKey] === item_id.toString());
+  
+  if (item) {
+    const reversedLabels = {};
+    for (const key in labels) {
+      reversedLabels[key] = item[labels[key]];
+    }
+    return reversedLabels;
+  } else {
+    return {};
+  }
+}
+
 function generateDataEquipments(input) {
-  let dataCSV = getDataFromSessionStorage('tempNineCMD', 'dataCSV');
-  return input.map((item, index) => {
+  const itemReqCSV = getDataFromSessionStorage('tempCSV', 'ItemRequirementSheet');
+  const itemNameCSV = getDataFromSessionStorage('tempCSV', 'item_name');
+  
+  return input.map((item, index) => {	  
     const itemId = item.id;
-    const itemData = dataCSV[itemId] || {}; // Lấy dữ liệu từ dataCSV theo itemId hoặc một đối tượng rỗng nếu không tồn tại
+	
+	var dataCSV = itemReqCSV;
+	var searchKey = "item_id";
+	var labels = {level_req: "level", mimis_req: "mimislevel"};
+	const itemReqCSVconvert = getDataFromCSV(dataCSV, searchKey, itemId, labels);
+	console.log(itemReqCSVconvert);
+	var dataCSV = itemNameCSV;
+	var searchKey = "Key";
+	var labels = {name: langCSV_default[$.i18n().locale]};
+	const itemNameCSVconvert = getDataFromCSV(dataCSV, searchKey, "ITEM_NAME_" + itemId, labels);
+	console.log(itemNameCSVconvert);
     const skills = item.skills && item.skills.length > 0 ? item.skills[0] : null;
     const skillsData = skills ? {
       skillId: skills.id,
@@ -629,9 +560,9 @@ function generateDataEquipments(input) {
 
     const output = {
       stt: index + 1,
-      name: itemData.name || "Unknown", // Thêm trường "name" từ dataCSV hoặc một giá trị mặc định "Unknown" nếu không tồn tại
-      level_req: itemData.level_req || level_req_default, // Thêm trường "level_req" từ dataCSV hoặc một giá trị mặc định 0 nếu không tồn tại
-      mimislevel: itemData.mimislevel || mimislevels_default,
+      name: itemNameCSVconvert.name || "Unknown", // Thêm trường "name" từ dataCSV hoặc một giá trị mặc định "Unknown" nếu không tồn tại
+      level_req: itemReqCSVconvert.level_req || level_req_default, // Thêm trường "level_req" từ dataCSV hoặc một giá trị mặc định 0 nếu không tồn tại
+      mimislevel: itemReqCSVconvert.mimislevel || mimislevels_default,
       image: `https://raw.githubusercontent.com/planetarium/NineChronicles/${pathNineChronicles}/nekoyume/Assets/Resources/UI/Icons/Item/${itemId}.png`,
       id: itemId,
       itemType: item.itemType,
@@ -1012,9 +943,20 @@ function fetchDataAvatar_display() {
     spansTableBlockNow.eq(3).text(url_rpc);
     spansTableBlockNow.eq(2).numberAnimate("set", delayUseNode);
     if (donaterBlock !== null) {
+	  let isTry = getDataFromSessionStorage("tempNineCMD", "isTryDonater");
+	  if (!getDataFromSessionStorage("tempNineCMD", "isTryDonater")) {
+		  let backgroundColor = "forestgreen"
+		  $(".lobby-donater-view").css("background-color", backgroundColor);
+	  } else {
+		  let backgroundColor = "goldenrod"
+		  $(".lobby-donater-view").css("background-color", backgroundColor);
+	  }
       $(".lobby-donater-view span").numberAnimate("set", (donaterBlock - blockNow).toLocaleString("en-US"));
+	  
     } else {
       $(".lobby-donater-view span").numberAnimate("set", "------");
+	  let backgroundColor = "slategray";
+	  $(".lobby-donater-view").css("background-color", backgroundColor);
     }
 
     if (dailyRewardReceivedIndex !== null) {
@@ -1256,12 +1198,12 @@ function save_9cmd_form_data_login() {
   var password = document.getElementById("password").value;
   var is_donater = document.getElementById("is-donater").checked;
   var url_rpc = document.getElementById("url_rpc").value;
-  var url_Server = document.getElementById("url_server_jsonBlod").value;
-  var passwordServer = document.getElementById("passwordServer").value;
+  var url_Server = document.getElementById("url_server_python").value;
+  // var passwordServer = document.getElementById("passwordServer").value;
 
   // if (url_rpc.startsWith("http://")) {
   // Sử dụng proxy khi url_rpc bắt đầu bằng "http://"
-  // url_rpc = urlProxy_default + url_rpc;
+  // url_rpc = urlProxy_default + "/" + url_rpc;
   // }
 
   var _9cmd_form_data_login = {
@@ -1271,7 +1213,7 @@ function save_9cmd_form_data_login() {
     donater: is_donater,
     url_rpc: url_rpc,
     url_Server: url_Server,
-    passwordServer: passwordServer,
+    // passwordServer: passwordServer,
   };
   var _temp = JSON.stringify(_9cmd_form_data_login);
   addToLog("Lưu lại _9cmd_form_data_login:" + _temp);
@@ -1298,8 +1240,8 @@ function populateFormWithSavedData() {
     document.getElementById("password").value = _9cmd_form_data_login_json.password;
     document.getElementById("is-donater").checked = _9cmd_form_data_login_json.donater;
     document.getElementById("url_rpc").value = _9cmd_form_data_login_json.url_rpc;
-    document.getElementById("url_server_jsonBlod").value = _9cmd_form_data_login_json.url_Server;
-    document.getElementById("passwordServer").value = _9cmd_form_data_login_json.passwordServer;
+    document.getElementById("url_server_python").value = _9cmd_form_data_login_json.url_Server;
+    // document.getElementById("passwordServer").value = _9cmd_form_data_login_json.passwordServer;
   }
 }
 
@@ -1368,7 +1310,7 @@ function node_list(data) {
       var optionValue = item.url;
       // if (optionValue.startsWith("http://")) {
       // Sử dụng proxy khi optionValue bắt đầu bằng "http://"
-      // optionValue = urlProxy_default + optionValue;
+      // optionValue = urlProxy_default + "/" + optionValue;
       // }
       var option = $("<option>").text(optionText).attr("value", optionValue);
       $("#url_rpc").append(option);
@@ -1379,7 +1321,7 @@ function node_list(data) {
 
 function listAvatar() {
   var address = $("#Address9c").val();
-  var url = url9cscanApi + "account?address=" + address;
+  var url = url9cscanApi + "/account?address=" + address;
 
   fetch(url)
     .then((response) => {
@@ -1451,7 +1393,7 @@ async function claimPatrolRewardUseNode() {
       claim(agentAddress: "${Address9c}" avatarAddress: "${avatarAddress}")
     }`
       };
-      let url = urlProxy_default + urlPatrolGraphql;
+      let url = urlProxy_default + "/" + urlPatrolGraphql;
       taskOutput.prepend(`<p>URL: <span class="user-select-all">${url}</span></p>`);
       taskOutput.prepend(`<p>Send: <span class="user-select-all">${JSON.stringify(post_data_json)}</span></p>`);
       var response = await fetch(url, {
@@ -1482,7 +1424,7 @@ async function claimPatrolRewardUseNode() {
           let invalidCount = 0;
 
           for (let i = 0; i <= 25; i += 1) {
-            const response = await fetch(`${url9cscanApi}transactions/${trans}/status`);
+            const response = await fetch(`${url9cscanApi}/transactions/${trans}/status`);
             const data = await response.json();
 
             if (data.status === 'SUCCESS') {
@@ -1928,15 +1870,26 @@ function randomStageSweep_percentage() {
 }
 //////////////////////////////////////////////////////////////////////////////
 
-function customViewFormatter(data) {
-  var template = $('#profileTemplate').html()
-  var view = ''
+function funcCreatImgItem(data) {
+  var template = $('#templateCreatImgItem').html();
+  var view = "";
+  var optionIcon = "";
+  var isEquip = "none";
   $.each(data, function(i, row) {
-    view += template.replace('%NAME%', row.name)
-      .replace('%IMAGE%', row.image)
+	  isEquip = "none";
+	if (row.equipped) isEquip = "unset";
+	optionIcon = [row.statsMap.aTK, row.statsMap.cRI, row.statsMap.dEF, row.statsMap.hIT, row.statsMap.hP, row.statsMap.sPD].map(value => value !== 0 ? '<img class="lazyload template-item-option" src="assets/loading_small.gif" data-src="assets/img/Common/UI_ItemGrade/UI_icon_option_stat.png" alt="optionStat">' : '').join(' ');
+	if (row.skills !== null) optionIcon += '<img class="lazyload template-item-option" src="assets/loading_small.gif" data-src="assets/img/Common/UI_ItemGrade/UI_icon_option_skill.png" alt="optionSkill">';
+	view += template.replace('%GRADE-1%', row.grade)
+	.replace('%GRADE-2%', row.grade)
+	.replace('%ISEQUIP%', isEquip)
+	.replace('%LEVEL%', row.level)
+	.replace('%OPTIONICON%', optionIcon)
+	.replace('%IMAGE%', row.image)
+	.replace('%UNIQUE_STT%', row.stt)
   })
 
-  return `<div class="row mx-0">${view}</div>`
+  return `<div class="row row-cols-4 row-cols-md-4 fixed-table-custom-view-inventory">${view}</div>`
 }
 
 
@@ -1948,9 +1901,9 @@ function creatTableInventory() {
     sortReset: true, // Giúp khi sắp xếp sẽ reset bảng về bảng 1
     sortStable: true, // Giúp sắp xếp các cột khác khi cột đc click như nhau
     onCustomViewPostBody: function() {
-      var innerDiv = $(".fixed-table-custom-view .row");
-      innerDiv.removeClass();
-      innerDiv.addClass("row row-cols-4 row-cols-md-4 fixed-table-custom-view-inventory");
+      // var innerDiv = $(".fixed-table-custom-view .row");
+      // innerDiv.removeClass();
+      // innerDiv.addClass("row row-cols-4 row-cols-md-4 fixed-table-custom-view-inventory");
       $('.bootstrap-table .fixed-table-container .fixed-table-body').css('height', 'unset');
     }, // Giúp hiện thị 4 item 1 hàng
     onToggleCustomView: function(state) {
@@ -2292,7 +2245,6 @@ function creatTableInventory() {
   });
 
 }
-
 function processDataCSVName(csvData) {
   const rows = csvData.split('\n');
   const headers = rows[0].split(',');
@@ -2300,10 +2252,7 @@ function processDataCSVName(csvData) {
   // Lấy cột được chọn dựa trên ngôn ngữ hiện tại
   let selectedColumn = 'English';
   const currentLanguage = $.i18n().locale;
-  const langCSV_default = {
-    en: "English",
-    vi: "Vietnam"
-  };
+
   if (langCSV_default[currentLanguage]) {
     selectedColumn = langCSV_default[currentLanguage];
   }
@@ -2362,12 +2311,12 @@ function processDataCSVLevelReq(csvData) {
     // Kiểm tra xem itemId đã tồn tại trong dataCSV hay chưa
     if (dataCSV[itemId]) {
       dataCSV[itemId]['level_req'] = parseInt(level_req);
-      dataCSV[itemId]['mimislevel'] = parseInt(mimislevel.split('\r')[0]);
+      dataCSV[itemId]['mimislevel'] = parseInt(mimislevel);
     } else {
       // Tạo một đối tượng mới với khóa và giá trị tương ứng
       dataCSV[itemId] = {
         'level_req': level_req,
-        'mimislevel': mimislevel.split('\r')[0]
+        'mimislevel': mimislevel
       };
     }
   }
